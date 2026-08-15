@@ -1,6 +1,7 @@
 /* =====================================================
-   AL JEFOON TENTS — ORDER TRACKER
-   CLEAN UI v1.2
+   AL JEFOON TENTS
+   ORDER TRACKER
+   VERSION 1.0
 ===================================================== */
 
 * {
@@ -9,32 +10,26 @@
 
 :root {
   --brand: #fcc224;
-  --brand-dark: #dca900;
+  --brand-dark: #d9a400;
 
-  --ink: #20242a;
-  --muted: #737b87;
-  --soft: #f7f8fa;
-  --bg: #f4f6f8;
-  --card: #ffffff;
+  --ink: #222;
+  --muted: #697386;
 
-  --line: #e6e8ec;
+  --bg: #f6f8fb;
+  --card: #fff;
+  --line: #e5e7eb;
 
   --green: #16834b;
   --red: #c93b32;
   --orange: #c47a00;
 
-  --radius: 12px;
-  --shadow: 0 3px 14px rgba(20, 30, 45, 0.045);
+  --shadow: 0 8px 25px rgba(20, 30, 45, .06);
 }
 
 
 /* =====================================================
    BASE
 ===================================================== */
-
-html {
-  scroll-behavior: smooth;
-}
 
 body {
   margin: 0;
@@ -48,17 +43,6 @@ input,
 select,
 textarea {
   font: inherit;
-}
-
-button {
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-}
-
-input,
-select,
-textarea {
-  outline: none;
 }
 
 
@@ -77,53 +61,74 @@ textarea {
 ===================================================== */
 
 .sidebar {
-  width: 235px;
+  width: 245px;
   background: #fff;
   border-right: 1px solid var(--line);
-  padding: 22px 14px;
+
+  padding: 24px 16px;
+
   display: flex;
   flex-direction: column;
+
   position: fixed;
   inset: 0 auto 0 0;
+
   z-index: 10;
 }
 
 
 /* =====================================================
-   BRAND / LOGO
+   BRAND
 ===================================================== */
 
 .brand {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 5px 9px 26px;
+
+  padding: 4px 8px 28px;
 }
 
-.brand-logo {
-  width: 46px;
-  height: 46px;
+.brand-mark {
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  border-radius: 10px;
+
+  background: var(--brand);
+
+  display: grid;
+  place-items: center;
+
+  font-weight: 900;
+  font-size: 15px;
+
+  overflow: hidden;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   display: block;
-  flex-shrink: 0;
 }
 
-.brand-text {
-  min-width: 0;
-}
-
-.brand-text strong {
+.brand strong {
   display: block;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.45px;
+  font-size: 13px;
+  letter-spacing: .4px;
   white-space: nowrap;
 }
 
-.brand-text span {
+.brand span {
   display: block;
+
   color: var(--muted);
-  font-size: 10px;
+
+  font-size: 11px;
+
   margin-top: 3px;
 }
 
@@ -134,38 +139,39 @@ textarea {
 
 .nav {
   display: grid;
-  gap: 4px;
+  gap: 6px;
 }
 
 .nav-item {
-  width: 100%;
   border: 0;
   background: transparent;
-  padding: 11px 12px;
-  border-radius: 8px;
+
+  padding: 13px 12px;
+
+  border-radius: 10px;
+
   text-align: left;
+
   cursor: pointer;
-  color: #555e6b;
+
+  color: #4b5563;
+
   display: flex;
   align-items: center;
-  gap: 11px;
-  font-size: 13px;
+  gap: 12px;
+
   font-weight: 600;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
+
+  transition: .15s ease;
 }
 
 .nav-item span {
-  width: 20px;
+  width: 22px;
   text-align: center;
-  font-size: 17px;
+  font-size: 18px;
 }
 
-.nav-item:hover {
-  background: #faf5df;
-}
-
+.nav-item:hover,
 .nav-item.active {
   background: var(--brand);
   color: #222;
@@ -178,9 +184,12 @@ textarea {
 
 .sidebar-footer {
   margin-top: auto;
-  padding: 10px 9px;
-  color: #9aa1ab;
-  font-size: 10px;
+
+  padding: 10px 8px;
+
+  color: #8b93a1;
+
+  font-size: 11px;
 }
 
 .sidebar-footer small {
@@ -189,10 +198,12 @@ textarea {
 }
 
 .brand-line {
-  width: 38px;
   height: 3px;
   background: var(--brand);
-  border-radius: 5px;
+
+  width: 42px;
+
+  border-radius: 4px;
 }
 
 
@@ -201,8 +212,10 @@ textarea {
 ===================================================== */
 
 .main {
-  margin-left: 235px;
-  width: calc(100% - 235px);
+  margin-left: 245px;
+
+  width: calc(100% - 245px);
+
   min-height: 100vh;
 }
 
@@ -212,29 +225,38 @@ textarea {
 ===================================================== */
 
 .topbar {
-  height: 76px;
+  height: 82px;
+
   background: #fff;
+
   border-bottom: 1px solid var(--line);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 30px;
+
+  padding: 0 32px;
+
   position: sticky;
   top: 0;
+
   z-index: 5;
 }
 
 .eyebrow {
-  font-size: 9px;
+  font-size: 10px;
+
   font-weight: 800;
+
   letter-spacing: 1.5px;
-  color: #9299a4;
+
+  color: #8a919c;
 }
 
 .topbar h1 {
   margin: 4px 0 0;
-  font-size: 23px;
-  line-height: 1.1;
+
+  font-size: 25px;
 }
 
 
@@ -244,7 +266,8 @@ textarea {
 
 .section {
   display: none;
-  padding: 28px 30px;
+
+  padding: 30px 32px;
 }
 
 .section.active {
@@ -259,189 +282,197 @@ textarea {
 .primary-btn,
 .outline-btn,
 .text-btn {
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.1s ease;
-}
+  border-radius: 9px;
 
-.primary-btn,
-.outline-btn {
-  padding: 10px 15px;
+  padding: 11px 16px;
+
+  cursor: pointer;
+
+  font-weight: 700;
 }
 
 .primary-btn {
-  border: 1px solid var(--brand);
+  border: 0;
+
   background: var(--brand);
+
   color: #222;
 }
 
 .primary-btn:hover {
-  background: #efb619;
-}
-
-.primary-btn:active,
-.outline-btn:active {
-  transform: translateY(1px);
+  background: #f0b91b;
 }
 
 .outline-btn {
   background: #fff;
+
   border: 1px solid var(--line);
-  color: #3e4651;
+
+  color: #333;
 }
 
 .outline-btn:hover {
-  border-color: #cfd4db;
+  border-color: #c7cbd2;
+
   background: #fafafa;
 }
 
 .text-btn {
   border: 0;
+
   background: transparent;
-  color: #8a6500;
-  padding: 4px 2px;
-  font-size: 12px;
+
+  color: #8b6500;
+
+  padding: 4px;
 }
 
 
 /* =====================================================
-   DASHBOARD WELCOME
+   WELCOME
 ===================================================== */
 
 .welcome {
-  background: #252525;
+  background: #222;
+
   color: #fff;
-  border-radius: var(--radius);
-  padding: 23px 25px;
+
+  border-radius: 16px;
+
+  padding: 26px 28px;
+
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
-  margin-bottom: 18px;
+
+  margin-bottom: 22px;
 }
 
 .welcome h2 {
-  margin: 5px 0 3px;
-  font-size: 21px;
+  margin: 6px 0 4px;
+
+  font-size: 24px;
 }
 
 .welcome p {
   margin: 0;
-  color: #c7c9cd;
-  font-size: 12px;
-}
 
-.welcome .outline-btn {
-  background: transparent;
-  border-color: #555;
-  color: #fff;
-}
-
-.welcome .outline-btn:hover {
-  background: #333;
-  border-color: #666;
+  color: #c5c8cd;
 }
 
 
 /* =====================================================
-   DASHBOARD STAT CARDS
+   DIGITAL CLOCK
+===================================================== */
+
+.digital-clock {
+  font-size: 13px !important;
+
+  font-weight: 600;
+
+  letter-spacing: .3px;
+
+  color: #d7d9dc !important;
+
+  margin-top: 8px !important;
+}
+
+
+/* =====================================================
+   STATS
 ===================================================== */
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 13px;
-  margin-bottom: 18px;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 16px;
+
+  margin-bottom: 22px;
 }
 
-.stat-card {
+.stat-card,
+.panel {
   background: var(--card);
+
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 17px 18px;
+
+  border-radius: 14px;
+
   box-shadow: var(--shadow);
 }
 
+.stat-card {
+  padding: 20px;
+}
+
 .stat-card span {
-  display: block;
-  font-size: 11px;
+  font-size: 12px;
+
   color: var(--muted);
+
   font-weight: 700;
 }
 
 .stat-card strong {
   display: block;
-  font-size: 22px;
-  margin: 7px 0 3px;
+
+  font-size: 25px;
+
+  margin: 9px 0 4px;
 }
 
 .stat-card small {
   color: #9aa1ad;
-  font-size: 10px;
 }
 
 
 /* =====================================================
-   DASHBOARD GRID
+   DASHBOARD
 ===================================================== */
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns:
-    minmax(0, 2fr)
-    minmax(250px, 1fr);
-  gap: 14px;
+
+  grid-template-columns: 2fr 1fr;
+
+  gap: 18px;
 }
-
-
-/* =====================================================
-   PANELS
-===================================================== */
 
 .panel {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
-.panel:not(.filters):not(.report-controls) {
-  padding: 18px;
+  padding: 20px;
 }
 
 .panel-head,
 .section-intro,
 .items-head {
   display: flex;
+
   justify-content: space-between;
+
   align-items: center;
+
   gap: 15px;
 }
 
 .panel-head h3,
 .items-head h3 {
   margin: 0;
-  font-size: 15px;
+
+  font-size: 16px;
 }
 
 .panel-head p,
 .items-head p,
 .section-intro p {
   margin: 4px 0 0;
+
   color: var(--muted);
-  font-size: 11px;
-}
 
-.section-intro {
-  margin-bottom: 18px;
-}
-
-.section-intro h2 {
-  margin: 0;
-  font-size: 22px;
+  font-size: 12px;
 }
 
 
@@ -451,43 +482,45 @@ textarea {
 
 .table-wrap {
   overflow-x: auto;
-  margin-top: 14px;
+
+  margin-top: 16px;
 }
 
 table {
   width: 100%;
+
   border-collapse: collapse;
-  min-width: 680px;
+
+  min-width: 700px;
 }
 
 th {
   text-align: left;
-  font-size: 9px;
+
+  font-size: 10px;
+
   text-transform: uppercase;
-  letter-spacing: 0.65px;
+
+  letter-spacing: .7px;
+
   color: #89919d;
+
   background: #fafbfc;
-  font-weight: 800;
 }
 
 th,
 td {
-  padding: 11px 9px;
+  padding: 12px 10px;
+
   border-bottom: 1px solid var(--line);
-  font-size: 11px;
+
+  font-size: 12px;
+
   vertical-align: top;
 }
 
 td {
   color: #3c4450;
-}
-
-tbody tr:hover {
-  background: #fcfcfd;
-}
-
-tbody tr:last-child td {
-  border-bottom: 0;
 }
 
 
@@ -496,19 +529,19 @@ tbody tr:last-child td {
 ===================================================== */
 
 .summary-list {
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .summary-list > div {
   display: flex;
-  align-items: center;
-  padding: 13px 0;
-  border-bottom: 1px solid var(--line);
-  font-size: 12px;
-}
 
-.summary-list > div:last-child {
-  border-bottom: 0;
+  align-items: center;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid var(--line);
+
+  font-size: 13px;
 }
 
 .summary-list strong {
@@ -516,11 +549,14 @@ tbody tr:last-child td {
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
+
   border-radius: 50%;
+
   display: inline-block;
-  margin-right: 9px;
+
+  margin-right: 10px;
 }
 
 .paid {
@@ -541,27 +577,52 @@ tbody tr:last-child td {
 
 
 /* =====================================================
+   SECTION INTRO
+===================================================== */
+
+.section-intro {
+  margin-bottom: 20px;
+}
+
+.section-intro h2 {
+  margin: 0;
+
+  font-size: 24px;
+}
+
+
+/* =====================================================
    FORM
 ===================================================== */
 
 .form-panel {
-  padding: 22px !important;
+  padding: 24px;
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 15px;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 17px;
 }
 
 .form-grid label,
 .full-label,
 .report-controls label {
   display: block;
-  font-size: 10px;
+
+  font-size: 11px;
+
   font-weight: 800;
-  color: #626b77;
+
+  color: #5c6572;
 }
+
+
+/* =====================================================
+   FORM INPUTS
+===================================================== */
 
 .form-grid input,
 .form-grid select,
@@ -570,16 +631,61 @@ tbody tr:last-child td {
 .filters select,
 .report-controls input {
   width: 100%;
-  margin-top: 6px;
-  padding: 10px 11px;
+
+  margin-top: 7px;
+
+  padding: 11px 12px;
+
   border: 1px solid #dfe3e8;
+
   border-radius: 8px;
+
   background: #fff;
+
+  outline: none;
+
   color: #222;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+
+  min-height: 42px;
 }
+
+
+/* =====================================================
+   RECEIVED BY / SELECT FIX
+===================================================== */
+
+.form-grid select {
+  appearance: auto;
+
+  height: 42px;
+
+  min-height: 42px;
+
+  line-height: normal;
+
+  padding-top: 10px;
+
+  padding-bottom: 10px;
+}
+
+
+/*
+   Important:
+   This keeps the label visible above the
+   Received By dropdown and prevents the
+   select from becoming oversized.
+*/
+
+.form-grid label select {
+  display: block;
+
+  width: 100%;
+}
+
+
+/* =====================================================
+   FOCUS
+===================================================== */
 
 .form-grid input:focus,
 .form-grid select:focus,
@@ -588,11 +694,13 @@ tbody tr:last-child td {
 .filters select:focus,
 .report-controls input:focus {
   border-color: #d5a400;
-  box-shadow: 0 0 0 3px rgba(252, 194, 36, 0.14);
+
+  box-shadow:
+    0 0 0 3px rgba(252, 194, 36, .15);
 }
 
 .form-grid input[readonly] {
-  background: #f5f6f8;
+  background: #f4f5f7;
 }
 
 
@@ -602,40 +710,57 @@ tbody tr:last-child td {
 
 .items-section {
   border-top: 1px solid var(--line);
+
   border-bottom: 1px solid var(--line);
-  padding: 20px 0;
-  margin: 22px 0;
+
+  padding: 22px 0;
+
+  margin: 24px 0;
 }
 
 .item-row {
   display: grid;
-  grid-template-columns:
-    minmax(0, 1fr)
-    120px
-    40px;
-  gap: 8px;
-  margin-top: 10px;
+
+  grid-template-columns: 1fr 130px 42px;
+
+  gap: 10px;
+
+  margin-top: 12px;
 }
 
 .item-row input {
   width: 100%;
+
+  min-height: 42px;
+
   padding: 10px;
+
   border: 1px solid #dfe3e8;
+
   border-radius: 8px;
-  background: #fff;
+
+  outline: none;
+}
+
+.item-row input:focus {
+  border-color: #d5a400;
+
+  box-shadow:
+    0 0 0 3px rgba(252, 194, 36, .15);
 }
 
 .remove-item {
   border: 1px solid var(--line);
-  background: #fff;
-  border-radius: 8px;
-  cursor: pointer;
-  color: #b3322d;
-  font-size: 16px;
-}
 
-.remove-item:hover {
-  background: #fff5f4;
+  background: #fff;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  color: #b3322d;
+
+  min-height: 42px;
 }
 
 
@@ -649,7 +774,8 @@ tbody tr:last-child td {
 
 .full-label textarea {
   resize: vertical;
-  min-height: 95px;
+
+  min-height: 100px;
 }
 
 
@@ -659,9 +785,12 @@ tbody tr:last-child td {
 
 .form-actions {
   display: flex;
+
   justify-content: flex-end;
-  gap: 8px;
-  margin-top: 18px;
+
+  gap: 10px;
+
+  margin-top: 20px;
 }
 
 
@@ -671,14 +800,14 @@ tbody tr:last-child td {
 
 .filters {
   display: grid;
-  grid-template-columns:
-    minmax(200px, 2fr)
-    minmax(140px, 1fr)
-    minmax(140px, 1fr)
-    auto;
-  gap: 9px;
-  margin-bottom: 14px;
-  padding: 13px;
+
+  grid-template-columns: 2fr 1fr 1fr auto;
+
+  gap: 10px;
+
+  margin-bottom: 16px;
+
+  padding: 14px;
 }
 
 .filters input,
@@ -693,31 +822,39 @@ tbody tr:last-child td {
 
 .badge {
   display: inline-flex;
-  align-items: center;
-  padding: 4px 7px;
+
+  padding: 5px 8px;
+
   border-radius: 20px;
-  font-size: 9px;
+
+  font-size: 10px;
+
   font-weight: 800;
+
   white-space: nowrap;
 }
 
 .badge-paid {
   background: #e7f6ed;
+
   color: #13703f;
 }
 
 .badge-partial {
   background: #fff4d6;
+
   color: #8a6100;
 }
 
 .badge-pending {
   background: #fde9e7;
+
   color: #a52d27;
 }
 
 .badge-none {
   background: #eef0f3;
+
   color: #66707d;
 }
 
@@ -728,19 +865,18 @@ tbody tr:last-child td {
 
 .action-btn {
   border: 0;
+
   background: transparent;
+
   cursor: pointer;
-  padding: 4px 5px;
-  color: #707985;
-  font-size: 11px;
+
+  padding: 5px;
+
+  color: #6a7280;
 }
 
 .action-btn:hover {
   color: #222;
-}
-
-.action-btn + .action-btn {
-  margin-left: 3px;
 }
 
 
@@ -750,18 +886,16 @@ tbody tr:last-child td {
 
 .report-controls {
   display: flex;
+
   align-items: flex-end;
-  gap: 10px;
-  margin-bottom: 18px;
-  padding: 13px;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
 }
 
 .report-controls label {
-  width: 230px;
-}
-
-.report-controls input {
-  margin-top: 6px;
+  width: 250px;
 }
 
 
@@ -771,29 +905,38 @@ tbody tr:last-child td {
 
 .report-page {
   background: #fff;
+
   border: 1px solid var(--line);
+
   box-shadow: var(--shadow);
-  padding: 30px;
+
+  padding: 34px;
+
   min-height: 400px;
 }
 
 .report-header {
   border-bottom: 3px solid var(--brand);
-  padding-bottom: 15px;
+
+  padding-bottom: 16px;
+
   display: flex;
+
   justify-content: space-between;
-  gap: 20px;
 }
 
 .report-header h2 {
   margin: 0;
-  font-size: 19px;
+
+  font-size: 20px;
 }
 
 .report-header p {
-  margin: 4px 0 0;
+  margin: 5px 0 0;
+
   color: var(--muted);
-  font-size: 11px;
+
+  font-size: 12px;
 }
 
 .report-title {
@@ -802,44 +945,48 @@ tbody tr:last-child td {
 
 .report-title strong {
   display: block;
-  font-size: 15px;
+
+  font-size: 16px;
 }
 
 .report-title span {
-  font-size: 10px;
+  font-size: 12px;
+
   color: var(--muted);
 }
 
-
-/* =====================================================
-   REPORT SUMMARY
-===================================================== */
-
 .report-summary {
   display: grid;
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
-  gap: 9px;
-  margin: 18px 0;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 10px;
+
+  margin: 20px 0;
 }
 
 .report-box {
   border: 1px solid var(--line);
-  padding: 11px;
+
+  padding: 12px;
+
   border-radius: 8px;
-  background: #fff;
 }
 
 .report-box span {
   display: block;
+
   color: var(--muted);
-  font-size: 9px;
+
+  font-size: 10px;
 }
 
 .report-box strong {
+  font-size: 17px;
+
   display: block;
-  font-size: 16px;
-  margin-top: 4px;
+
+  margin-top: 5px;
 }
 
 
@@ -848,9 +995,11 @@ tbody tr:last-child td {
 ===================================================== */
 
 .empty {
-  padding: 28px !important;
+  padding: 30px;
+
   text-align: center;
-  color: #8a919c !important;
+
+  color: #8a919c;
 }
 
 
@@ -860,15 +1009,22 @@ tbody tr:last-child td {
 
 .toast {
   position: fixed;
-  right: 22px;
-  bottom: 22px;
+
+  right: 25px;
+
+  bottom: 25px;
+
   background: #222;
+
   color: #fff;
-  padding: 11px 15px;
-  border-radius: 8px;
+
+  padding: 12px 16px;
+
+  border-radius: 9px;
+
   box-shadow: var(--shadow);
+
   z-index: 20;
-  font-size: 12px;
 }
 
 .toast.hidden {
@@ -877,23 +1033,32 @@ tbody tr:last-child td {
 
 
 /* =====================================================
+   TABLE RESPONSIVENESS
+===================================================== */
+
+.orders-table {
+  min-width: 950px;
+}
+
+
+/* =====================================================
    TABLET
 ===================================================== */
 
-@media (max-width: 1100px) {
+@media (max-width: 1000px) {
 
   .sidebar {
-    width: 210px;
+    width: 205px;
   }
 
   .main {
-    margin-left: 210px;
-    width: calc(100% - 210px);
+    margin-left: 205px;
+
+    width: calc(100% - 205px);
   }
 
   .stats-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .dashboard-grid {
@@ -901,9 +1066,9 @@ tbody tr:last-child td {
   }
 
   .form-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
+
 }
 
 
@@ -913,83 +1078,53 @@ tbody tr:last-child td {
 
 @media (max-width: 700px) {
 
+  .sidebar {
+    position: static;
+
+    width: 100%;
+
+    height: auto;
+  }
+
   .app-shell {
     display: block;
   }
 
-  .sidebar {
-    position: static;
+  .main {
+    margin-left: 0;
+
     width: 100%;
-    height: auto;
-    padding: 14px;
-  }
-
-  .brand {
-    padding-bottom: 16px;
-  }
-
-  .brand-logo {
-    width: 42px;
-    height: 42px;
   }
 
   .nav {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .sidebar-footer {
     display: none;
   }
 
-  .main {
-    margin-left: 0;
-    width: 100%;
-  }
-
   .topbar {
+    padding: 15px 18px;
+
     height: auto;
-    padding: 14px 16px;
-    gap: 10px;
-  }
-
-  .topbar h1 {
-    font-size: 20px;
-  }
-
-  .topbar .primary-btn {
-    padding: 9px 11px;
-    font-size: 11px;
   }
 
   .section {
-    padding: 18px 14px;
+    padding: 20px 16px;
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
+  .stats-grid,
   .form-grid {
     grid-template-columns: 1fr;
   }
 
   .welcome {
     display: block;
-    padding: 20px;
   }
 
   .welcome .outline-btn {
-    margin-top: 15px;
-  }
-
-  .section-intro {
-    align-items: flex-start;
-  }
-
-  .section-intro h2 {
-    font-size: 20px;
+    margin-top: 18px;
   }
 
   .filters {
@@ -1001,8 +1136,11 @@ tbody tr:last-child td {
   }
 
   .report-controls label {
+    display: block;
+
     width: 100%;
-    margin-bottom: 9px;
+
+    margin-bottom: 10px;
   }
 
   .report-page {
@@ -1010,57 +1148,13 @@ tbody tr:last-child td {
   }
 
   .report-summary {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .report-header {
-    display: block;
+  .brand strong {
+    font-size: 12px;
   }
 
-  .report-title {
-    text-align: left;
-    margin-top: 12px;
-  }
-
-  .item-row {
-    grid-template-columns:
-      minmax(0, 1fr)
-      90px
-      38px;
-  }
-}
-
-
-/* =====================================================
-   SMALL MOBILE
-===================================================== */
-
-@media (max-width: 420px) {
-
-  .nav {
-    grid-template-columns: 1fr;
-  }
-
-  .topbar {
-    align-items: flex-start;
-  }
-
-  .topbar .primary-btn {
-    white-space: nowrap;
-  }
-
-  .report-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .form-panel {
-    padding: 16px !important;
-  }
-
-  .brand-text strong {
-    font-size: 11px;
-  }
 }
 
 
@@ -1084,21 +1178,26 @@ tbody tr:last-child td {
 
   .main {
     margin: 0;
+
     width: 100%;
   }
 
   .section#reports {
     display: block;
+
     padding: 0;
   }
 
   .report-page {
     border: 0;
+
     box-shadow: none;
+
     padding: 0;
   }
 
   .report-header {
     margin-top: 0;
   }
+
 }
