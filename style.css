@@ -1,6 +1,6 @@
 /* =====================================================
    AL JEFOON TENTS — ORDER TRACKER
-   CLEAN UI v1.1
+   CLEAN UI v1.2
 ===================================================== */
 
 * {
@@ -38,12 +38,7 @@ html {
 
 body {
   margin: 0;
-  font-family:
-    Inter,
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
   background: var(--bg);
   color: var(--ink);
 }
@@ -57,6 +52,7 @@ textarea {
 
 button {
   -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 input,
@@ -82,66 +78,59 @@ textarea {
 
 .sidebar {
   width: 235px;
-
   background: #fff;
   border-right: 1px solid var(--line);
-
   padding: 22px 14px;
-
   display: flex;
   flex-direction: column;
-
   position: fixed;
   inset: 0 auto 0 0;
-
   z-index: 10;
 }
 
 
-/* BRAND */
+/* =====================================================
+   BRAND / LOGO
+===================================================== */
 
 .brand {
   display: flex;
   align-items: center;
   gap: 11px;
-
   padding: 5px 9px 26px;
 }
 
-.brand-mark {
-  width: 40px;
-  height: 40px;
-
-  border-radius: 9px;
-
-  background: var(--brand);
-
-  display: grid;
-  place-items: center;
-
-  font-size: 14px;
-  font-weight: 900;
+.brand-logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
 }
 
-.brand strong {
-  display: block;
+.brand-text {
+  min-width: 0;
+}
 
+.brand-text strong {
+  display: block;
   font-size: 12px;
+  font-weight: 800;
   letter-spacing: 0.45px;
+  white-space: nowrap;
 }
 
-.brand span {
+.brand-text span {
   display: block;
-
   color: var(--muted);
-
   font-size: 10px;
-
   margin-top: 3px;
 }
 
 
-/* NAVIGATION */
+/* =====================================================
+   NAVIGATION
+===================================================== */
 
 .nav {
   display: grid;
@@ -150,28 +139,18 @@ textarea {
 
 .nav-item {
   width: 100%;
-
   border: 0;
   background: transparent;
-
   padding: 11px 12px;
-
   border-radius: 8px;
-
   text-align: left;
-
   cursor: pointer;
-
   color: #555e6b;
-
   display: flex;
   align-items: center;
-
   gap: 11px;
-
   font-size: 13px;
   font-weight: 600;
-
   transition:
     background 0.15s ease,
     color 0.15s ease;
@@ -179,9 +158,7 @@ textarea {
 
 .nav-item span {
   width: 20px;
-
   text-align: center;
-
   font-size: 17px;
 }
 
@@ -195,15 +172,14 @@ textarea {
 }
 
 
-/* SIDEBAR FOOTER */
+/* =====================================================
+   SIDEBAR FOOTER
+===================================================== */
 
 .sidebar-footer {
   margin-top: auto;
-
   padding: 10px 9px;
-
   color: #9aa1ab;
-
   font-size: 10px;
 }
 
@@ -215,9 +191,7 @@ textarea {
 .brand-line {
   width: 38px;
   height: 3px;
-
   background: var(--brand);
-
   border-radius: 5px;
 }
 
@@ -228,9 +202,7 @@ textarea {
 
 .main {
   margin-left: 235px;
-
   width: calc(100% - 235px);
-
   min-height: 100vh;
 }
 
@@ -241,38 +213,27 @@ textarea {
 
 .topbar {
   height: 76px;
-
   background: #fff;
-
   border-bottom: 1px solid var(--line);
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 30px;
-
   position: sticky;
   top: 0;
-
   z-index: 5;
 }
 
 .eyebrow {
   font-size: 9px;
-
   font-weight: 800;
-
   letter-spacing: 1.5px;
-
   color: #9299a4;
 }
 
 .topbar h1 {
   margin: 4px 0 0;
-
   font-size: 23px;
-
   line-height: 1.1;
 }
 
@@ -283,7 +244,6 @@ textarea {
 
 .section {
   display: none;
-
   padding: 28px 30px;
 }
 
@@ -300,11 +260,8 @@ textarea {
 .outline-btn,
 .text-btn {
   border-radius: 8px;
-
   cursor: pointer;
-
   font-weight: 700;
-
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
@@ -318,9 +275,7 @@ textarea {
 
 .primary-btn {
   border: 1px solid var(--brand);
-
   background: var(--brand);
-
   color: #222;
 }
 
@@ -335,27 +290,20 @@ textarea {
 
 .outline-btn {
   background: #fff;
-
   border: 1px solid var(--line);
-
   color: #3e4651;
 }
 
 .outline-btn:hover {
   border-color: #cfd4db;
-
   background: #fafafa;
 }
 
 .text-btn {
   border: 0;
-
   background: transparent;
-
   color: #8a6500;
-
   padding: 4px 2px;
-
   font-size: 12px;
 }
 
@@ -366,45 +314,34 @@ textarea {
 
 .welcome {
   background: #252525;
-
   color: #fff;
-
   border-radius: var(--radius);
-
   padding: 23px 25px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   margin-bottom: 18px;
 }
 
 .welcome h2 {
   margin: 5px 0 3px;
-
   font-size: 21px;
 }
 
 .welcome p {
   margin: 0;
-
   color: #c7c9cd;
-
   font-size: 12px;
 }
 
 .welcome .outline-btn {
   background: transparent;
-
   border-color: #555;
-
   color: #fff;
 }
 
 .welcome .outline-btn:hover {
   background: #333;
-
   border-color: #666;
 }
 
@@ -415,48 +352,34 @@ textarea {
 
 .stats-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
-
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 13px;
-
   margin-bottom: 18px;
 }
 
 .stat-card {
   background: var(--card);
-
   border: 1px solid var(--line);
-
   border-radius: var(--radius);
-
   padding: 17px 18px;
-
   box-shadow: var(--shadow);
 }
 
 .stat-card span {
   display: block;
-
   font-size: 11px;
-
   color: var(--muted);
-
   font-weight: 700;
 }
 
 .stat-card strong {
   display: block;
-
   font-size: 22px;
-
   margin: 7px 0 3px;
 }
 
 .stat-card small {
   color: #9aa1ad;
-
   font-size: 10px;
 }
 
@@ -467,11 +390,9 @@ textarea {
 
 .dashboard-grid {
   display: grid;
-
   grid-template-columns:
     minmax(0, 2fr)
     minmax(250px, 1fr);
-
   gap: 14px;
 }
 
@@ -482,11 +403,8 @@ textarea {
 
 .panel {
   background: var(--card);
-
   border: 1px solid var(--line);
-
   border-radius: var(--radius);
-
   box-shadow: var(--shadow);
 }
 
@@ -498,18 +416,14 @@ textarea {
 .section-intro,
 .items-head {
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
-
   gap: 15px;
 }
 
 .panel-head h3,
 .items-head h3 {
   margin: 0;
-
   font-size: 15px;
 }
 
@@ -517,9 +431,7 @@ textarea {
 .items-head p,
 .section-intro p {
   margin: 4px 0 0;
-
   color: var(--muted);
-
   font-size: 11px;
 }
 
@@ -529,7 +441,6 @@ textarea {
 
 .section-intro h2 {
   margin: 0;
-
   font-size: 22px;
 }
 
@@ -540,42 +451,30 @@ textarea {
 
 .table-wrap {
   overflow-x: auto;
-
   margin-top: 14px;
 }
 
 table {
   width: 100%;
-
   border-collapse: collapse;
-
   min-width: 680px;
 }
 
 th {
   text-align: left;
-
   font-size: 9px;
-
   text-transform: uppercase;
-
   letter-spacing: 0.65px;
-
   color: #89919d;
-
   background: #fafbfc;
-
   font-weight: 800;
 }
 
 th,
 td {
   padding: 11px 9px;
-
   border-bottom: 1px solid var(--line);
-
   font-size: 11px;
-
   vertical-align: top;
 }
 
@@ -602,13 +501,9 @@ tbody tr:last-child td {
 
 .summary-list > div {
   display: flex;
-
   align-items: center;
-
   padding: 13px 0;
-
   border-bottom: 1px solid var(--line);
-
   font-size: 12px;
 }
 
@@ -623,11 +518,8 @@ tbody tr:last-child td {
 .dot {
   width: 8px;
   height: 8px;
-
   border-radius: 50%;
-
   display: inline-block;
-
   margin-right: 9px;
 }
 
@@ -658,10 +550,7 @@ tbody tr:last-child td {
 
 .form-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
-
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 15px;
 }
 
@@ -669,11 +558,8 @@ tbody tr:last-child td {
 .full-label,
 .report-controls label {
   display: block;
-
   font-size: 10px;
-
   font-weight: 800;
-
   color: #626b77;
 }
 
@@ -684,19 +570,12 @@ tbody tr:last-child td {
 .filters select,
 .report-controls input {
   width: 100%;
-
   margin-top: 6px;
-
   padding: 10px 11px;
-
   border: 1px solid #dfe3e8;
-
   border-radius: 8px;
-
   background: #fff;
-
   color: #222;
-
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
@@ -709,10 +588,7 @@ tbody tr:last-child td {
 .filters select:focus,
 .report-controls input:focus {
   border-color: #d5a400;
-
-  box-shadow:
-    0 0 0 3px
-    rgba(252, 194, 36, 0.14);
+  box-shadow: 0 0 0 3px rgba(252, 194, 36, 0.14);
 }
 
 .form-grid input[readonly] {
@@ -726,50 +602,35 @@ tbody tr:last-child td {
 
 .items-section {
   border-top: 1px solid var(--line);
-
   border-bottom: 1px solid var(--line);
-
   padding: 20px 0;
-
   margin: 22px 0;
 }
 
 .item-row {
   display: grid;
-
   grid-template-columns:
     minmax(0, 1fr)
     120px
     40px;
-
   gap: 8px;
-
   margin-top: 10px;
 }
 
 .item-row input {
   width: 100%;
-
   padding: 10px;
-
   border: 1px solid #dfe3e8;
-
   border-radius: 8px;
-
   background: #fff;
 }
 
 .remove-item {
   border: 1px solid var(--line);
-
   background: #fff;
-
   border-radius: 8px;
-
   cursor: pointer;
-
   color: #b3322d;
-
   font-size: 16px;
 }
 
@@ -788,7 +649,6 @@ tbody tr:last-child td {
 
 .full-label textarea {
   resize: vertical;
-
   min-height: 95px;
 }
 
@@ -799,11 +659,8 @@ tbody tr:last-child td {
 
 .form-actions {
   display: flex;
-
   justify-content: flex-end;
-
   gap: 8px;
-
   margin-top: 18px;
 }
 
@@ -814,17 +671,13 @@ tbody tr:last-child td {
 
 .filters {
   display: grid;
-
   grid-template-columns:
     minmax(200px, 2fr)
     minmax(140px, 1fr)
     minmax(140px, 1fr)
     auto;
-
   gap: 9px;
-
   margin-bottom: 14px;
-
   padding: 13px;
 }
 
@@ -840,41 +693,31 @@ tbody tr:last-child td {
 
 .badge {
   display: inline-flex;
-
   align-items: center;
-
   padding: 4px 7px;
-
   border-radius: 20px;
-
   font-size: 9px;
-
   font-weight: 800;
-
   white-space: nowrap;
 }
 
 .badge-paid {
   background: #e7f6ed;
-
   color: #13703f;
 }
 
 .badge-partial {
   background: #fff4d6;
-
   color: #8a6100;
 }
 
 .badge-pending {
   background: #fde9e7;
-
   color: #a52d27;
 }
 
 .badge-none {
   background: #eef0f3;
-
   color: #66707d;
 }
 
@@ -885,15 +728,10 @@ tbody tr:last-child td {
 
 .action-btn {
   border: 0;
-
   background: transparent;
-
   cursor: pointer;
-
   padding: 4px 5px;
-
   color: #707985;
-
   font-size: 11px;
 }
 
@@ -912,13 +750,9 @@ tbody tr:last-child td {
 
 .report-controls {
   display: flex;
-
   align-items: flex-end;
-
   gap: 10px;
-
   margin-bottom: 18px;
-
   padding: 13px;
 }
 
@@ -937,39 +771,28 @@ tbody tr:last-child td {
 
 .report-page {
   background: #fff;
-
   border: 1px solid var(--line);
-
   box-shadow: var(--shadow);
-
   padding: 30px;
-
   min-height: 400px;
 }
 
 .report-header {
   border-bottom: 3px solid var(--brand);
-
   padding-bottom: 15px;
-
   display: flex;
-
   justify-content: space-between;
-
   gap: 20px;
 }
 
 .report-header h2 {
   margin: 0;
-
   font-size: 19px;
 }
 
 .report-header p {
   margin: 4px 0 0;
-
   color: var(--muted);
-
   font-size: 11px;
 }
 
@@ -979,53 +802,43 @@ tbody tr:last-child td {
 
 .report-title strong {
   display: block;
-
   font-size: 15px;
 }
 
 .report-title span {
   font-size: 10px;
-
   color: var(--muted);
 }
 
 
-/* REPORT SUMMARY */
+/* =====================================================
+   REPORT SUMMARY
+===================================================== */
 
 .report-summary {
   display: grid;
-
   grid-template-columns:
     repeat(4, minmax(0, 1fr));
-
   gap: 9px;
-
   margin: 18px 0;
 }
 
 .report-box {
   border: 1px solid var(--line);
-
   padding: 11px;
-
   border-radius: 8px;
-
   background: #fff;
 }
 
 .report-box span {
   display: block;
-
   color: var(--muted);
-
   font-size: 9px;
 }
 
 .report-box strong {
   display: block;
-
   font-size: 16px;
-
   margin-top: 4px;
 }
 
@@ -1036,9 +849,7 @@ tbody tr:last-child td {
 
 .empty {
   padding: 28px !important;
-
   text-align: center;
-
   color: #8a919c !important;
 }
 
@@ -1049,22 +860,14 @@ tbody tr:last-child td {
 
 .toast {
   position: fixed;
-
   right: 22px;
   bottom: 22px;
-
   background: #222;
-
   color: #fff;
-
   padding: 11px 15px;
-
   border-radius: 8px;
-
   box-shadow: var(--shadow);
-
   z-index: 20;
-
   font-size: 12px;
 }
 
@@ -1085,7 +888,6 @@ tbody tr:last-child td {
 
   .main {
     margin-left: 210px;
-
     width: calc(100% - 210px);
   }
 
@@ -1102,7 +904,6 @@ tbody tr:last-child td {
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
   }
-
 }
 
 
@@ -1118,16 +919,18 @@ tbody tr:last-child td {
 
   .sidebar {
     position: static;
-
     width: 100%;
-
     height: auto;
-
     padding: 14px;
   }
 
   .brand {
     padding-bottom: 16px;
+  }
+
+  .brand-logo {
+    width: 42px;
+    height: 42px;
   }
 
   .nav {
@@ -1141,15 +944,12 @@ tbody tr:last-child td {
 
   .main {
     margin-left: 0;
-
     width: 100%;
   }
 
   .topbar {
     height: auto;
-
     padding: 14px 16px;
-
     gap: 10px;
   }
 
@@ -1159,7 +959,6 @@ tbody tr:last-child td {
 
   .topbar .primary-btn {
     padding: 9px 11px;
-
     font-size: 11px;
   }
 
@@ -1169,7 +968,6 @@ tbody tr:last-child td {
 
   .stats-grid {
     grid-template-columns: 1fr;
-
     gap: 10px;
   }
 
@@ -1179,7 +977,6 @@ tbody tr:last-child td {
 
   .welcome {
     display: block;
-
     padding: 20px;
   }
 
@@ -1205,7 +1002,6 @@ tbody tr:last-child td {
 
   .report-controls label {
     width: 100%;
-
     margin-bottom: 9px;
   }
 
@@ -1224,7 +1020,6 @@ tbody tr:last-child td {
 
   .report-title {
     text-align: left;
-
     margin-top: 12px;
   }
 
@@ -1234,7 +1029,6 @@ tbody tr:last-child td {
       90px
       38px;
   }
-
 }
 
 
@@ -1264,6 +1058,9 @@ tbody tr:last-child td {
     padding: 16px !important;
   }
 
+  .brand-text strong {
+    font-size: 11px;
+  }
 }
 
 
@@ -1287,26 +1084,21 @@ tbody tr:last-child td {
 
   .main {
     margin: 0;
-
     width: 100%;
   }
 
   .section#reports {
     display: block;
-
     padding: 0;
   }
 
   .report-page {
     border: 0;
-
     box-shadow: none;
-
     padding: 0;
   }
 
   .report-header {
     margin-top: 0;
   }
-
 }
