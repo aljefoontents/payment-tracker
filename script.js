@@ -23,11 +23,22 @@ const todayISO = () =>
 const currentMonth = () =>
   new Date().toISOString().slice(0, 7);
 
+
+/* =====================================================
+   MONEY
+   AED REMOVED
+===================================================== */
+
 const money = n =>
-  `AED ${Number(n || 0).toLocaleString("en-AE", {
+  Number(n || 0).toLocaleString("en-AE", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  })}`;
+  });
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
 const esc = s =>
   String(s ?? "").replace(
@@ -47,16 +58,17 @@ const esc = s =>
 ===================================================== */
 
 function save() {
+
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(orders)
   );
+
 }
 
 
 /* =====================================================
-   STATUS
-   Always calculated from payment amounts
+   AUTOMATIC STATUS
 ===================================================== */
 
 function statusFor(order) {
@@ -80,6 +92,7 @@ function statusFor(order) {
   }
 
   return "Pending";
+
 }
 
 
@@ -105,11 +118,13 @@ function badge(status) {
 
   }[status] || "badge-none";
 
+
   return `
     <span class="badge ${cls}">
       ${esc(status)}
     </span>
   `;
+
 }
 
 
@@ -121,30 +136,36 @@ function monthOrders(month) {
 
   return orders.filter(
     order =>
-      String(order.date || "")
-        .slice(0, 7) === month
+      order.date &&
+      order.date.slice(0, 7) === month
   );
+
 }
 
 
 /* =====================================================
    SORT ORDERS
    Newest date first
-   Job number as secondary sort
+   Job number secondary
 ===================================================== */
 
 function sortOrders() {
 
   orders.sort((a, b) => {
 
+    const dateA =
+      String(a.date || "");
+
+    const dateB =
+      String(b.date || "");
+
     const dateCompare =
-      String(b.date || "").localeCompare(
-        String(a.date || "")
-      );
+      dateB.localeCompare(dateA);
 
     if (dateCompare !== 0) {
       return dateCompare;
     }
+
 
     const jobA =
       parseInt(
@@ -153,6 +174,7 @@ function sortOrders() {
         10
       ) || 0;
 
+
     const jobB =
       parseInt(
         String(b.jobNo || "")
@@ -160,9 +182,11 @@ function sortOrders() {
         10
       ) || 0;
 
+
     return jobB - jobA;
 
   });
+
 }
 
 
@@ -174,16 +198,19 @@ function getNextJobNumber() {
 
   let highest = 0;
 
+
   orders.forEach(order => {
 
     const match =
       String(order.jobNo || "")
         .match(/JB(\d+)/i);
 
+
     if (match) {
 
       const number =
         parseInt(match[1], 10);
+
 
       if (number > highest) {
         highest = number;
@@ -193,9 +220,11 @@ function getNextJobNumber() {
 
   });
 
+
   return `JB${String(
     highest + 1
   ).padStart(4, "0")}`;
+
 }
 
 
@@ -218,6 +247,9 @@ function resetForm() {
   $("pendingAmount").value =
     "0.00";
 
+  $("status").value =
+    "auto";
+
   $("saveOrderBtn").textContent =
     "Save Order";
 
@@ -225,6 +257,7 @@ function resetForm() {
     "";
 
   addItem();
+
 }
 
 
@@ -232,7 +265,10 @@ function resetForm() {
    ADD ITEM
 ===================================================== */
 
-function addItem(desc = "", qty = "") {
+function addItem(
+  description = "",
+  quantity = ""
+) {
 
   const row =
     document.createElement("div");
@@ -240,12 +276,13 @@ function addItem(desc = "", qty = "") {
   row.className =
     "item-row";
 
+
   row.innerHTML = `
 
     <input
       class="item-desc"
       placeholder="Item description (e.g. Banquet Chair)"
-      value="${esc(desc)}"
+      value="${esc(description)}"
     >
 
     <input
@@ -254,7 +291,7 @@ function addItem(desc = "", qty = "") {
       min="0"
       step="1"
       placeholder="Qty"
-      value="${esc(qty)}"
+      value="${esc(quantity)}"
     >
 
     <button
@@ -266,13 +303,16 @@ function addItem(desc = "", qty = "") {
 
   `;
 
-  row
-    .querySelector(".remove-item")
-    .onclick = () =>
-      row.remove();
+
+  row.querySelector(
+    ".remove-item"
+  ).onclick = () =>
+    row.remove();
+
 
   $("itemsContainer")
     .appendChild(row);
+
 }
 
 
@@ -305,6 +345,7 @@ function itemsFromForm() {
         item.description ||
         item.quantity
     );
+
 }
 
 
@@ -316,21 +357,27 @@ function navTo(section) {
 
   document
     .querySelectorAll(".section")
-    .forEach(s =>
-      s.classList.toggle(
+    .forEach(element => {
+
+      element.classList.toggle(
         "active",
-        s.id === section
-      )
-    );
+        element.id === section
+      );
+
+    });
+
 
   document
     .querySelectorAll(".nav-item")
-    .forEach(button =>
+    .forEach(button => {
+
       button.classList.toggle(
         "active",
         button.dataset.section === section
-      )
-    );
+      );
+
+    });
+
 
   const names = {
 
@@ -348,25 +395,31 @@ function navTo(section) {
 
   };
 
+
   $("pageTitle").textContent =
-    names[section];
+    names[section] || "";
+
 
   if (section === "dashboard") {
     renderDashboard();
   }
 
+
   if (section === "orders") {
     renderOrders();
   }
+
 
   if (section === "reports") {
     renderReport();
   }
 
+
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
+
 }
 
 
@@ -434,6 +487,7 @@ function updatePending() {
       ) || 0
     );
 
+
   const received =
     Math.max(
       0,
@@ -442,11 +496,13 @@ function updatePending() {
       ) || 0
     );
 
+
   $("pendingAmount").value =
     Math.max(
       0,
       total - received
     ).toFixed(2);
+
 }
 
 
@@ -481,6 +537,7 @@ $("orderForm").onsubmit = e => {
 
   e.preventDefault();
 
+
   const total =
     Math.max(
       0,
@@ -488,6 +545,7 @@ $("orderForm").onsubmit = e => {
         $("totalAmount").value
       ) || 0
     );
+
 
   const received =
     Math.max(
@@ -497,20 +555,21 @@ $("orderForm").onsubmit = e => {
       ) || 0
     );
 
+
   const chosen =
     $("status").value;
 
+
   const automaticStatus =
     statusFor({
-      totalAmount:
-        total,
-
-      amountReceived:
-        received
+      totalAmount: total,
+      amountReceived: received
     });
+
 
   const itemData =
     itemsFromForm();
+
 
   const obj = {
 
@@ -522,29 +581,38 @@ $("orderForm").onsubmit = e => {
           : Date.now().toString()
       ),
 
+
     date:
       $("orderDate").value,
+
 
     jobNo:
       $("jobNo").value.trim(),
 
+
     haflaId:
       $("haflaId").value.trim(),
+
 
     party:
       $("party").value.trim(),
 
+
     incharge:
       $("incharge").value.trim(),
+
 
     receivedBy:
       $("receivedBy").value.trim(),
 
+
     paymentMethod:
       $("paymentMethod").value,
 
+
     totalAmount:
       total,
+
 
     amountReceived:
       Math.min(
@@ -552,19 +620,23 @@ $("orderForm").onsubmit = e => {
         total || received
       ),
 
+
     pendingAmount:
       Math.max(
         0,
         total - received
       ),
 
+
     status:
       chosen === "auto"
         ? automaticStatus
         : chosen,
 
+
     items:
       itemData,
+
 
     remarks:
       $("remarks").value.trim()
@@ -572,16 +644,16 @@ $("orderForm").onsubmit = e => {
   };
 
 
-  const idx =
+  const index =
     orders.findIndex(
       order =>
         order.id === obj.id
     );
 
 
-  if (idx >= 0) {
+  if (index >= 0) {
 
-    orders[idx] =
+    orders[index] =
       obj;
 
   } else {
@@ -595,11 +667,13 @@ $("orderForm").onsubmit = e => {
 
   save();
 
+
   toast(
-    idx >= 0
+    index >= 0
       ? "Order updated"
       : "Order saved"
   );
+
 
   resetForm();
 
@@ -616,8 +690,10 @@ function renderDashboard() {
 
   sortOrders();
 
+
   const month =
     currentMonth();
+
 
   const arr =
     monthOrders(month);
@@ -667,25 +743,20 @@ function renderDashboard() {
 
   $("statPendingOrders")
     .textContent =
-      arr.filter(order => {
-
-        const status =
-          statusFor(order);
-
-        return (
-          status === "Pending" ||
-          status ===
+      arr.filter(
+        order =>
+          order.status ===
+            "Pending" ||
+          order.status ===
             "Partially Received"
-        );
-
-      }).length;
+      ).length;
 
 
   $("summaryReceived")
     .textContent =
       arr.filter(
         order =>
-          statusFor(order) ===
+          order.status ===
           "Received"
       ).length;
 
@@ -694,7 +765,7 @@ function renderDashboard() {
     .textContent =
       arr.filter(
         order =>
-          statusFor(order) ===
+          order.status ===
           "Partially Received"
       ).length;
 
@@ -703,7 +774,7 @@ function renderDashboard() {
     .textContent =
       arr.filter(
         order =>
-          statusFor(order) ===
+          order.status ===
           "Pending"
       ).length;
 
@@ -712,13 +783,14 @@ function renderDashboard() {
     .textContent =
       arr.filter(
         order =>
-          statusFor(order) ===
+          order.status ===
           "No Amount"
       ).length;
 
 
   const recent =
-    arr.slice()
+    arr
+      .slice()
       .sort(
         (a, b) =>
           String(b.date || "")
@@ -731,14 +803,195 @@ function renderDashboard() {
 
   $("recentOrdersBody")
     .innerHTML =
-
       recent.length
 
         ? recent
+            .map(order => `
+
+              <tr>
+
+                <td>
+                  ${esc(
+                    formatDate(
+                      order.date
+                    )
+                  )}
+                </td>
+
+                <td>
+                  <strong>
+                    ${esc(
+                      order.jobNo
+                    )}
+                  </strong>
+                </td>
+
+                <td>
+                  ${esc(
+                    order.party
+                  )}
+                </td>
+
+                <td>
+                  ${money(
+                    order.amountReceived
+                  )}
+                </td>
+
+                <td>
+                  ${badge(
+                    order.status
+                  )}
+                </td>
+
+              </tr>
+
+            `)
+            .join("")
+
+        : `
+
+          <tr>
+
+            <td
+              colspan="5"
+              class="empty"
+            >
+              No orders for this month.
+            </td>
+
+          </tr>
+
+        `;
+
+}
+
+
+/* =====================================================
+   DASHBOARD REPORT
+===================================================== */
+
+$("dashboardReportBtn").onclick = () => {
+
+  $("reportMonth").value =
+    currentMonth();
+
+  navTo("reports");
+
+};
+
+
+/* =====================================================
+   ALL ORDERS
+===================================================== */
+
+function renderOrders() {
+
+  sortOrders();
+
+
+  const query =
+    $("searchOrders")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const month =
+    $("filterMonth").value;
+
+
+  const selectedStatus =
+    $("filterStatus").value;
+
+
+  const filteredOrders =
+    orders.filter(order => {
+
+      const searchableText = [
+
+        order.jobNo,
+
+        order.party,
+
+        order.haflaId,
+
+        order.incharge,
+
+        order.receivedBy,
+
+        order.paymentMethod,
+
+        order.remarks,
+
+        ...(order.items || [])
+          .map(
+            item =>
+              item.description
+          )
+
+      ]
+        .join(" ")
+        .toLowerCase();
+
+
+      const matchesSearch =
+        !query ||
+        searchableText.includes(
+          query
+        );
+
+
+      const matchesMonth =
+        !month ||
+        (
+          order.date &&
+          order.date.startsWith(
+            month
+          )
+        );
+
+
+      const matchesStatus =
+        !selectedStatus ||
+        order.status ===
+          selectedStatus;
+
+
+      return (
+        matchesSearch &&
+        matchesMonth &&
+        matchesStatus
+      );
+
+    });
+
+
+  $("ordersBody")
+    .innerHTML =
+
+      filteredOrders.length
+
+        ? filteredOrders
             .map(order => {
 
-              const status =
-                statusFor(order);
+              const items =
+                (order.items || [])
+                  .map(item =>
+                    `${esc(
+                      item.description
+                    )}
+                    ${
+                      item.quantity
+                        ? ` × ${esc(
+                            item.quantity
+                          )}`
+                        : ""
+                    }`
+                  )
+                  .join("<br>")
+                  || "—";
+
 
               return `
 
@@ -767,13 +1020,53 @@ function renderDashboard() {
                   </td>
 
                   <td>
+                    ${items}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      order.incharge
+                    )}
+                  </td>
+
+                  <td>
                     ${money(
                       order.amountReceived
                     )}
                   </td>
 
                   <td>
-                    ${badge(status)}
+                    ${money(
+                      order.pendingAmount
+                    )}
+                  </td>
+
+                  <td>
+                    ${badge(
+                      order.status
+                    )}
+                  </td>
+
+                  <td>
+
+                    <button
+                      class="action-btn"
+                      onclick="editOrder('${esc(
+                        order.id
+                      )}')"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      class="action-btn"
+                      onclick="deleteOrder('${esc(
+                        order.id
+                      )}')"
+                    >
+                      Delete
+                    </button>
+
                   </td>
 
                 </tr>
@@ -788,286 +1081,31 @@ function renderDashboard() {
           <tr>
 
             <td
-              colspan="5"
+              colspan="9"
               class="empty"
             >
-              No orders for this month.
+              No orders match your filters.
             </td>
 
           </tr>
 
         `;
+
 }
 
 
 /* =====================================================
-   DASHBOARD REPORT
+   FILTER EVENTS
 ===================================================== */
 
-$("dashboardReportBtn").onclick = () => {
+$("searchOrders").oninput =
+  renderOrders;
 
-  $("reportMonth").value =
-    currentMonth();
+$("filterMonth").oninput =
+  renderOrders;
 
-  navTo("reports");
-
-};
-
-
-/* =====================================================
-   ALL ORDERS
-   FIXED STATUS FILTER
-===================================================== */
-
-function renderOrders() {
-
-  sortOrders();
-
-
-  const q =
-    $("searchOrders").value
-      .toLowerCase()
-      .trim();
-
-
-  const month =
-    $("filterMonth").value;
-
-
-  const selectedStatus =
-    $("filterStatus").value;
-
-
-  const arr =
-    orders.filter(order => {
-
-
-      /* -----------------------------
-         SEARCH
-      ----------------------------- */
-
-      const text = [
-
-        order.jobNo,
-
-        order.party,
-
-        order.haflaId,
-
-        order.incharge,
-
-        order.receivedBy,
-
-        order.remarks,
-
-        ...(order.items || [])
-          .map(
-            item =>
-              item.description
-          )
-
-      ]
-        .join(" ")
-        .toLowerCase();
-
-
-      const matchesSearch =
-        !q ||
-        text.includes(q);
-
-
-      /* -----------------------------
-         MONTH
-      ----------------------------- */
-
-      const matchesMonth =
-        !month ||
-        String(
-          order.date || ""
-        ).startsWith(month);
-
-
-      /* -----------------------------
-         REAL STATUS
-         CALCULATED FROM AMOUNTS
-      ----------------------------- */
-
-      const realStatus =
-        statusFor(order);
-
-
-      /* -----------------------------
-         STATUS FILTER
-      ----------------------------- */
-
-      const matchesStatus =
-        !selectedStatus ||
-        realStatus === selectedStatus;
-
-
-      return (
-        matchesSearch &&
-        matchesMonth &&
-        matchesStatus
-      );
-
-    });
-
-
-  /* -----------------------------
-     DISPLAY ORDERS
-  ----------------------------- */
-
-  $("ordersBody").innerHTML =
-
-    arr.length
-
-      ? arr
-          .map(order => {
-
-            const items =
-              (order.items || [])
-                .map(item =>
-                  `${esc(
-                    item.description
-                  )}
-                  ${
-                    item.quantity
-                      ? ` × ${esc(
-                          item.quantity
-                        )}`
-                      : ""
-                  }`
-                )
-                .join("<br>")
-                ||
-                "—";
-
-
-            const displayStatus =
-              statusFor(order);
-
-
-            return `
-
-              <tr>
-
-                <td>
-                  ${esc(
-                    formatDate(
-                      order.date
-                    )
-                  )}
-                </td>
-
-                <td>
-                  <strong>
-                    ${esc(
-                      order.jobNo
-                    )}
-                  </strong>
-                </td>
-
-                <td>
-                  ${esc(
-                    order.party
-                  )}
-                </td>
-
-                <td>
-                  ${items}
-                </td>
-
-                <td>
-                  ${esc(
-                    order.incharge
-                  )}
-                </td>
-
-                <td>
-                  ${money(
-                    order.amountReceived
-                  )}
-                </td>
-
-                <td>
-                  ${money(
-                    order.pendingAmount
-                  )}
-                </td>
-
-                <td>
-                  ${badge(
-                    displayStatus
-                  )}
-                </td>
-
-                <td>
-
-                  <button
-                    class="action-btn"
-                    onclick="editOrder('${order.id}')"
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    class="action-btn"
-                    onclick="deleteOrder('${order.id}')"
-                  >
-                    Delete
-                  </button>
-
-                </td>
-
-              </tr>
-
-            `;
-
-          })
-          .join("")
-
-      : `
-
-        <tr>
-
-          <td
-            colspan="9"
-            class="empty"
-          >
-            No orders match your filters.
-          </td>
-
-        </tr>
-
-      `;
-}
-
-
-/* =====================================================
-   FILTERS
-   FIXED
-===================================================== */
-
-$("searchOrders")
-  .addEventListener(
-    "input",
-    renderOrders
-  );
-
-
-$("filterMonth")
-  .addEventListener(
-    "change",
-    renderOrders
-  );
-
-
-$("filterStatus")
-  .addEventListener(
-    "change",
-    renderOrders
-  );
+$("filterStatus").onchange =
+  renderOrders;
 
 
 $("clearFilters").onclick = () => {
@@ -1094,8 +1132,10 @@ window.editOrder = id => {
 
   const order =
     orders.find(
-      x => x.id === id
+      item =>
+        item.id === id
     );
+
 
   if (!order) {
     return;
@@ -1110,11 +1150,11 @@ window.editOrder = id => {
 
 
   $("orderDate").value =
-    order.date;
+    order.date || todayISO();
 
 
   $("jobNo").value =
-    order.jobNo;
+    order.jobNo || "";
 
 
   $("haflaId").value =
@@ -1151,32 +1191,26 @@ window.editOrder = id => {
     ).toFixed(2);
 
 
-  /* -----------------------------
-     OLD STATUS COMPATIBILITY
-  ----------------------------- */
-
   let currentStatus =
-    statusFor(order);
+    order.status;
 
+
+  /* Convert old status names */
 
   if (
-    order.status === "Paid"
+    currentStatus === "Paid"
   ) {
-
     currentStatus =
       "Received";
-
   }
 
 
   if (
-    order.status ===
+    currentStatus ===
     "Partially Paid"
   ) {
-
     currentStatus =
       "Partially Received";
-
   }
 
 
@@ -1193,16 +1227,18 @@ window.editOrder = id => {
 
 
   (
-    order.items?.length
+    order.items &&
+    order.items.length
       ? order.items
       : [{}]
-  )
-    .forEach(item =>
-      addItem(
-        item.description || "",
-        item.quantity || ""
-      )
+  ).forEach(item => {
+
+    addItem(
+      item.description || "",
+      item.quantity || ""
     );
+
+  });
 
 
   $("saveOrderBtn")
@@ -1220,8 +1256,10 @@ window.deleteOrder = id => {
 
   const order =
     orders.find(
-      x => x.id === id
+      item =>
+        item.id === id
     );
+
 
   if (!order) {
     return;
@@ -1236,7 +1274,8 @@ window.deleteOrder = id => {
 
     orders =
       orders.filter(
-        x => x.id !== id
+        item =>
+          item.id !== id
       );
 
 
@@ -1265,6 +1304,7 @@ function formatDate(date) {
     return "—";
   }
 
+
   return new Date(
     date + "T00:00:00"
   ).toLocaleDateString(
@@ -1275,6 +1315,7 @@ function formatDate(date) {
       year: "numeric"
     }
   );
+
 }
 
 
@@ -1313,6 +1354,7 @@ function getDigitalDateTime() {
 
 
   return `${date} • ${time}`;
+
 }
 
 
@@ -1324,6 +1366,7 @@ function updateClock() {
 
   const clock =
     $("dashboardDateTime");
+
 
   if (clock) {
 
@@ -1394,157 +1437,139 @@ function renderReport() {
     );
 
 
-  $("reportPreview").innerHTML = `
+  $("reportPreview")
+    .innerHTML = `
 
-    <div class="report-header">
+      <div class="report-header">
 
-      <div>
+        <div>
 
-        <h2>
-          AL JEFOON TENTS
-        </h2>
+          <h2>
+            AL JEFOON TENTS
+          </h2>
 
-        <p>
-          Monthly Order & Collection Report
-        </p>
+          <p>
+            Monthly Order & Collection Report
+          </p>
 
-      </div>
-
-
-      <div class="report-title">
-
-        <strong>
-          ${label}
-        </strong>
-
-        <span>
-          Generated
-          ${formatDate(todayISO())}
-        </span>
-
-      </div>
-
-    </div>
+        </div>
 
 
-    <div class="report-summary">
+        <div class="report-title">
 
-      <div class="report-box">
+          <strong>
+            ${label}
+          </strong>
 
-        <span>
-          Total Orders
-        </span>
+          <span>
+            Generated
+            ${formatDate(
+              todayISO()
+            )}
+          </span>
 
-        <strong>
-          ${arr.length}
-        </strong>
+        </div>
 
       </div>
 
 
-      <div class="report-box">
+      <div class="report-summary">
 
-        <span>
-          Total Received
-        </span>
+        <div class="report-box">
 
-        <strong>
-          ${money(received)}
-        </strong>
+          <span>
+            Total Orders
+          </span>
+
+          <strong>
+            ${arr.length}
+          </strong>
+
+        </div>
+
+
+        <div class="report-box">
+
+          <span>
+            Total Received
+          </span>
+
+          <strong>
+            ${money(received)}
+          </strong>
+
+        </div>
+
+
+        <div class="report-box">
+
+          <span>
+            Total Pending
+          </span>
+
+          <strong>
+            ${money(pending)}
+          </strong>
+
+        </div>
+
+
+        <div class="report-box">
+
+          <span>
+            Pending Orders
+          </span>
+
+          <strong>
+            ${
+              arr.filter(
+                order =>
+                  order.status ===
+                    "Pending" ||
+                  order.status ===
+                    "Partially Received"
+              ).length
+            }
+          </strong>
+
+        </div>
 
       </div>
 
 
-      <div class="report-box">
+      <div class="table-wrap">
 
-        <span>
-          Total Pending
-        </span>
+        <table>
 
-        <strong>
-          ${money(pending)}
-        </strong>
+          <thead>
 
-      </div>
+            <tr>
 
+              <th>Sr#</th>
+              <th>Date</th>
+              <th>Job #</th>
+              <th>HAFLA ID</th>
+              <th>Party</th>
+              <th>Orders</th>
+              <th>Incharge</th>
+              <th>Received</th>
+              <th>Pending</th>
+              <th>Received By</th>
+              <th>Status</th>
 
-      <div class="report-box">
+            </tr>
 
-        <span>
-          Pending Orders
-        </span>
-
-        <strong>
-          ${
-            arr.filter(order => {
-
-              const status =
-                statusFor(order);
-
-              return (
-                status === "Pending" ||
-                status ===
-                  "Partially Received"
-              );
-
-            }).length
-          }
-        </strong>
-
-      </div>
-
-    </div>
+          </thead>
 
 
-    <div class="table-wrap">
+          <tbody>
 
-      <table>
+            ${
+              arr.length
 
-        <thead>
-
-          <tr>
-
-            <th>Sr#</th>
-
-            <th>Date</th>
-
-            <th>Job #</th>
-
-            <th>HAFLA ID</th>
-
-            <th>Party</th>
-
-            <th>Orders</th>
-
-            <th>Incharge</th>
-
-            <th>Received</th>
-
-            <th>Pending</th>
-
-            <th>Received By</th>
-
-            <th>Status</th>
-
-          </tr>
-
-        </thead>
-
-
-        <tbody>
-
-          ${
-            arr.length
-
-              ? arr
-                  .map(
-                    (order, index) => {
-
-                      const reportStatus =
-                        statusFor(order);
-
-
-                      return `
+                ? arr
+                    .map(
+                      (order, index) => `
 
                         <tr>
 
@@ -1579,7 +1604,6 @@ function renderReport() {
                           </td>
 
                           <td>
-
                             ${
                               (
                                 order.items ||
@@ -1599,10 +1623,8 @@ function renderReport() {
                                     }`
                                 )
                                 .join("<br>")
-                                ||
-                                "—"
+                              || "—"
                             }
-
                           </td>
 
                           <td>
@@ -1633,63 +1655,61 @@ function renderReport() {
 
                           <td>
                             ${badge(
-                              reportStatus
+                              order.status
                             )}
                           </td>
 
                         </tr>
 
-                      `;
+                      `
+                    )
+                    .join("")
 
-                    }
-                  )
-                  .join("")
+                : `
 
-              : `
+                    <tr>
 
-                <tr>
+                      <td
+                        colspan="11"
+                        class="empty"
+                      >
+                        No orders for
+                        ${label}.
+                      </td>
 
-                  <td
-                    colspan="11"
-                    class="empty"
-                  >
-                    No orders for
-                    ${label}.
-                  </td>
+                    </tr>
 
-                </tr>
+                  `
+            }
 
-              `
-          }
+          </tbody>
 
-        </tbody>
+        </table>
 
-      </table>
-
-    </div>
+      </div>
 
 
-    <div
-      style="
-        margin-top:35px;
-        display:flex;
-        justify-content:space-between;
-        font-size:11px;
-        color:#777;
-      "
-    >
+      <div
+        style="
+          margin-top:35px;
+          display:flex;
+          justify-content:space-between;
+          font-size:11px;
+          color:#777;
+        "
+      >
 
-      <span>
-        Prepared by: ____________________
-      </span>
+        <span>
+          Prepared by: ____________________
+        </span>
 
-      <span>
-        Approved by: ____________________
-      </span>
+        <span>
+          Approved by: ____________________
+        </span>
 
-    </div>
+      </div>
 
-  `;
+    `;
 
 }
 
@@ -1716,39 +1736,41 @@ $("printReportBtn").onclick =
 
 function toast(message) {
 
-  let t =
+  let toastElement =
     document.querySelector(
       ".toast"
     );
 
 
-  if (!t) {
+  if (!toastElement) {
 
-    t =
+    toastElement =
       document.createElement(
         "div"
       );
 
-    t.className =
+    toastElement.className =
       "toast";
 
-    document.body.appendChild(t);
+    document.body.appendChild(
+      toastElement
+    );
 
   }
 
 
-  t.textContent =
+  toastElement.textContent =
     message;
 
 
-  t.classList.remove(
+  toastElement.classList.remove(
     "hidden"
   );
 
 
   setTimeout(
     () =>
-      t.classList.add(
+      toastElement.classList.add(
         "hidden"
       ),
     2200
@@ -1762,22 +1784,19 @@ function toast(message) {
    Protect existing data
 ===================================================== */
 
-let dataChanged =
-  false;
+let dataChanged = false;
 
 
 orders.forEach(order => {
 
   if (
-    order.status ===
-    "Paid"
+    order.status === "Paid"
   ) {
 
     order.status =
       "Received";
 
-    dataChanged =
-      true;
+    dataChanged = true;
 
   }
 
@@ -1790,8 +1809,40 @@ orders.forEach(order => {
     order.status =
       "Partially Received";
 
-    dataChanged =
-      true;
+    dataChanged = true;
+
+  }
+
+});
+
+
+/* =====================================================
+   RE-CALCULATE OLD ORDER STATUSES
+   Ensures filtering works correctly
+===================================================== */
+
+orders.forEach(order => {
+
+  const calculated =
+    statusFor(order);
+
+
+  /*
+   Only automatically correct
+   statuses that were previously
+   using the old naming system or
+   automatic values.
+  */
+
+  if (
+    order.status === "Paid" ||
+    order.status === "Partially Paid"
+  ) {
+
+    order.status =
+      calculated;
+
+    dataChanged = true;
 
   }
 
@@ -1799,9 +1850,7 @@ orders.forEach(order => {
 
 
 if (dataChanged) {
-
   save();
-
 }
 
 
