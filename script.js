@@ -6,21 +6,9 @@
 
 const STORAGE_KEY = "alJefoonOrdersV1";
 
-let orders = [];
-
-try {
-  orders = JSON.parse(
-    localStorage.getItem(STORAGE_KEY) || "[]"
-  );
-
-  if (!Array.isArray(orders)) {
-    orders = [];
-  }
-
-} catch (error) {
-  console.error("Could not load saved orders:", error);
-  orders = [];
-}
+let orders = JSON.parse(
+  localStorage.getItem(STORAGE_KEY) || "[]"
+);
 
 
 /* =====================================================
@@ -67,21 +55,17 @@ function save() {
 
 
 /* =====================================================
-   STATUS CALCULATION
-   ALWAYS BASED ON ACTUAL AMOUNTS
+   STATUS
+   Always calculated from payment amounts
 ===================================================== */
 
 function statusFor(order) {
 
-  const total = Math.max(
-    0,
-    Number(order.totalAmount || 0)
-  );
+  const total =
+    Number(order.totalAmount || 0);
 
-  const received = Math.max(
-    0,
-    Number(order.amountReceived || 0)
-  );
+  const received =
+    Number(order.amountReceived || 0);
 
   if (total <= 0) {
     return "No Amount";
@@ -100,106 +84,25 @@ function statusFor(order) {
 
 
 /* =====================================================
-   NORMALIZE OLD DATA
-   Converts old statuses and fixes payment values.
-===================================================== */
-
-function normalizeOrders() {
-
-  let changed = false;
-
-  orders = orders.map(order => {
-
-    if (!order || typeof order !== "object") {
-      return order;
-    }
-
-    const total = Math.max(
-      0,
-      Number(order.totalAmount || 0)
-    );
-
-    let received = Math.max(
-      0,
-      Number(order.amountReceived || 0)
-    );
-
-    if (total > 0) {
-      received = Math.min(received, total);
-    }
-
-    const pending = Math.max(
-      0,
-      total - received
-    );
-
-    const correctStatus = statusFor({
-      totalAmount: total,
-      amountReceived: received
-    });
-
-    if (
-      Number(order.totalAmount || 0) !== total ||
-      Number(order.amountReceived || 0) !== received ||
-      Number(order.pendingAmount || 0) !== pending ||
-      order.status !== correctStatus
-    ) {
-      changed = true;
-    }
-
-    return {
-      ...order,
-
-      totalAmount: total,
-
-      amountReceived: received,
-
-      pendingAmount: pending,
-
-      status: correctStatus,
-
-      jobNo: String(order.jobNo || "").trim(),
-
-      date: String(order.date || ""),
-
-      party: String(order.party || ""),
-
-      haflaId: String(order.haflaId || ""),
-
-      incharge: String(order.incharge || ""),
-
-      receivedBy: String(order.receivedBy || ""),
-
-      paymentMethod: String(
-        order.paymentMethod || ""
-      ),
-
-      remarks: String(order.remarks || ""),
-
-      items: Array.isArray(order.items)
-        ? order.items
-        : []
-    };
-
-  }).filter(Boolean);
-
-  if (changed) {
-    save();
-  }
-}
-
-
-/* =====================================================
    STATUS BADGE
 ===================================================== */
 
 function badge(status) {
 
   const cls = {
-    "Received": "badge-paid",
-    "Partially Received": "badge-partial",
-    "Pending": "badge-pending",
-    "No Amount": "badge-none"
+
+    "Received":
+      "badge-paid",
+
+    "Partially Received":
+      "badge-partial",
+
+    "Pending":
+      "badge-pending",
+
+    "No Amount":
+      "badge-none"
+
   }[status] || "badge-none";
 
   return `
@@ -218,41 +121,47 @@ function monthOrders(month) {
 
   return orders.filter(
     order =>
-      String(order.date || "").slice(0, 7) === month
+      String(order.date || "")
+        .slice(0, 7) === month
   );
 }
 
 
 /* =====================================================
    SORT ORDERS
-   Newest date first.
-   Job number used as secondary sort.
+   Newest date first
+   Job number as secondary sort
 ===================================================== */
 
 function sortOrders() {
 
   orders.sort((a, b) => {
 
-    const dateA = String(a.date || "");
-    const dateB = String(b.date || "");
+    const dateCompare =
+      String(b.date || "").localeCompare(
+        String(a.date || "")
+      );
 
-    if (dateA !== dateB) {
-      return dateB.localeCompare(dateA);
+    if (dateCompare !== 0) {
+      return dateCompare;
     }
 
     const jobA =
       parseInt(
-        String(a.jobNo || "").replace(/\D/g, ""),
+        String(a.jobNo || "")
+          .replace(/\D/g, ""),
         10
       ) || 0;
 
     const jobB =
       parseInt(
-        String(b.jobNo || "").replace(/\D/g, ""),
+        String(b.jobNo || "")
+          .replace(/\D/g, ""),
         10
       ) || 0;
 
     return jobB - jobA;
+
   });
 }
 
@@ -268,9 +177,8 @@ function getNextJobNumber() {
   orders.forEach(order => {
 
     const match =
-      String(order.jobNo || "").match(
-        /JB(\d+)/i
-      );
+      String(order.jobNo || "")
+        .match(/JB(\d+)/i);
 
     if (match) {
 
@@ -280,10 +188,14 @@ function getNextJobNumber() {
       if (number > highest) {
         highest = number;
       }
+
     }
+
   });
 
-  return `JB${String(highest + 1).padStart(4, "0")}`;
+  return `JB${String(
+    highest + 1
+  ).padStart(4, "0")}`;
 }
 
 
@@ -305,9 +217,6 @@ function resetForm() {
 
   $("pendingAmount").value =
     "0.00";
-
-  $("status").value =
-    "auto";
 
   $("saveOrderBtn").textContent =
     "Save Order";
@@ -357,9 +266,10 @@ function addItem(desc = "", qty = "") {
 
   `;
 
-  row.querySelector(
-    ".remove-item"
-  ).onclick = () => row.remove();
+  row
+    .querySelector(".remove-item")
+    .onclick = () =>
+      row.remove();
 
   $("itemsContainer")
     .appendChild(row);
@@ -415,10 +325,10 @@ function navTo(section) {
 
   document
     .querySelectorAll(".nav-item")
-    .forEach(b =>
-      b.classList.toggle(
+    .forEach(button =>
+      button.classList.toggle(
         "active",
-        b.dataset.section === section
+        button.dataset.section === section
       )
     );
 
@@ -439,7 +349,7 @@ function navTo(section) {
   };
 
   $("pageTitle").textContent =
-    names[section] || "Dashboard";
+    names[section];
 
   if (section === "dashboard") {
     renderDashboard();
@@ -537,7 +447,6 @@ function updatePending() {
       0,
       total - received
     ).toFixed(2);
-
 }
 
 
@@ -549,7 +458,7 @@ $("amountReceived").oninput =
 
 
 /* =====================================================
-   ADD ITEM
+   ADD ITEM BUTTON
 ===================================================== */
 
 $("addItemBtn").onclick = () =>
@@ -580,7 +489,7 @@ $("orderForm").onsubmit = e => {
       ) || 0
     );
 
-  let received =
+  const received =
     Math.max(
       0,
       Number(
@@ -588,29 +497,30 @@ $("orderForm").onsubmit = e => {
       ) || 0
     );
 
-  if (total > 0) {
-    received =
-      Math.min(
-        received,
-        total
-      );
-  }
+  const chosen =
+    $("status").value;
+
+  const automaticStatus =
+    statusFor({
+      totalAmount:
+        total,
+
+      amountReceived:
+        received
+    });
 
   const itemData =
     itemsFromForm();
 
-  const id =
-    $("editId").value ||
-    (
-      window.crypto &&
-      typeof window.crypto.randomUUID === "function"
-        ? window.crypto.randomUUID()
-        : Date.now().toString()
-    );
-
   const obj = {
 
-    id: id,
+    id:
+      $("editId").value ||
+      (
+        crypto.randomUUID
+          ? crypto.randomUUID()
+          : Date.now().toString()
+      ),
 
     date:
       $("orderDate").value,
@@ -628,7 +538,7 @@ $("orderForm").onsubmit = e => {
       $("incharge").value.trim(),
 
     receivedBy:
-      $("receivedBy").value,
+      $("receivedBy").value.trim(),
 
     paymentMethod:
       $("paymentMethod").value,
@@ -637,7 +547,10 @@ $("orderForm").onsubmit = e => {
       total,
 
     amountReceived:
-      received,
+      Math.min(
+        received,
+        total || received
+      ),
 
     pendingAmount:
       Math.max(
@@ -645,22 +558,17 @@ $("orderForm").onsubmit = e => {
         total - received
       ),
 
-    /*
-      IMPORTANT:
-      Status is always calculated.
-      It is NOT manually overridden.
-    */
     status:
-      statusFor({
-        totalAmount: total,
-        amountReceived: received
-      }),
+      chosen === "auto"
+        ? automaticStatus
+        : chosen,
 
     items:
       itemData,
 
     remarks:
       $("remarks").value.trim()
+
   };
 
 
@@ -696,6 +604,7 @@ $("orderForm").onsubmit = e => {
   resetForm();
 
   navTo("orders");
+
 };
 
 
@@ -758,19 +667,25 @@ function renderDashboard() {
 
   $("statPendingOrders")
     .textContent =
-      arr.filter(
-        order =>
-          order.status === "Pending" ||
-          order.status ===
+      arr.filter(order => {
+
+        const status =
+          statusFor(order);
+
+        return (
+          status === "Pending" ||
+          status ===
             "Partially Received"
-      ).length;
+        );
+
+      }).length;
 
 
   $("summaryReceived")
     .textContent =
       arr.filter(
         order =>
-          order.status ===
+          statusFor(order) ===
           "Received"
       ).length;
 
@@ -779,7 +694,7 @@ function renderDashboard() {
     .textContent =
       arr.filter(
         order =>
-          order.status ===
+          statusFor(order) ===
           "Partially Received"
       ).length;
 
@@ -788,7 +703,7 @@ function renderDashboard() {
     .textContent =
       arr.filter(
         order =>
-          order.status ===
+          statusFor(order) ===
           "Pending"
       ).length;
 
@@ -797,42 +712,20 @@ function renderDashboard() {
     .textContent =
       arr.filter(
         order =>
-          order.status ===
+          statusFor(order) ===
           "No Amount"
       ).length;
 
 
   const recent =
-    arr
-      .slice()
-      .sort((a, b) => {
-
-        const dateCompare =
+    arr.slice()
+      .sort(
+        (a, b) =>
           String(b.date || "")
             .localeCompare(
               String(a.date || "")
-            );
-
-        if (dateCompare !== 0) {
-          return dateCompare;
-        }
-
-        return (
-          parseInt(
-            String(b.jobNo || "")
-              .replace(/\D/g, ""),
-            10
-          ) || 0
-        ) -
-        (
-          parseInt(
-            String(a.jobNo || "")
-              .replace(/\D/g, ""),
-            10
-          ) || 0
-        );
-
-      })
+            )
+      )
       .slice(0, 7);
 
 
@@ -842,47 +735,52 @@ function renderDashboard() {
       recent.length
 
         ? recent
-            .map(order => `
+            .map(order => {
 
-              <tr>
+              const status =
+                statusFor(order);
 
-                <td>
-                  ${esc(
-                    formatDate(
-                      order.date
-                    )
-                  )}
-                </td>
+              return `
 
-                <td>
-                  <strong>
+                <tr>
+
+                  <td>
                     ${esc(
-                      order.jobNo
+                      formatDate(
+                        order.date
+                      )
                     )}
-                  </strong>
-                </td>
+                  </td>
 
-                <td>
-                  ${esc(
-                    order.party
-                  )}
-                </td>
+                  <td>
+                    <strong>
+                      ${esc(
+                        order.jobNo
+                      )}
+                    </strong>
+                  </td>
 
-                <td>
-                  ${money(
-                    order.amountReceived
-                  )}
-                </td>
+                  <td>
+                    ${esc(
+                      order.party
+                    )}
+                  </td>
 
-                <td>
-                  ${badge(
-                    order.status
-                  )}
-                </td>
+                  <td>
+                    ${money(
+                      order.amountReceived
+                    )}
+                  </td>
 
-              </tr>
+                  <td>
+                    ${badge(status)}
+                  </td>
 
-            `)
+                </tr>
+
+              `;
+
+            })
             .join("")
 
         : `
@@ -918,20 +816,23 @@ $("dashboardReportBtn").onclick = () => {
 
 /* =====================================================
    ALL ORDERS
+   FIXED STATUS FILTER
 ===================================================== */
 
 function renderOrders() {
 
   sortOrders();
 
+
   const q =
-    $("searchOrders")
-      .value
+    $("searchOrders").value
       .toLowerCase()
       .trim();
 
+
   const month =
     $("filterMonth").value;
+
 
   const selectedStatus =
     $("filterStatus").value;
@@ -939,6 +840,11 @@ function renderOrders() {
 
   const arr =
     orders.filter(order => {
+
+
+      /* -----------------------------
+         SEARCH
+      ----------------------------- */
 
       const text = [
 
@@ -951,8 +857,6 @@ function renderOrders() {
         order.incharge,
 
         order.receivedBy,
-
-        order.paymentMethod,
 
         order.remarks,
 
@@ -967,16 +871,14 @@ function renderOrders() {
         .toLowerCase();
 
 
-      /*
-        IMPORTANT:
-        Filtering uses the normalized
-        status stored on every order.
-      */
-
       const matchesSearch =
         !q ||
         text.includes(q);
 
+
+      /* -----------------------------
+         MONTH
+      ----------------------------- */
 
       const matchesMonth =
         !month ||
@@ -985,9 +887,22 @@ function renderOrders() {
         ).startsWith(month);
 
 
+      /* -----------------------------
+         REAL STATUS
+         CALCULATED FROM AMOUNTS
+      ----------------------------- */
+
+      const realStatus =
+        statusFor(order);
+
+
+      /* -----------------------------
+         STATUS FILTER
+      ----------------------------- */
+
       const matchesStatus =
         !selectedStatus ||
-        order.status === selectedStatus;
+        realStatus === selectedStatus;
 
 
       return (
@@ -999,152 +914,160 @@ function renderOrders() {
     });
 
 
-  $("ordersBody")
-    .innerHTML =
+  /* -----------------------------
+     DISPLAY ORDERS
+  ----------------------------- */
 
-      arr.length
+  $("ordersBody").innerHTML =
 
-        ? arr
-            .map(order => {
+    arr.length
 
-              const items =
-                (
-                  order.items || []
+      ? arr
+          .map(order => {
+
+            const items =
+              (order.items || [])
+                .map(item =>
+                  `${esc(
+                    item.description
+                  )}
+                  ${
+                    item.quantity
+                      ? ` × ${esc(
+                          item.quantity
+                        )}`
+                      : ""
+                  }`
                 )
-                  .map(item =>
-                    `${esc(
-                      item.description
-                    )}
-                    ${
-                      item.quantity
-                        ? ` × ${esc(
-                            item.quantity
-                          )}`
-                        : ""
-                    }`
-                  )
-                  .join("<br>")
-                  ||
-                  "—";
+                .join("<br>")
+                ||
+                "—";
 
 
-              return `
+            const displayStatus =
+              statusFor(order);
 
-                <tr>
 
-                  <td>
+            return `
+
+              <tr>
+
+                <td>
+                  ${esc(
+                    formatDate(
+                      order.date
+                    )
+                  )}
+                </td>
+
+                <td>
+                  <strong>
                     ${esc(
-                      formatDate(
-                        order.date
-                      )
+                      order.jobNo
                     )}
-                  </td>
+                  </strong>
+                </td>
 
-                  <td>
-                    <strong>
-                      ${esc(
-                        order.jobNo
-                      )}
-                    </strong>
-                  </td>
+                <td>
+                  ${esc(
+                    order.party
+                  )}
+                </td>
 
-                  <td>
-                    ${esc(
-                      order.party
-                    )}
-                  </td>
+                <td>
+                  ${items}
+                </td>
 
-                  <td>
-                    ${items}
-                  </td>
+                <td>
+                  ${esc(
+                    order.incharge
+                  )}
+                </td>
 
-                  <td>
-                    ${esc(
-                      order.incharge
-                    )}
-                  </td>
+                <td>
+                  ${money(
+                    order.amountReceived
+                  )}
+                </td>
 
-                  <td>
-                    ${money(
-                      order.amountReceived
-                    )}
-                  </td>
+                <td>
+                  ${money(
+                    order.pendingAmount
+                  )}
+                </td>
 
-                  <td>
-                    ${money(
-                      order.pendingAmount
-                    )}
-                  </td>
+                <td>
+                  ${badge(
+                    displayStatus
+                  )}
+                </td>
 
-                  <td>
-                    ${badge(
-                      order.status
-                    )}
-                  </td>
+                <td>
 
-                  <td>
+                  <button
+                    class="action-btn"
+                    onclick="editOrder('${order.id}')"
+                  >
+                    Edit
+                  </button>
 
-                    <button
-                      class="action-btn"
-                      onclick="editOrder('${esc(order.id)}')"
-                    >
-                      Edit
-                    </button>
+                  <button
+                    class="action-btn"
+                    onclick="deleteOrder('${order.id}')"
+                  >
+                    Delete
+                  </button>
 
-                    <button
-                      class="action-btn"
-                      onclick="deleteOrder('${esc(order.id)}')"
-                    >
-                      Delete
-                    </button>
+                </td>
 
-                  </td>
+              </tr>
 
-                </tr>
+            `;
 
-              `;
+          })
+          .join("")
 
-            })
-            .join("")
+      : `
 
-        : `
+        <tr>
 
-          <tr>
+          <td
+            colspan="9"
+            class="empty"
+          >
+            No orders match your filters.
+          </td>
 
-            <td
-              colspan="9"
-              class="empty"
-            >
-              No orders match your filters.
-            </td>
+        </tr>
 
-          </tr>
-
-        `;
+      `;
 }
 
 
 /* =====================================================
    FILTERS
+   FIXED
 ===================================================== */
 
-[
-  "searchOrders",
-  "filterMonth",
-  "filterStatus"
-].forEach(id => {
-
-  $(id).addEventListener(
+$("searchOrders")
+  .addEventListener(
     "input",
     renderOrders
   );
 
-  $(id).addEventListener(
+
+$("filterMonth")
+  .addEventListener(
     "change",
     renderOrders
   );
 
-});
+
+$("filterStatus")
+  .addEventListener(
+    "change",
+    renderOrders
+  );
 
 
 $("clearFilters").onclick = () => {
@@ -1171,8 +1094,7 @@ window.editOrder = id => {
 
   const order =
     orders.find(
-      item =>
-        item.id === id
+      x => x.id === id
     );
 
   if (!order) {
@@ -1229,14 +1151,37 @@ window.editOrder = id => {
     ).toFixed(2);
 
 
-  /*
-    Status is recalculated.
-    It cannot become incorrect
-    because of old data.
-  */
+  /* -----------------------------
+     OLD STATUS COMPATIBILITY
+  ----------------------------- */
+
+  let currentStatus =
+    statusFor(order);
+
+
+  if (
+    order.status === "Paid"
+  ) {
+
+    currentStatus =
+      "Received";
+
+  }
+
+
+  if (
+    order.status ===
+    "Partially Paid"
+  ) {
+
+    currentStatus =
+      "Partially Received";
+
+  }
+
 
   $("status").value =
-    statusFor(order);
+    currentStatus || "auto";
 
 
   $("remarks").value =
@@ -1248,8 +1193,7 @@ window.editOrder = id => {
 
 
   (
-    order.items &&
-    order.items.length
+    order.items?.length
       ? order.items
       : [{}]
   )
@@ -1264,6 +1208,7 @@ window.editOrder = id => {
   $("saveOrderBtn")
     .textContent =
       "Update Order";
+
 };
 
 
@@ -1275,8 +1220,7 @@ window.deleteOrder = id => {
 
   const order =
     orders.find(
-      item =>
-        item.id === id
+      x => x.id === id
     );
 
   if (!order) {
@@ -1292,9 +1236,9 @@ window.deleteOrder = id => {
 
     orders =
       orders.filter(
-        item =>
-          item.id !== id
+        x => x.id !== id
       );
+
 
     save();
 
@@ -1305,7 +1249,9 @@ window.deleteOrder = id => {
     toast(
       "Order deleted"
     );
+
   }
+
 };
 
 
@@ -1385,6 +1331,7 @@ function updateClock() {
       getDigitalDateTime();
 
   }
+
 }
 
 
@@ -1447,8 +1394,7 @@ function renderReport() {
     );
 
 
-  $("reportPreview")
-    .innerHTML = `
+  $("reportPreview").innerHTML = `
 
     <div class="report-header">
 
@@ -1464,6 +1410,7 @@ function renderReport() {
 
       </div>
 
+
       <div class="report-title">
 
         <strong>
@@ -1472,9 +1419,7 @@ function renderReport() {
 
         <span>
           Generated
-          ${formatDate(
-            todayISO()
-          )}
+          ${formatDate(todayISO())}
         </span>
 
       </div>
@@ -1504,9 +1449,7 @@ function renderReport() {
         </span>
 
         <strong>
-          ${money(
-            received
-          )}
+          ${money(received)}
         </strong>
 
       </div>
@@ -1519,9 +1462,7 @@ function renderReport() {
         </span>
 
         <strong>
-          ${money(
-            pending
-          )}
+          ${money(pending)}
         </strong>
 
       </div>
@@ -1535,13 +1476,18 @@ function renderReport() {
 
         <strong>
           ${
-            arr.filter(
-              order =>
-                order.status ===
-                  "Pending" ||
-                order.status ===
+            arr.filter(order => {
+
+              const status =
+                statusFor(order);
+
+              return (
+                status === "Pending" ||
+                status ===
                   "Partially Received"
-            ).length
+              );
+
+            }).length
           }
         </strong>
 
@@ -1559,15 +1505,25 @@ function renderReport() {
           <tr>
 
             <th>Sr#</th>
+
             <th>Date</th>
+
             <th>Job #</th>
+
             <th>HAFLA ID</th>
+
             <th>Party</th>
+
             <th>Orders</th>
+
             <th>Incharge</th>
+
             <th>Received</th>
+
             <th>Pending</th>
+
             <th>Received By</th>
+
             <th>Status</th>
 
           </tr>
@@ -1582,100 +1538,110 @@ function renderReport() {
 
               ? arr
                   .map(
-                    (order, index) => `
+                    (order, index) => {
 
-                      <tr>
+                      const reportStatus =
+                        statusFor(order);
 
-                        <td>
-                          ${index + 1}
-                        </td>
 
-                        <td>
-                          ${formatDate(
-                            order.date
-                          )}
-                        </td>
+                      return `
 
-                        <td>
-                          ${esc(
-                            order.jobNo
-                          )}
-                        </td>
+                        <tr>
 
-                        <td>
-                          ${
-                            esc(
-                              order.haflaId
-                            ) || "—"
-                          }
-                        </td>
+                          <td>
+                            ${index + 1}
+                          </td>
 
-                        <td>
-                          ${esc(
-                            order.party
-                          )}
-                        </td>
+                          <td>
+                            ${formatDate(
+                              order.date
+                            )}
+                          </td>
 
-                        <td>
-                          ${
-                            (
-                              order.items ||
-                              []
-                            )
-                              .map(
-                                item =>
-                                  `${esc(
-                                    item.description
-                                  )}
-                                  ${
-                                    item.quantity
-                                      ? ` × ${esc(
-                                          item.quantity
-                                        )}`
-                                      : ""
-                                  }`
+                          <td>
+                            ${esc(
+                              order.jobNo
+                            )}
+                          </td>
+
+                          <td>
+                            ${
+                              esc(
+                                order.haflaId
+                              ) || "—"
+                            }
+                          </td>
+
+                          <td>
+                            ${esc(
+                              order.party
+                            )}
+                          </td>
+
+                          <td>
+
+                            ${
+                              (
+                                order.items ||
+                                []
                               )
-                              .join("<br>")
-                              ||
-                              "—"
-                          }
-                        </td>
+                                .map(
+                                  item =>
+                                    `${esc(
+                                      item.description
+                                    )}
+                                    ${
+                                      item.quantity
+                                        ? ` × ${esc(
+                                            item.quantity
+                                          )}`
+                                        : ""
+                                    }`
+                                )
+                                .join("<br>")
+                                ||
+                                "—"
+                            }
 
-                        <td>
-                          ${esc(
-                            order.incharge
-                          )}
-                        </td>
+                          </td>
 
-                        <td>
-                          ${money(
-                            order.amountReceived
-                          )}
-                        </td>
+                          <td>
+                            ${esc(
+                              order.incharge
+                            )}
+                          </td>
 
-                        <td>
-                          ${money(
-                            order.pendingAmount
-                          )}
-                        </td>
+                          <td>
+                            ${money(
+                              order.amountReceived
+                            )}
+                          </td>
 
-                        <td>
-                          ${
-                            esc(
-                              order.receivedBy
-                            ) || "—"
-                          }
-                        </td>
+                          <td>
+                            ${money(
+                              order.pendingAmount
+                            )}
+                          </td>
 
-                        <td>
-                          ${badge(
-                            order.status
-                          )}
-                        </td>
+                          <td>
+                            ${
+                              esc(
+                                order.receivedBy
+                              ) || "—"
+                            }
+                          </td>
 
-                      </tr>
+                          <td>
+                            ${badge(
+                              reportStatus
+                            )}
+                          </td>
 
-                    `
+                        </tr>
+
+                      `;
+
+                    }
                   )
                   .join("")
 
@@ -1688,7 +1654,7 @@ function renderReport() {
                     class="empty"
                   >
                     No orders for
-                    ${esc(label)}.
+                    ${label}.
                   </td>
 
                 </tr>
@@ -1724,6 +1690,7 @@ function renderReport() {
     </div>
 
   `;
+
 }
 
 
@@ -1766,6 +1733,7 @@ function toast(message) {
       "toast";
 
     document.body.appendChild(t);
+
   }
 
 
@@ -1785,50 +1753,79 @@ function toast(message) {
       ),
     2200
   );
+
 }
 
 
 /* =====================================================
-   INITIALIZE EXISTING DATA
+   CONVERT OLD STATUS VALUES
+   Protect existing data
 ===================================================== */
 
-/*
-  This is important.
+let dataChanged =
+  false;
 
-  Any old records containing:
-  Paid
-  Partially Paid
-  Received
-  Partially Received
-  Pending
-  No Amount
 
-  will now be recalculated from the
-  actual Total Amount and Amount Received.
+orders.forEach(order => {
 
-  Your existing localStorage data is preserved.
-*/
+  if (
+    order.status ===
+    "Paid"
+  ) {
 
-normalizeOrders();
+    order.status =
+      "Received";
 
-sortOrders();
+    dataChanged =
+      true;
 
-save();
+  }
+
+
+  if (
+    order.status ===
+    "Partially Paid"
+  ) {
+
+    order.status =
+      "Partially Received";
+
+    dataChanged =
+      true;
+
+  }
+
+});
+
+
+if (dataChanged) {
+
+  save();
+
+}
 
 
 /* =====================================================
-   INITIALIZE FORM
+   INITIALIZE
 ===================================================== */
+
+sortOrders();
+
 
 $("itemsContainer")
   .innerHTML = "";
 
+
 resetForm();
+
 
 renderDashboard();
 
+
 renderOrders();
 
+
 renderReport();
+
 
 updateClock();
