@@ -13,7 +13,6 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
 
-  <!-- Main Styles -->
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -21,10 +20,7 @@
 
 <div class="app-shell">
 
-  <!-- =====================================================
-       SIDEBAR
-  ====================================================== -->
-
+  <!-- SIDEBAR -->
   <aside class="sidebar">
 
     <div class="brand">
@@ -75,14 +71,10 @@
   </aside>
 
 
-  <!-- =====================================================
-       MAIN
-  ====================================================== -->
-
+  <!-- MAIN -->
   <main class="main">
 
     <!-- TOP BAR -->
-
     <header class="topbar">
 
       <div>
@@ -104,10 +96,7 @@
     </header>
 
 
-    <!-- =====================================================
-         DASHBOARD
-    ====================================================== -->
-
+    <!-- DASHBOARD -->
     <section id="dashboard" class="section active">
 
       <div class="welcome">
@@ -136,7 +125,6 @@
 
 
       <!-- STATS -->
-
       <div class="stats-grid">
 
         <div class="stat-card">
@@ -147,13 +135,13 @@
 
         <div class="stat-card">
           <span>Total Received</span>
-          <strong id="statReceived">AED 0.00</strong>
+          <strong id="statReceived">0.00</strong>
           <small>This month</small>
         </div>
 
         <div class="stat-card">
           <span>Total Pending</span>
-          <strong id="statPending">AED 0.00</strong>
+          <strong id="statPending">0.00</strong>
           <small>Outstanding</small>
         </div>
 
@@ -169,7 +157,6 @@
       <div class="dashboard-grid">
 
         <!-- RECENT ORDERS -->
-
         <div class="panel">
 
           <div class="panel-head">
@@ -211,7 +198,6 @@
 
 
         <!-- QUICK SUMMARY -->
-
         <div class="panel">
 
           <div class="panel-head">
@@ -258,10 +244,7 @@
     </section>
 
 
-    <!-- =====================================================
-         NEW ORDER
-    ====================================================== -->
-
+    <!-- NEW ORDER -->
     <section id="new-order" class="section">
 
       <div class="section-intro">
@@ -285,80 +268,58 @@
 
         <div class="form-grid">
 
-          <!-- DATE -->
-
           <label>
             Date
-
             <input
               type="date"
               id="orderDate"
               required
             >
-
           </label>
 
 
-          <!-- JOB NUMBER -->
-
           <label>
             Job #
-
             <input
               type="text"
               id="jobNo"
               placeholder="Automatic"
               required
             >
-
           </label>
 
 
-          <!-- HAFLA -->
-
           <label>
             HAFLA Order ID
-
             <input
               type="text"
               id="haflaId"
               placeholder="Optional"
             >
-
           </label>
 
 
-          <!-- PARTY -->
-
           <label>
             Party / Customer
-
             <input
               type="text"
               id="party"
               placeholder="Customer name"
               required
             >
-
           </label>
 
 
-          <!-- INCHARGE -->
-
           <label>
             Incharge
-
             <input
               type="text"
               id="incharge"
               placeholder="e.g. Saud"
               required
             >
-
           </label>
 
-
-          <!-- RECEIVED BY -->
 
           <label>
             Received By
@@ -369,20 +330,18 @@
                 Select
               </option>
 
-              <option>Ali</option>
               <option>Zohaib</option>
               <option>Saud</option>
+              <option>Ali</option>
+              <option>Ihsan</option>
               <option>Fahad</option>
               <option>Malik</option>
               <option>Parvaiz</option>
-              <option>Ihsan</option>
 
             </select>
 
           </label>
 
-
-          <!-- PAYMENT METHOD -->
 
           <label>
             Payment Method
@@ -404,10 +363,8 @@
           </label>
 
 
-          <!-- TOTAL -->
-
           <label>
-            Total Amount (AED)
+            Total Amount
 
             <input
               type="number"
@@ -420,10 +377,8 @@
           </label>
 
 
-          <!-- RECEIVED -->
-
           <label>
-            Amount Received (AED)
+            Amount Received
 
             <input
               type="number"
@@ -436,10 +391,8 @@
           </label>
 
 
-          <!-- PENDING -->
-
           <label>
-            Pending (AED)
+            Pending
 
             <input
               type="number"
@@ -449,8 +402,6 @@
 
           </label>
 
-
-          <!-- STATUS -->
 
           <label>
             Status
@@ -484,10 +435,7 @@
         </div>
 
 
-        <!-- =================================================
-             ORDER ITEMS
-        ================================================== -->
-
+        <!-- ORDER ITEMS -->
         <div class="items-section">
 
           <div class="items-head">
@@ -518,7 +466,6 @@
 
 
         <!-- REMARKS -->
-
         <label class="full-label">
 
           Remarks
@@ -533,7 +480,6 @@
 
 
         <!-- ACTIONS -->
-
         <div class="form-actions">
 
           <button
@@ -559,10 +505,7 @@
     </section>
 
 
-    <!-- =====================================================
-         ALL ORDERS
-    ====================================================== -->
-
+    <!-- ALL ORDERS -->
     <section id="orders" class="section">
 
       <div class="section-intro">
@@ -588,7 +531,6 @@
 
 
       <!-- FILTERS -->
-
       <div class="panel filters">
 
         <input
@@ -637,7 +579,6 @@
 
 
       <!-- ORDERS TABLE -->
-
       <div class="panel">
 
         <div class="table-wrap">
@@ -673,10 +614,7 @@
     </section>
 
 
-    <!-- =====================================================
-         MONTHLY REPORTS
-    ====================================================== -->
-
+    <!-- REPORTS -->
     <section id="reports" class="section">
 
       <div class="section-intro">
@@ -735,10 +673,6 @@
 
 </div>
 
-
-<!-- =====================================================
-     JAVASCRIPT
-====================================================== -->
 
 <script src="script.js"></script>
 
