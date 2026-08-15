@@ -1,10 +1,21 @@
 const STORAGE_KEY = "alJefoonOrdersV1";
-let orders = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+let orders = JSON.parse(
+  localStorage.getItem(STORAGE_KEY) || "[]"
+);
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
 
 const $ = id => document.getElementById(id);
 
-const todayISO = () => new Date().toISOString().slice(0, 10);
-const currentMonth = () => new Date().toISOString().slice(0, 7);
+const todayISO = () =>
+  new Date().toISOString().slice(0, 10);
+
+const currentMonth = () =>
+  new Date().toISOString().slice(0, 7);
 
 const money = n =>
   `AED ${Number(n || 0).toLocaleString("en-AE", {
@@ -27,7 +38,10 @@ const esc = s =>
 ===================================================== */
 
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(orders)
+  );
 }
 
 
@@ -36,9 +50,15 @@ function save() {
 ===================================================== */
 
 function statusFor(o) {
-  if (Number(o.totalAmount) <= 0) return "No Amount";
 
-  if (Number(o.amountReceived) >= Number(o.totalAmount)) {
+  if (Number(o.totalAmount) <= 0) {
+    return "No Amount";
+  }
+
+  if (
+    Number(o.amountReceived) >=
+    Number(o.totalAmount)
+  ) {
     return "Paid";
   }
 
@@ -49,7 +69,9 @@ function statusFor(o) {
   return "Pending";
 }
 
+
 function badge(s) {
+
   const cls = {
     "Paid": "badge-paid",
     "Partially Paid": "badge-partial",
@@ -57,22 +79,25 @@ function badge(s) {
     "No Amount": "badge-none"
   }[s] || "badge-none";
 
-  return `<span class="badge ${cls}">${esc(s)}</span>`;
+  return `
+    <span class="badge ${cls}">
+      ${esc(s)}
+    </span>
+  `;
 }
 
 
 /* =====================================================
-   DATE / MONTH
+   DATE
 ===================================================== */
 
-function monthOrders(month) {
-  return orders.filter(o => o.date?.slice(0, 7) === month);
-}
-
 function formatDate(d) {
+
   if (!d) return "—";
 
-  return new Date(d + "T00:00:00").toLocaleDateString(
+  return new Date(
+    d + "T00:00:00"
+  ).toLocaleDateString(
     "en-GB",
     {
       day: "2-digit",
@@ -84,8 +109,31 @@ function formatDate(d) {
 
 
 /* =====================================================
+   MONTH ORDERS
+   Newest first
+===================================================== */
+
+function monthOrders(month) {
+
+  return orders
+    .filter(
+      o =>
+        o.date?.slice(0, 7) === month
+    )
+    .sort((a, b) => {
+
+      return (
+        b.date || ""
+      ).localeCompare(
+        a.date || ""
+      );
+
+    });
+}
+
+
+/* =====================================================
    AUTOMATIC JOB NUMBER
-   Starts from JB0433 because JB0419-JB0432 already exist.
 ===================================================== */
 
 function getNextJobNumber() {
@@ -94,21 +142,27 @@ function getNextJobNumber() {
 
   orders.forEach(order => {
 
-    const match = String(order.jobNo || "")
-      .toUpperCase()
-      .match(/^JB(\d+)$/);
+    const match =
+      String(order.jobNo || "")
+        .toUpperCase()
+        .match(/^JB(\d+)$/);
 
     if (match) {
-      const number = parseInt(match[1], 10);
+
+      const number =
+        parseInt(match[1], 10);
 
       if (number > highest) {
         highest = number;
       }
+
     }
 
   });
 
-  return `JB${String(highest + 1).padStart(4, "0")}`;
+  return `JB${String(
+    highest + 1
+  ).padStart(4, "0")}`;
 }
 
 
@@ -122,13 +176,17 @@ function resetForm() {
 
   $("editId").value = "";
 
-  $("orderDate").value = todayISO();
+  $("orderDate").value =
+    todayISO();
 
-  $("jobNo").value = getNextJobNumber();
+  $("jobNo").value =
+    getNextJobNumber();
 
-  $("pendingAmount").value = "0.00";
+  $("pendingAmount").value =
+    "0.00";
 
-  $("saveOrderBtn").textContent = "Save Order";
+  $("saveOrderBtn").textContent =
+    "Save Order";
 
   $("itemsContainer").innerHTML = "";
 
@@ -137,14 +195,19 @@ function resetForm() {
 
 
 /* =====================================================
-   ORDER ITEMS
+   ITEMS
 ===================================================== */
 
-function addItem(desc = "", qty = "") {
+function addItem(
+  desc = "",
+  qty = ""
+) {
 
-  const row = document.createElement("div");
+  const row =
+    document.createElement("div");
 
-  row.className = "item-row";
+  row.className =
+    "item-row";
 
   row.innerHTML = `
     <input
@@ -168,24 +231,39 @@ function addItem(desc = "", qty = "") {
     </button>
   `;
 
-  row.querySelector(".remove-item").onclick = () => {
+  row.querySelector(
+    ".remove-item"
+  ).onclick = () =>
     row.remove();
-  };
 
-  $("itemsContainer").appendChild(row);
+  $("itemsContainer")
+    .appendChild(row);
 }
 
 
 function itemsFromForm() {
 
   return [
-    ...document.querySelectorAll(".item-row")
+    ...document.querySelectorAll(
+      ".item-row"
+    )
   ]
-    .map(r => ({
-      description: r.querySelector(".item-desc").value.trim(),
-      quantity: r.querySelector(".item-qty").value.trim()
+    .map(row => ({
+      description:
+        row.querySelector(
+          ".item-desc"
+        ).value.trim(),
+
+      quantity:
+        row.querySelector(
+          ".item-qty"
+        ).value.trim()
     }))
-    .filter(x => x.description || x.quantity);
+    .filter(
+      x =>
+        x.description ||
+        x.quantity
+    );
 }
 
 
@@ -195,16 +273,29 @@ function itemsFromForm() {
 
 function navTo(section) {
 
-  document.querySelectorAll(".section").forEach(s => {
-    s.classList.toggle("active", s.id === section);
-  });
+  document
+    .querySelectorAll(".section")
+    .forEach(s => {
 
-  document.querySelectorAll(".nav-item").forEach(b => {
-    b.classList.toggle(
-      "active",
-      b.dataset.section === section
-    );
-  });
+      s.classList.toggle(
+        "active",
+        s.id === section
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(".nav-item")
+    .forEach(b => {
+
+      b.classList.toggle(
+        "active",
+        b.dataset.section === section
+      );
+
+    });
+
 
   const names = {
     dashboard: "Dashboard",
@@ -213,7 +304,10 @@ function navTo(section) {
     reports: "Monthly Reports"
   };
 
-  $("pageTitle").textContent = names[section];
+
+  $("pageTitle").textContent =
+    names[section];
+
 
   if (section === "dashboard") {
     renderDashboard();
@@ -227,6 +321,7 @@ function navTo(section) {
     renderReport();
   }
 
+
   window.scrollTo({
     top: 0,
     behavior: "smooth"
@@ -235,16 +330,31 @@ function navTo(section) {
 
 
 /* =====================================================
-   NAVIGATION BUTTONS
+   NAV BUTTONS
 ===================================================== */
 
-document.querySelectorAll(".nav-item").forEach(b => {
-  b.onclick = () => navTo(b.dataset.section);
-});
+document
+  .querySelectorAll(".nav-item")
+  .forEach(b => {
 
-document.querySelectorAll("[data-go]").forEach(b => {
-  b.onclick = () => navTo(b.dataset.go);
-});
+    b.onclick = () =>
+      navTo(
+        b.dataset.section
+      );
+
+  });
+
+
+document
+  .querySelectorAll("[data-go]")
+  .forEach(b => {
+
+    b.onclick = () =>
+      navTo(
+        b.dataset.go
+      );
+
+  });
 
 
 /* =====================================================
@@ -252,12 +362,17 @@ document.querySelectorAll("[data-go]").forEach(b => {
 ===================================================== */
 
 $("quickAddBtn").onclick = () => {
+
   resetForm();
+
   navTo("new-order");
 };
 
+
 $("ordersAddBtn").onclick = () => {
+
   resetForm();
+
   navTo("new-order");
 };
 
@@ -267,58 +382,88 @@ $("ordersAddBtn").onclick = () => {
 ===================================================== */
 
 $("totalAmount").oninput =
-$("amountReceived").oninput = () => {
+$("amountReceived").oninput =
+  () => {
 
-  const total = Math.max(
-    0,
-    Number($("totalAmount").value) || 0
-  );
+    const total =
+      Math.max(
+        0,
+        Number(
+          $("totalAmount").value
+        ) || 0
+      );
 
-  const received = Math.max(
-    0,
-    Number($("amountReceived").value) || 0
-  );
 
-  $("pendingAmount").value =
-    Math.max(0, total - received).toFixed(2);
-};
+    const received =
+      Math.max(
+        0,
+        Number(
+          $("amountReceived").value
+        ) || 0
+      );
+
+
+    $("pendingAmount").value =
+      Math.max(
+        0,
+        total - received
+      ).toFixed(2);
+
+  };
 
 
 /* =====================================================
    ITEM BUTTONS
 ===================================================== */
 
-$("addItemBtn").onclick = () => addItem();
+$("addItemBtn").onclick =
+  () => addItem();
 
-$("cancelEditBtn").onclick = resetForm;
+$("cancelEditBtn").onclick =
+  resetForm;
 
 
 /* =====================================================
-   SAVE / UPDATE ORDER
+   SAVE ORDER
 ===================================================== */
 
 $("orderForm").onsubmit = e => {
 
   e.preventDefault();
 
-  const total = Math.max(
-    0,
-    Number($("totalAmount").value) || 0
-  );
 
-  const received = Math.max(
-    0,
-    Number($("amountReceived").value) || 0
-  );
+  const total =
+    Math.max(
+      0,
+      Number(
+        $("totalAmount").value
+      ) || 0
+    );
 
-  const chosen = $("status").value;
 
-  const auto = statusFor({
-    totalAmount: total,
-    amountReceived: received
-  });
+  const received =
+    Math.max(
+      0,
+      Number(
+        $("amountReceived").value
+      ) || 0
+    );
 
-  const itemData = itemsFromForm();
+
+  const chosen =
+    $("status").value;
+
+
+  const auto =
+    statusFor({
+      totalAmount: total,
+      amountReceived: received
+    });
+
+
+  const itemData =
+    itemsFromForm();
+
 
   const obj = {
 
@@ -372,16 +517,20 @@ $("orderForm").onsubmit = e => {
 
     remarks:
       $("remarks").value.trim()
+
   };
 
 
   /* Prevent duplicate Job Numbers */
 
-  const duplicateJob = orders.find(
-    o =>
-      o.jobNo.toLowerCase() === obj.jobNo.toLowerCase() &&
-      o.id !== obj.id
-  );
+  const duplicateJob =
+    orders.find(
+      o =>
+        o.jobNo.toLowerCase() ===
+          obj.jobNo.toLowerCase() &&
+        o.id !== obj.id
+    );
+
 
   if (duplicateJob) {
 
@@ -393,9 +542,10 @@ $("orderForm").onsubmit = e => {
   }
 
 
-  const idx = orders.findIndex(
-    x => x.id === obj.id
-  );
+  const idx =
+    orders.findIndex(
+      x => x.id === obj.id
+    );
 
 
   if (idx >= 0) {
@@ -409,21 +559,24 @@ $("orderForm").onsubmit = e => {
   }
 
 
-  orders.sort(
-    (a, b) =>
-      (b.date || "").localeCompare(
-        a.date || ""
-      )
+  /* Newest first */
+
+  orders.sort((a, b) =>
+    (b.date || "").localeCompare(
+      a.date || ""
+    )
   );
 
 
   save();
+
 
   toast(
     idx >= 0
       ? "Order updated"
       : "Order saved"
   );
+
 
   resetForm();
 
@@ -437,21 +590,31 @@ $("orderForm").onsubmit = e => {
 
 function renderDashboard() {
 
-  const mos = currentMonth();
+  const mos =
+    currentMonth();
 
-  const arr = monthOrders(mos);
+  const arr =
+    monthOrders(mos);
+
 
   const received =
     arr.reduce(
       (s, o) =>
-        s + Number(o.amountReceived || 0),
+        s +
+        Number(
+          o.amountReceived || 0
+        ),
       0
     );
+
 
   const pending =
     arr.reduce(
       (s, o) =>
-        s + Number(o.pendingAmount || 0),
+        s +
+        Number(
+          o.pendingAmount || 0
+        ),
       0
     );
 
@@ -471,11 +634,14 @@ function renderDashboard() {
   $("statOrders").textContent =
     arr.length;
 
+
   $("statReceived").textContent =
     money(received);
 
+
   $("statPending").textContent =
     money(pending);
+
 
   $("statPendingOrders").textContent =
     arr.filter(
@@ -490,15 +656,18 @@ function renderDashboard() {
       o => o.status === "Paid"
     ).length;
 
+
   $("summaryPartial").textContent =
     arr.filter(
       o => o.status === "Partially Paid"
     ).length;
 
+
   $("summaryPending").textContent =
     arr.filter(
       o => o.status === "Pending"
     ).length;
+
 
   $("summaryNoAmount").textContent =
     arr.filter(
@@ -507,21 +676,21 @@ function renderDashboard() {
 
 
   const recent =
-    arr
-      .slice()
-      .sort(
-        (a, b) =>
-          b.date.localeCompare(a.date)
-      )
-      .slice(0, 7);
+    arr.slice(0, 7);
 
 
   $("recentOrdersBody").innerHTML =
     recent.length
 
       ? recent.map(o => `
+
           <tr>
-            <td>${esc(formatDate(o.date))}</td>
+
+            <td>
+              ${esc(
+                formatDate(o.date)
+              )}
+            </td>
 
             <td>
               <strong>
@@ -534,24 +703,32 @@ function renderDashboard() {
             </td>
 
             <td>
-              ${money(o.amountReceived)}
+              ${money(
+                o.amountReceived
+              )}
             </td>
 
             <td>
               ${badge(o.status)}
             </td>
+
           </tr>
+
         `).join("")
 
       : `
+
         <tr>
+
           <td
             colspan="5"
             class="empty"
           >
             No orders for this month.
           </td>
+
         </tr>
+
       `;
 }
 
@@ -560,63 +737,85 @@ function renderDashboard() {
    DASHBOARD REPORT
 ===================================================== */
 
-$("dashboardReportBtn").onclick = () => {
+$("dashboardReportBtn").onclick =
+  () => {
 
-  $("reportMonth").value =
-    currentMonth();
+    $("reportMonth").value =
+      currentMonth();
 
-  navTo("reports");
-};
+    navTo("reports");
+
+  };
 
 
 /* =====================================================
    ALL ORDERS
+   NEWEST DATE FIRST
 ===================================================== */
 
 function renderOrders() {
 
   const q =
-    $("searchOrders").value
+    $("searchOrders")
+      .value
       .toLowerCase();
+
 
   const m =
     $("filterMonth").value;
+
 
   const st =
     $("filterStatus").value;
 
 
-  let arr = orders.filter(o => {
+  let arr =
+    orders
+      .filter(o => {
 
-    const text = [
-      o.jobNo,
-      o.party,
-      o.haflaId,
-      o.incharge,
-      o.receivedBy,
-      o.remarks,
+        const text = [
 
-      ...(o.items || [])
-        .map(i => i.description)
+          o.jobNo,
+          o.party,
+          o.haflaId,
+          o.incharge,
+          o.receivedBy,
+          o.remarks,
 
-    ]
-      .join(" ")
-      .toLowerCase();
+          ...(o.items || [])
+            .map(
+              i =>
+                i.description
+            )
+
+        ]
+          .join(" ")
+          .toLowerCase();
 
 
-    return (
+        return (
 
-      (!q || text.includes(q)) &&
+          (!q ||
+            text.includes(q)) &&
 
-      (!m ||
-        o.date?.startsWith(m)) &&
+          (!m ||
+            o.date?.startsWith(m)) &&
 
-      (!st ||
-        o.status === st)
+          (!st ||
+            o.status === st)
 
-    );
+        );
 
-  });
+      })
+      .sort((a, b) => {
+
+        return (
+          b.date || ""
+        ).localeCompare(
+          a.date || ""
+        );
+
+      });
 
 
   $("ordersBody").innerHTML =
@@ -628,20 +827,26 @@ function renderOrders() {
           const items =
             (o.items || [])
               .map(i =>
+
                 `${esc(i.description)}${
                   i.quantity
                     ? ` × ${esc(i.quantity)}`
                     : ""
                 }`
+
               )
-              .join("<br>") || "—";
+              .join("<br>") ||
+            "—";
 
 
           return `
+
             <tr>
 
               <td>
-                ${esc(formatDate(o.date))}
+                ${esc(
+                  formatDate(o.date)
+                )}
               </td>
 
               <td>
@@ -663,11 +868,15 @@ function renderOrders() {
               </td>
 
               <td>
-                ${money(o.amountReceived)}
+                ${money(
+                  o.amountReceived
+                )}
               </td>
 
               <td>
-                ${money(o.pendingAmount)}
+                ${money(
+                  o.pendingAmount
+                )}
               </td>
 
               <td>
@@ -693,25 +902,30 @@ function renderOrders() {
               </td>
 
             </tr>
+
           `;
 
         }).join("")
 
       : `
+
         <tr>
+
           <td
             colspan="9"
             class="empty"
           >
             No orders match your filters.
           </td>
+
         </tr>
+
       `;
 }
 
 
 /* =====================================================
-   ORDER FILTERS
+   FILTERS
 ===================================================== */
 
 [
@@ -726,16 +940,18 @@ function renderOrders() {
 });
 
 
-$("clearFilters").onclick = () => {
+$("clearFilters").onclick =
+  () => {
 
-  $("searchOrders").value = "";
+    $("searchOrders").value = "";
 
-  $("filterMonth").value = "";
+    $("filterMonth").value = "";
 
-  $("filterStatus").value = "";
+    $("filterStatus").value = "";
 
-  renderOrders();
-};
+    renderOrders();
+
+  };
 
 
 /* =====================================================
@@ -749,6 +965,7 @@ window.editOrder = id => {
       x => x.id === id
     );
 
+
   if (!o) return;
 
 
@@ -758,45 +975,59 @@ window.editOrder = id => {
   $("editId").value =
     o.id;
 
+
   $("orderDate").value =
     o.date;
+
 
   $("jobNo").value =
     o.jobNo;
 
+
   $("haflaId").value =
     o.haflaId;
+
 
   $("party").value =
     o.party;
 
+
   $("incharge").value =
     o.incharge;
+
 
   $("receivedBy").value =
     o.receivedBy || "";
 
+
   $("paymentMethod").value =
     o.paymentMethod || "";
+
 
   $("totalAmount").value =
     o.totalAmount || "";
 
+
   $("amountReceived").value =
     o.amountReceived || "";
 
+
   $("pendingAmount").value =
-    Number(o.pendingAmount || 0)
-      .toFixed(2);
+    Number(
+      o.pendingAmount || 0
+    ).toFixed(2);
+
 
   $("status").value =
     "auto";
+
 
   $("remarks").value =
     o.remarks || "";
 
 
-  $("itemsContainer").innerHTML = "";
+  $("itemsContainer")
+    .innerHTML = "";
 
 
   (
@@ -829,6 +1060,7 @@ window.deleteOrder = id => {
       x => x.id === id
     );
 
+
   if (!o) return;
 
 
@@ -843,21 +1075,24 @@ window.deleteOrder = id => {
         x => x.id !== id
       );
 
+
     save();
 
     renderOrders();
 
     renderDashboard();
 
-    toast("Order deleted");
+    toast(
+      "Order deleted"
+    );
 
   }
-
 };
 
 
 /* =====================================================
    MONTHLY REPORT
+   OLDEST DATE FIRST
 ===================================================== */
 
 function renderReport() {
@@ -866,18 +1101,31 @@ function renderReport() {
     $("reportMonth").value ||
     currentMonth();
 
+
   $("reportMonth").value =
     m;
 
 
   const arr =
-    monthOrders(m);
+    monthOrders(m)
+      .sort((a, b) => {
+
+        return (
+          a.date || ""
+        ).localeCompare(
+          b.date || ""
+        );
+
+      });
 
 
   const received =
     arr.reduce(
       (s, o) =>
-        s + Number(o.amountReceived || 0),
+        s +
+        Number(
+          o.amountReceived || 0
+        ),
       0
     );
 
@@ -885,7 +1133,10 @@ function renderReport() {
   const pending =
     arr.reduce(
       (s, o) =>
-        s + Number(o.pendingAmount || 0),
+        s +
+        Number(
+          o.pendingAmount || 0
+        ),
       0
     );
 
@@ -918,6 +1169,7 @@ function renderReport() {
 
       </div>
 
+
       <div class="report-title">
 
         <strong>
@@ -936,29 +1188,57 @@ function renderReport() {
     <div class="report-summary">
 
       <div class="report-box">
-        <span>Total Orders</span>
-        <strong>${arr.length}</strong>
+
+        <span>
+          Total Orders
+        </span>
+
+        <strong>
+          ${arr.length}
+        </strong>
+
       </div>
 
-      <div class="report-box">
-        <span>Total Received</span>
-        <strong>${money(received)}</strong>
-      </div>
 
       <div class="report-box">
-        <span>Total Pending</span>
-        <strong>${money(pending)}</strong>
+
+        <span>
+          Total Received
+        </span>
+
+        <strong>
+          ${money(received)}
+        </strong>
+
       </div>
 
+
       <div class="report-box">
-        <span>Pending Orders</span>
+
+        <span>
+          Total Pending
+        </span>
+
+        <strong>
+          ${money(pending)}
+        </strong>
+
+      </div>
+
+
+      <div class="report-box">
+
+        <span>
+          Pending Orders
+        </span>
 
         <strong>
           ${
             arr.filter(
               o =>
                 o.status === "Pending" ||
-                o.status === "Partially Paid"
+                o.status ===
+                  "Partially Paid"
             ).length
           }
         </strong>
@@ -975,6 +1255,7 @@ function renderReport() {
         <thead>
 
           <tr>
+
             <th>Sr#</th>
             <th>Date</th>
             <th>Job #</th>
@@ -985,9 +1266,11 @@ function renderReport() {
             <th>Received</th>
             <th>Pending</th>
             <th>Status</th>
+
           </tr>
 
         </thead>
+
 
         <tbody>
 
@@ -1019,17 +1302,24 @@ function renderReport() {
                   </td>
 
                   <td>
+
                     ${
                       (o.items || [])
                         .map(x =>
-                          `${esc(x.description)}${
+                          `${esc(
+                            x.description
+                          )}${
                             x.quantity
-                              ? ` × ${esc(x.quantity)}`
+                              ? ` × ${esc(
+                                  x.quantity
+                                )}`
                               : ""
                           }`
                         )
-                        .join("<br>") || "—"
+                        .join("<br>") ||
+                      "—"
                     }
+
                   </td>
 
                   <td>
@@ -1037,11 +1327,15 @@ function renderReport() {
                   </td>
 
                   <td>
-                    ${money(o.amountReceived)}
+                    ${money(
+                      o.amountReceived
+                    )}
                   </td>
 
                   <td>
-                    ${money(o.pendingAmount)}
+                    ${money(
+                      o.pendingAmount
+                    )}
                   </td>
 
                   <td>
@@ -1106,8 +1400,10 @@ function renderReport() {
 $("reportMonth").value =
   currentMonth();
 
+
 $("generateReportBtn").onclick =
   renderReport;
+
 
 $("printReportBtn").onclick =
   () => window.print();
@@ -1120,13 +1416,17 @@ $("printReportBtn").onclick =
 function toast(msg) {
 
   let t =
-    document.querySelector(".toast");
+    document.querySelector(
+      ".toast"
+    );
 
 
   if (!t) {
 
     t =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
     t.className =
       "toast";
@@ -1138,6 +1438,7 @@ function toast(msg) {
 
   t.textContent =
     msg;
+
 
   t.classList.remove(
     "hidden"
@@ -1155,7 +1456,7 @@ function toast(msg) {
 
 
 /* =====================================================
-   EXISTING ORDERS
+   IMPORT EXISTING ORDERS
    JB0419 - JB0432
 ===================================================== */
 
@@ -1174,12 +1475,14 @@ const IMPORTED_ORDERS = [
     amountReceived: 170,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Banquet Chair",
         quantity: "10"
       }
     ],
+
     remarks: ""
   },
 
@@ -1197,6 +1500,7 @@ const IMPORTED_ORDERS = [
     amountReceived: 1500,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Sofa",
@@ -1215,6 +1519,7 @@ const IMPORTED_ORDERS = [
         quantity: "1"
       }
     ],
+
     remarks:
       "Received 3000.00 for JB0417, JB0420. Transferred 2500 to Bank"
   },
@@ -1233,6 +1538,7 @@ const IMPORTED_ORDERS = [
     amountReceived: 0,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Round Dish",
@@ -1243,6 +1549,7 @@ const IMPORTED_ORDERS = [
         quantity: "10+10"
       }
     ],
+
     remarks: ""
   },
 
@@ -1260,6 +1567,7 @@ const IMPORTED_ORDERS = [
     amountReceived: 0,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Golden Chiavari",
@@ -1274,6 +1582,7 @@ const IMPORTED_ORDERS = [
         quantity: "7"
       }
     ],
+
     remarks: ""
   },
 
@@ -1291,6 +1600,7 @@ const IMPORTED_ORDERS = [
     amountReceived: 0,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "White Chiavari",
@@ -1301,6 +1611,7 @@ const IMPORTED_ORDERS = [
         quantity: "1"
       }
     ],
+
     remarks: ""
   },
 
@@ -1318,12 +1629,14 @@ const IMPORTED_ORDERS = [
     amountReceived: 100,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Mist Fan",
         quantity: "3"
       }
     ],
+
     remarks: ""
   },
 
@@ -1341,12 +1654,14 @@ const IMPORTED_ORDERS = [
     amountReceived: 600,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Majlis for 15pax",
         quantity: ""
       }
     ],
+
     remarks: ""
   },
 
@@ -1364,12 +1679,14 @@ const IMPORTED_ORDERS = [
     amountReceived: 280,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Plastic Chair",
         quantity: "90"
       }
     ],
+
     remarks: ""
   },
 
@@ -1387,6 +1704,7 @@ const IMPORTED_ORDERS = [
     amountReceived: 0,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Banquet Chair",
@@ -1397,6 +1715,7 @@ const IMPORTED_ORDERS = [
         quantity: "6"
       }
     ],
+
     remarks: ""
   },
 
@@ -1414,6 +1733,7 @@ const IMPORTED_ORDERS = [
     amountReceived: 0,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Buffet Table",
@@ -1424,6 +1744,7 @@ const IMPORTED_ORDERS = [
         quantity: "6"
       }
     ],
+
     remarks: ""
   },
 
@@ -1441,12 +1762,14 @@ const IMPORTED_ORDERS = [
     amountReceived: 1260,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Tower AC",
         quantity: "1"
       }
     ],
+
     remarks: ""
   },
 
@@ -1464,12 +1787,14 @@ const IMPORTED_ORDERS = [
     amountReceived: 0,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Coolers",
         quantity: "18"
       }
     ],
+
     remarks: ""
   },
 
@@ -1487,12 +1812,14 @@ const IMPORTED_ORDERS = [
     amountReceived: 0,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Tables",
         quantity: "4"
       }
     ],
+
     remarks: ""
   },
 
@@ -1510,12 +1837,14 @@ const IMPORTED_ORDERS = [
     amountReceived: 0,
     pendingAmount: 0,
     status: "No Amount",
+
     items: [
       {
         description: "Welcome Carpet",
         quantity: "60m"
       }
     ],
+
     remarks: ""
   }
 
@@ -1545,7 +1874,9 @@ function importExistingOrders() {
     );
 
 
-  if (newOrders.length === 0) {
+  if (
+    newOrders.length === 0
+  ) {
     return;
   }
 
@@ -1555,12 +1886,15 @@ function importExistingOrders() {
   );
 
 
-  orders.sort(
-    (a, b) =>
-      (b.date || "").localeCompare(
-        a.date || ""
-      )
-  );
+  orders.sort((a, b) => {
+
+    return (
+      b.date || ""
+    ).localeCompare(
+      a.date || ""
+    );
+
+  });
 
 
   save();
@@ -1573,7 +1907,8 @@ function importExistingOrders() {
 
 importExistingOrders();
 
-$("itemsContainer").innerHTML = "";
+$("itemsContainer")
+  .innerHTML = "";
 
 addItem();
 
