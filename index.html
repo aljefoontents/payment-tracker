@@ -9,10 +9,6 @@
 
   <title>AL JEFOON TENTS — Order Tracker</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
-
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -20,12 +16,19 @@
 
 <div class="app-shell">
 
-  <!-- SIDEBAR -->
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
   <aside class="sidebar">
 
     <div class="brand">
 
-      <div class="brand-mark">AJ</div>
+      <img
+        src="logo.png"
+        alt="AL JEFOON TENTS"
+        class="brand-logo"
+      >
 
       <div>
         <strong>AL JEFOON TENTS</strong>
@@ -34,47 +37,79 @@
 
     </div>
 
+
+    <!-- NAVIGATION -->
+
     <nav class="nav">
 
-      <button class="nav-item active" data-section="dashboard">
+      <button
+        class="nav-item active"
+        data-section="dashboard"
+      >
         <span>▦</span>
         Dashboard
       </button>
 
-      <button class="nav-item" data-section="new-order">
+
+      <button
+        class="nav-item"
+        data-section="new-order"
+      >
         <span>＋</span>
         New Order
       </button>
 
-      <button class="nav-item" data-section="orders">
+
+      <button
+        class="nav-item"
+        data-section="orders"
+      >
         <span>☷</span>
         All Orders
       </button>
 
-      <button class="nav-item" data-section="reports">
+
+      <button
+        class="nav-item"
+        data-section="reports"
+      >
         <span>▤</span>
         Monthly Reports
       </button>
 
     </nav>
 
+
+    <!-- SIDEBAR FOOTER -->
+
     <div class="sidebar-footer">
 
       <div class="brand-line"></div>
 
-      <small>Never miss an order.</small>
+      <small>
+        Never miss an order.
+      </small>
 
-      <small>© 2026 AL JEFOON TENTS</small>
+      <small>
+        © 2026 AL JEFOON TENTS
+      </small>
 
     </div>
 
   </aside>
 
 
-  <!-- MAIN -->
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
   <main class="main">
 
-    <!-- TOP BAR -->
+
+    <!-- ===================================================
+         TOP BAR
+    ==================================================== -->
+
     <header class="topbar">
 
       <div>
@@ -89,15 +124,27 @@
 
       </div>
 
-      <button class="primary-btn" id="quickAddBtn">
+
+      <button
+        class="primary-btn"
+        id="quickAddBtn"
+      >
         ＋ New Order
       </button>
 
     </header>
 
 
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="section active">
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <section
+      id="dashboard"
+      class="section active"
+    >
+
+      <!-- WELCOME -->
 
       <div class="welcome">
 
@@ -111,13 +158,20 @@
             Monthly Order Overview
           </h2>
 
-          <p id="dashboardDateTime" class="digital-clock">
+          <p
+            id="dashboardDateTime"
+            class="digital-clock"
+          >
             Loading...
           </p>
 
         </div>
 
-        <button class="outline-btn" id="dashboardReportBtn">
+
+        <button
+          class="outline-btn"
+          id="dashboardReportBtn"
+        >
           View Monthly Report
         </button>
 
@@ -125,52 +179,113 @@
 
 
       <!-- STATS -->
+
       <div class="stats-grid">
 
-        <div class="stat-card">
-          <span>Total Orders</span>
-          <strong id="statOrders">0</strong>
-          <small>This month</small>
-        </div>
 
         <div class="stat-card">
-          <span>Total Received</span>
-          <strong id="statReceived">0.00</strong>
-          <small>This month</small>
+
+          <span>
+            Total Orders
+          </span>
+
+          <strong id="statOrders">
+            0
+          </strong>
+
+          <small>
+            This month
+          </small>
+
         </div>
 
-        <div class="stat-card">
-          <span>Total Pending</span>
-          <strong id="statPending">0.00</strong>
-          <small>Outstanding</small>
-        </div>
 
         <div class="stat-card">
-          <span>Pending Orders</span>
-          <strong id="statPendingOrders">0</strong>
-          <small>Need attention</small>
+
+          <span>
+            Total Received
+          </span>
+
+          <strong id="statReceived">
+            0.00
+          </strong>
+
+          <small>
+            This month
+          </small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span>
+            Total Pending
+          </span>
+
+          <strong id="statPending">
+            0.00
+          </strong>
+
+          <small>
+            Outstanding
+          </small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span>
+            Pending Orders
+          </span>
+
+          <strong id="statPendingOrders">
+            0
+          </strong>
+
+          <small>
+            Need attention
+          </small>
+
         </div>
 
       </div>
 
 
+      <!-- DASHBOARD GRID -->
+
       <div class="dashboard-grid">
 
+
         <!-- RECENT ORDERS -->
+
         <div class="panel">
 
           <div class="panel-head">
 
             <div>
-              <h3>Recent Orders</h3>
-              <p>Latest jobs entered into the system</p>
+
+              <h3>
+                Recent Orders
+              </h3>
+
+              <p>
+                Latest jobs entered into the system
+              </p>
+
             </div>
 
-            <button class="text-btn" data-go="orders">
+
+            <button
+              class="text-btn"
+              data-go="orders"
+            >
               View all
             </button>
 
           </div>
+
 
           <div class="table-wrap">
 
@@ -179,16 +294,35 @@
               <thead>
 
                 <tr>
-                  <th>Date</th>
-                  <th>Job #</th>
-                  <th>Party</th>
-                  <th>Received</th>
-                  <th>Status</th>
+
+                  <th>
+                    Date
+                  </th>
+
+                  <th>
+                    Job #
+                  </th>
+
+                  <th>
+                    Party
+                  </th>
+
+                  <th>
+                    Received
+                  </th>
+
+                  <th>
+                    Status
+                  </th>
+
                 </tr>
 
               </thead>
 
-              <tbody id="recentOrdersBody"></tbody>
+
+              <tbody
+                id="recentOrdersBody"
+              ></tbody>
 
             </table>
 
@@ -198,41 +332,78 @@
 
 
         <!-- QUICK SUMMARY -->
+
         <div class="panel">
 
           <div class="panel-head">
 
             <div>
-              <h3>Quick Summary</h3>
-              <p>Order count by status</p>
+
+              <h3>
+                Quick Summary
+              </h3>
+
+              <p>
+                Order count by status
+              </p>
+
             </div>
 
           </div>
 
+
           <div class="summary-list">
 
+
             <div>
+
               <span class="dot paid"></span>
+
               Received
-              <strong id="summaryReceived">0</strong>
+
+              <strong id="summaryReceived">
+                0
+              </strong>
+
             </div>
 
+
             <div>
+
               <span class="dot partial"></span>
+
               Partially Received
-              <strong id="summaryPartial">0</strong>
+
+              <strong id="summaryPartial">
+                0
+              </strong>
+
             </div>
 
+
             <div>
+
               <span class="dot pending"></span>
+
               Pending
-              <strong id="summaryPending">0</strong>
+
+              <strong id="summaryPending">
+                0
+              </strong>
+
             </div>
 
+
             <div>
+
               <span class="dot noamount"></span>
+
               No Amount
-              <strong id="summaryNoAmount">0</strong>
+
+              <strong id="summaryNoAmount">
+                0
+              </strong>
+
             </div>
 
           </div>
@@ -244,14 +415,22 @@
     </section>
 
 
-    <!-- NEW ORDER -->
-    <section id="new-order" class="section">
+    <!-- =====================================================
+         NEW ORDER
+    ====================================================== -->
+
+    <section
+      id="new-order"
+      class="section"
+    >
 
       <div class="section-intro">
 
         <div>
 
-          <h2>Create New Order</h2>
+          <h2>
+            Create New Order
+          </h2>
 
           <p>
             Record a new job and collection details.
@@ -262,66 +441,102 @@
       </div>
 
 
-      <form id="orderForm" class="panel form-panel">
+      <form
+        id="orderForm"
+        class="panel form-panel"
+      >
 
-        <input type="hidden" id="editId">
+        <input
+          type="hidden"
+          id="editId"
+        >
+
 
         <div class="form-grid">
 
+
+          <!-- DATE -->
+
           <label>
+
             Date
+
             <input
               type="date"
               id="orderDate"
               required
             >
+
           </label>
 
 
+          <!-- JOB NUMBER -->
+
           <label>
+
             Job #
+
             <input
               type="text"
               id="jobNo"
               placeholder="Automatic"
               required
             >
+
           </label>
 
 
+          <!-- HAFLA -->
+
           <label>
+
             HAFLA Order ID
+
             <input
               type="text"
               id="haflaId"
               placeholder="Optional"
             >
+
           </label>
 
 
+          <!-- PARTY -->
+
           <label>
+
             Party / Customer
+
             <input
               type="text"
               id="party"
               placeholder="Customer name"
               required
             >
+
           </label>
 
 
+          <!-- INCHARGE -->
+
           <label>
+
             Incharge
+
             <input
               type="text"
               id="incharge"
               placeholder="e.g. Saud"
               required
             >
+
           </label>
 
 
+          <!-- RECEIVED BY -->
+
           <label>
+
             Received By
 
             <select id="receivedBy">
@@ -330,20 +545,47 @@
                 Select
               </option>
 
-              <option>Zohaib</option>
-              <option>Saud</option>
-              <option>Ali</option>
-              <option>Ihsan</option>
-              <option>Fahad</option>
-              <option>Malik</option>
-              <option>Parvaiz</option>
+              <option value="Ali">
+                Ali
+              </option>
+
+              <option value="Ihsan">
+                Ihsan
+              </option>
+
+              <option value="Zohaib">
+                Zohaib
+              </option>
+
+              <option value="Saud">
+                Saud
+              </option>
+
+              <option value="Fahad">
+                Fahad
+              </option>
+
+              <option value="Malik">
+                Malik
+              </option>
+
+              <option value="Parvaiz">
+                Parvaiz
+              </option>
+
+              <option value="Bank">
+                Bank
+              </option>
 
             </select>
 
           </label>
 
 
+          <!-- PAYMENT METHOD -->
+
           <label>
+
             Payment Method
 
             <select id="paymentMethod">
@@ -352,18 +594,35 @@
                 Select
               </option>
 
-              <option>Cash</option>
-              <option>Bank</option>
-              <option>Online</option>
-              <option>Card</option>
-              <option>Other</option>
+              <option value="Cash">
+                Cash
+              </option>
+
+              <option value="Bank">
+                Bank
+              </option>
+
+              <option value="Online">
+                Online
+              </option>
+
+              <option value="Card">
+                Card
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
 
             </select>
 
           </label>
 
 
+          <!-- TOTAL -->
+
           <label>
+
             Total Amount
 
             <input
@@ -377,7 +636,10 @@
           </label>
 
 
+          <!-- RECEIVED -->
+
           <label>
+
             Amount Received
 
             <input
@@ -391,7 +653,10 @@
           </label>
 
 
+          <!-- PENDING -->
+
           <label>
+
             Pending
 
             <input
@@ -403,7 +668,10 @@
           </label>
 
 
+          <!-- STATUS -->
+
           <label>
+
             Status
 
             <select id="status">
@@ -412,19 +680,19 @@
                 Automatic
               </option>
 
-              <option>
+              <option value="Received">
                 Received
               </option>
 
-              <option>
+              <option value="Partially Received">
                 Partially Received
               </option>
 
-              <option>
+              <option value="Pending">
                 Pending
               </option>
 
-              <option>
+              <option value="No Amount">
                 No Amount
               </option>
 
@@ -435,20 +703,26 @@
         </div>
 
 
-        <!-- ORDER ITEMS -->
+        <!-- =================================================
+             ORDER ITEMS
+        ================================================== -->
+
         <div class="items-section">
 
           <div class="items-head">
 
             <div>
 
-              <h3>Order Items</h3>
+              <h3>
+                Order Items
+              </h3>
 
               <p>
                 Add each item separately for better future reports.
               </p>
 
             </div>
+
 
             <button
               type="button"
@@ -460,12 +734,16 @@
 
           </div>
 
+
           <div id="itemsContainer"></div>
 
         </div>
 
 
-        <!-- REMARKS -->
+        <!-- =================================================
+             REMARKS
+        ================================================== -->
+
         <label class="full-label">
 
           Remarks
@@ -479,7 +757,10 @@
         </label>
 
 
-        <!-- ACTIONS -->
+        <!-- =================================================
+             FORM ACTIONS
+        ================================================== -->
+
         <div class="form-actions">
 
           <button
@@ -489,6 +770,7 @@
           >
             Clear
           </button>
+
 
           <button
             type="submit"
@@ -505,20 +787,29 @@
     </section>
 
 
-    <!-- ALL ORDERS -->
-    <section id="orders" class="section">
+    <!-- =====================================================
+         ALL ORDERS
+    ====================================================== -->
+
+    <section
+      id="orders"
+      class="section"
+    >
 
       <div class="section-intro">
 
         <div>
 
-          <h2>All Orders</h2>
+          <h2>
+            All Orders
+          </h2>
 
           <p>
             Search, filter and manage your jobs.
           </p>
 
         </div>
+
 
         <button
           class="primary-btn"
@@ -531,6 +822,7 @@
 
 
       <!-- FILTERS -->
+
       <div class="panel filters">
 
         <input
@@ -539,10 +831,12 @@
           placeholder="Search job, customer, item, HAFLA ID..."
         >
 
+
         <input
           id="filterMonth"
           type="month"
         >
+
 
         <select id="filterStatus">
 
@@ -550,23 +844,24 @@
             All Statuses
           </option>
 
-          <option>
+          <option value="Received">
             Received
           </option>
 
-          <option>
+          <option value="Partially Received">
             Partially Received
           </option>
 
-          <option>
+          <option value="Pending">
             Pending
           </option>
 
-          <option>
+          <option value="No Amount">
             No Amount
           </option>
 
         </select>
+
 
         <button
           class="outline-btn"
@@ -579,6 +874,7 @@
 
 
       <!-- ORDERS TABLE -->
+
       <div class="panel">
 
         <div class="table-wrap">
@@ -589,21 +885,50 @@
 
               <tr>
 
-                <th>Date</th>
-                <th>Job #</th>
-                <th>Party</th>
-                <th>Orders</th>
-                <th>Incharge</th>
-                <th>Received</th>
-                <th>Pending</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>
+                  Date
+                </th>
+
+                <th>
+                  Job #
+                </th>
+
+                <th>
+                  Party
+                </th>
+
+                <th>
+                  Orders
+                </th>
+
+                <th>
+                  Incharge
+                </th>
+
+                <th>
+                  Received
+                </th>
+
+                <th>
+                  Pending
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Actions
+                </th>
 
               </tr>
 
             </thead>
 
-            <tbody id="ordersBody"></tbody>
+
+            <tbody
+              id="ordersBody"
+            ></tbody>
 
           </table>
 
@@ -614,20 +939,29 @@
     </section>
 
 
-    <!-- REPORTS -->
-    <section id="reports" class="section">
+    <!-- =====================================================
+         MONTHLY REPORTS
+    ====================================================== -->
+
+    <section
+      id="reports"
+      class="section"
+    >
 
       <div class="section-intro">
 
         <div>
 
-          <h2>Monthly Reports</h2>
+          <h2>
+            Monthly Reports
+          </h2>
 
           <p>
             Generate a print-ready order and collection report.
           </p>
 
         </div>
+
 
         <button
           class="primary-btn"
@@ -638,6 +972,8 @@
 
       </div>
 
+
+      <!-- REPORT CONTROLS -->
 
       <div class="panel report-controls">
 
@@ -652,6 +988,7 @@
 
         </label>
 
+
         <button
           class="outline-btn"
           id="generateReportBtn"
@@ -661,6 +998,8 @@
 
       </div>
 
+
+      <!-- REPORT -->
 
       <div
         id="reportPreview"
@@ -673,6 +1012,10 @@
 
 </div>
 
+
+<!-- =======================================================
+     JAVASCRIPT
+======================================================== -->
 
 <script src="script.js"></script>
 
