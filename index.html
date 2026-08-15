@@ -10,27 +10,28 @@
   <title>AL JEFOON TENTS — Order Tracker</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="./favicon.png">
-  <link rel="apple-touch-icon" href="./favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
 
-  <link rel="stylesheet" href="./style.css">
+  <!-- Main Styles -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="app-shell">
 
-  <!-- SIDEBAR -->
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
   <aside class="sidebar">
 
     <div class="brand">
 
-      <!-- LOGO -->
-      <div class="brand-mark">
-        <img src="./favicon.png" alt="AL JEFOON TENTS">
-      </div>
+      <div class="brand-mark">AJ</div>
 
-      <div class="brand-text">
+      <div>
         <strong>AL JEFOON TENTS</strong>
         <span>Order Tracker</span>
       </div>
@@ -74,10 +75,14 @@
   </aside>
 
 
-  <!-- MAIN -->
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
   <main class="main">
 
     <!-- TOP BAR -->
+
     <header class="topbar">
 
       <div>
@@ -99,7 +104,10 @@
     </header>
 
 
-    <!-- DASHBOARD -->
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
     <section id="dashboard" class="section active">
 
       <div class="welcome">
@@ -128,6 +136,7 @@
 
 
       <!-- STATS -->
+
       <div class="stats-grid">
 
         <div class="stat-card">
@@ -160,6 +169,7 @@
       <div class="dashboard-grid">
 
         <!-- RECENT ORDERS -->
+
         <div class="panel">
 
           <div class="panel-head">
@@ -180,6 +190,7 @@
             <table>
 
               <thead>
+
                 <tr>
                   <th>Date</th>
                   <th>Job #</th>
@@ -187,6 +198,7 @@
                   <th>Received</th>
                   <th>Status</th>
                 </tr>
+
               </thead>
 
               <tbody id="recentOrdersBody"></tbody>
@@ -199,6 +211,7 @@
 
 
         <!-- QUICK SUMMARY -->
+
         <div class="panel">
 
           <div class="panel-head">
@@ -245,14 +258,22 @@
     </section>
 
 
-    <!-- NEW ORDER -->
+    <!-- =====================================================
+         NEW ORDER
+    ====================================================== -->
+
     <section id="new-order" class="section">
 
       <div class="section-intro">
 
         <div>
+
           <h2>Create New Order</h2>
-          <p>Record a new job and collection details.</p>
+
+          <p>
+            Record a new job and collection details.
+          </p>
+
         </div>
 
       </div>
@@ -264,79 +285,130 @@
 
         <div class="form-grid">
 
+          <!-- DATE -->
+
           <label>
             Date
-            <input type="date" id="orderDate" required>
+
+            <input
+              type="date"
+              id="orderDate"
+              required
+            >
+
           </label>
+
+
+          <!-- JOB NUMBER -->
 
           <label>
             Job #
+
             <input
               type="text"
               id="jobNo"
               placeholder="Automatic"
               required
             >
+
           </label>
+
+
+          <!-- HAFLA -->
 
           <label>
             HAFLA Order ID
+
             <input
               type="text"
               id="haflaId"
               placeholder="Optional"
             >
+
           </label>
+
+
+          <!-- PARTY -->
 
           <label>
             Party / Customer
+
             <input
               type="text"
               id="party"
               placeholder="Customer name"
               required
             >
+
           </label>
+
+
+          <!-- INCHARGE -->
 
           <label>
             Incharge
+
             <input
               type="text"
               id="incharge"
               placeholder="e.g. Saud"
               required
             >
+
           </label>
 
-       <select id="receivedBy">
 
-  <option value="">
-    Select
-  </option>
+          <!-- RECEIVED BY -->
 
-  <option>Ali</option>
-  <option>Zohaib</option>
-  <option>Saud</option>
-  <option>Fahad</option>
-  <option>Malik</option>
-  <option>Parvaiz</option>
-  <option>Ihsan</option>
+          <label>
+            Received By
 
-</select>
+            <select id="receivedBy">
+
+              <option value="">
+                Select
+              </option>
+
+              <option>Ali</option>
+              <option>Zohaib</option>
+              <option>Saud</option>
+              <option>Fahad</option>
+              <option>Malik</option>
+              <option>Parvaiz</option>
+              <option>Ihsan</option>
+
+            </select>
+
+          </label>
+
+
+          <!-- PAYMENT METHOD -->
+
           <label>
             Payment Method
+
             <select id="paymentMethod">
-              <option value="">Select</option>
+
+              <option value="">
+                Select
+              </option>
+
               <option>Cash</option>
               <option>Bank</option>
               <option>Online</option>
               <option>Card</option>
               <option>Other</option>
+
             </select>
+
           </label>
+
+
+          <!-- TOTAL -->
 
           <label>
             Total Amount (AED)
+
             <input
               type="number"
               id="totalAmount"
@@ -344,10 +416,15 @@
               step="0.01"
               placeholder="0.00"
             >
+
           </label>
+
+
+          <!-- RECEIVED -->
 
           <label>
             Amount Received (AED)
+
             <input
               type="number"
               id="amountReceived"
@@ -355,39 +432,74 @@
               step="0.01"
               placeholder="0.00"
             >
+
           </label>
+
+
+          <!-- PENDING -->
 
           <label>
             Pending (AED)
+
             <input
               type="number"
               id="pendingAmount"
               readonly
             >
+
           </label>
+
+
+          <!-- STATUS -->
 
           <label>
             Status
+
             <select id="status">
-              <option value="auto">Automatic</option>
-              <option value="Received">Received</option>
-              <option value="Partially Received">Partially Received</option>
-              <option value="Pending">Pending</option>
-              <option value="No Amount">No Amount</option>
+
+              <option value="auto">
+                Automatic
+              </option>
+
+              <option>
+                Received
+              </option>
+
+              <option>
+                Partially Received
+              </option>
+
+              <option>
+                Pending
+              </option>
+
+              <option>
+                No Amount
+              </option>
+
             </select>
+
           </label>
 
         </div>
 
 
-        <!-- ORDER ITEMS -->
+        <!-- =================================================
+             ORDER ITEMS
+        ================================================== -->
+
         <div class="items-section">
 
           <div class="items-head">
 
             <div>
+
               <h3>Order Items</h3>
-              <p>Add each item separately for better future reports.</p>
+
+              <p>
+                Add each item separately for better future reports.
+              </p>
+
             </div>
 
             <button
@@ -406,6 +518,7 @@
 
 
         <!-- REMARKS -->
+
         <label class="full-label">
 
           Remarks
@@ -418,6 +531,8 @@
 
         </label>
 
+
+        <!-- ACTIONS -->
 
         <div class="form-actions">
 
@@ -444,14 +559,22 @@
     </section>
 
 
-    <!-- ALL ORDERS -->
+    <!-- =====================================================
+         ALL ORDERS
+    ====================================================== -->
+
     <section id="orders" class="section">
 
       <div class="section-intro">
 
         <div>
+
           <h2>All Orders</h2>
-          <p>Search, filter and manage your jobs.</p>
+
+          <p>
+            Search, filter and manage your jobs.
+          </p>
+
         </div>
 
         <button
@@ -463,6 +586,8 @@
 
       </div>
 
+
+      <!-- FILTERS -->
 
       <div class="panel filters">
 
@@ -483,19 +608,19 @@
             All Statuses
           </option>
 
-          <option value="Received">
+          <option>
             Received
           </option>
 
-          <option value="Partially Received">
+          <option>
             Partially Received
           </option>
 
-          <option value="Pending">
+          <option>
             Pending
           </option>
 
-          <option value="No Amount">
+          <option>
             No Amount
           </option>
 
@@ -511,6 +636,8 @@
       </div>
 
 
+      <!-- ORDERS TABLE -->
+
       <div class="panel">
 
         <div class="table-wrap">
@@ -518,7 +645,9 @@
           <table class="orders-table">
 
             <thead>
+
               <tr>
+
                 <th>Date</th>
                 <th>Job #</th>
                 <th>Party</th>
@@ -528,7 +657,9 @@
                 <th>Pending</th>
                 <th>Status</th>
                 <th>Actions</th>
+
               </tr>
+
             </thead>
 
             <tbody id="ordersBody"></tbody>
@@ -542,14 +673,22 @@
     </section>
 
 
-    <!-- REPORTS -->
+    <!-- =====================================================
+         MONTHLY REPORTS
+    ====================================================== -->
+
     <section id="reports" class="section">
 
       <div class="section-intro">
 
         <div>
+
           <h2>Monthly Reports</h2>
-          <p>Generate a print-ready order and collection report.</p>
+
+          <p>
+            Generate a print-ready order and collection report.
+          </p>
+
         </div>
 
         <button
@@ -598,64 +737,10 @@
 
 
 <!-- =====================================================
-     LOGO SIZE FIX
-===================================================== -->
+     JAVASCRIPT
+====================================================== -->
 
-<style>
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 4px 8px 28px;
-}
-
-.brand-mark {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  min-height: 42px;
-  max-width: 42px;
-  max-height: 42px;
-  border-radius: 10px;
-  background: #fcc224;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.brand-mark img {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-.brand-text {
-  min-width: 0;
-  overflow: hidden;
-}
-
-.brand-text strong {
-  display: block;
-  font-size: 13px;
-  letter-spacing: .4px;
-  white-space: nowrap;
-}
-
-.brand-text span {
-  display: block;
-  color: #697386;
-  font-size: 11px;
-  margin-top: 3px;
-}
-</style>
-
-
-<script src="./script.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
