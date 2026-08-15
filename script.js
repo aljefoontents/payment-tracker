@@ -1,3 +1,9 @@
+/* =====================================================
+   AL JEFOON TENTS
+   ORDER TRACKER
+   Version 1.0
+===================================================== */
+
 const STORAGE_KEY = "alJefoonOrdersV1";
 
 let orders = JSON.parse(
@@ -24,111 +30,128 @@ const money = n =>
   })}`;
 
 const esc = s =>
-  String(s ?? "").replace(/[&<>"']/g, m => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
-  }[m]));
+  String(s ?? "").replace(
+    /[&<>"']/g,
+    m => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[m])
+  );
 
 
 /* =====================================================
-   STORAGE
+   SAVE
 ===================================================== */
 
 function save() {
+
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(orders)
   );
+
 }
 
 
 /* =====================================================
-   STATUS
+   AUTOMATIC STATUS
 ===================================================== */
 
 function statusFor(o) {
 
-  if (Number(o.totalAmount) <= 0) {
+  const total = Number(o.totalAmount || 0);
+  const received = Number(o.amountReceived || 0);
+
+  if (total <= 0) {
     return "No Amount";
   }
 
-  if (
-    Number(o.amountReceived) >=
-    Number(o.totalAmount)
-  ) {
-    return "Paid";
+  if (received >= total) {
+    return "Received";
   }
 
-  if (Number(o.amountReceived) > 0) {
-    return "Partially Paid";
+  if (received > 0) {
+    return "Partially Received";
   }
 
   return "Pending";
-}
 
-
-function badge(s) {
-
-  const cls = {
-    "Paid": "badge-paid",
-    "Partially Paid": "badge-partial",
-    "Pending": "badge-pending",
-    "No Amount": "badge-none"
-  }[s] || "badge-none";
-
-  return `
-    <span class="badge ${cls}">
-      ${esc(s)}
-    </span>
-  `;
 }
 
 
 /* =====================================================
-   DATE
+   STATUS BADGE
 ===================================================== */
 
-function formatDate(d) {
+function badge(status) {
 
-  if (!d) return "—";
+  const cls = {
+    "Received": "badge-paid",
+    "Partially Received": "badge-partial",
+    "Pending": "badge-pending",
+    "No Amount": "badge-none"
+  }[status] || "badge-none";
 
-  return new Date(
-    d + "T00:00:00"
-  ).toLocaleDateString(
-    "en-GB",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    }
-  );
+  return `
+    <span class="badge ${cls}">
+      ${esc(status)}
+    </span>
+  `;
+
 }
 
 
 /* =====================================================
    MONTH ORDERS
-   Newest first
 ===================================================== */
 
 function monthOrders(month) {
 
-  return orders
-    .filter(
-      o =>
-        o.date?.slice(0, 7) === month
-    )
-    .sort((a, b) => {
+  return orders.filter(
+    o => o.date?.slice(0, 7) === month
+  );
 
-      return (
-        b.date || ""
-      ).localeCompare(
-        a.date || ""
+}
+
+
+/* =====================================================
+   SORT ORDERS
+   Newest date first
+   Job number used as secondary sort
+===================================================== */
+
+function sortOrders() {
+
+  orders.sort((a, b) => {
+
+    const dateCompare =
+      String(b.date || "").localeCompare(
+        String(a.date || "")
       );
 
-    });
+    if (dateCompare !== 0) {
+      return dateCompare;
+    }
+
+    const jobA =
+      parseInt(
+        String(a.jobNo || "").replace(/\D/g, ""),
+        10
+      ) || 0;
+
+    const jobB =
+      parseInt(
+        String(b.jobNo || "").replace(/\D/g, ""),
+        10
+      ) || 0;
+
+    return jobB - jobA;
+
+  });
+
 }
 
 
@@ -143,9 +166,9 @@ function getNextJobNumber() {
   orders.forEach(order => {
 
     const match =
-      String(order.jobNo || "")
-        .toUpperCase()
-        .match(/^JB(\d+)$/);
+      String(order.jobNo || "").match(
+        /JB(\d+)/i
+      );
 
     if (match) {
 
@@ -160,9 +183,8 @@ function getNextJobNumber() {
 
   });
 
-  return `JB${String(
-    highest + 1
-  ).padStart(4, "0")}`;
+  return `JB${String(highest + 1).padStart(4, "0")}`;
+
 }
 
 
@@ -176,14 +198,11 @@ function resetForm() {
 
   $("editId").value = "";
 
-  $("orderDate").value =
-    todayISO();
+  $("orderDate").value = todayISO();
 
-  $("jobNo").value =
-    getNextJobNumber();
+  $("jobNo").value = getNextJobNumber();
 
-  $("pendingAmount").value =
-    "0.00";
+  $("pendingAmount").value = "0.00";
 
   $("saveOrderBtn").textContent =
     "Save Order";
@@ -191,25 +210,23 @@ function resetForm() {
   $("itemsContainer").innerHTML = "";
 
   addItem();
+
 }
 
 
 /* =====================================================
-   ITEMS
+   ADD ITEM
 ===================================================== */
 
-function addItem(
-  desc = "",
-  qty = ""
-) {
+function addItem(desc = "", qty = "") {
 
   const row =
     document.createElement("div");
 
-  row.className =
-    "item-row";
+  row.className = "item-row";
 
   row.innerHTML = `
+
     <input
       class="item-desc"
       placeholder="Item description (e.g. Banquet Chair)"
@@ -218,7 +235,9 @@ function addItem(
 
     <input
       class="item-qty"
-      type="text"
+      type="number"
+      min="0"
+      step="1"
       placeholder="Qty"
       value="${esc(qty)}"
     >
@@ -229,26 +248,29 @@ function addItem(
     >
       ×
     </button>
+
   `;
 
-  row.querySelector(
-    ".remove-item"
-  ).onclick = () =>
-    row.remove();
+  row
+    .querySelector(".remove-item")
+    .onclick = () => row.remove();
 
-  $("itemsContainer")
-    .appendChild(row);
+  $("itemsContainer").appendChild(row);
+
 }
 
+
+/* =====================================================
+   GET ITEMS
+===================================================== */
 
 function itemsFromForm() {
 
   return [
-    ...document.querySelectorAll(
-      ".item-row"
-    )
+    ...document.querySelectorAll(".item-row")
   ]
     .map(row => ({
+
       description:
         row.querySelector(
           ".item-desc"
@@ -257,13 +279,13 @@ function itemsFromForm() {
       quantity:
         row.querySelector(
           ".item-qty"
-        ).value.trim()
+        ).value
+
     }))
     .filter(
-      x =>
-        x.description ||
-        x.quantity
+      x => x.description || x.quantity
     );
+
 }
 
 
@@ -275,39 +297,36 @@ function navTo(section) {
 
   document
     .querySelectorAll(".section")
-    .forEach(s => {
-
+    .forEach(s =>
       s.classList.toggle(
         "active",
         s.id === section
-      );
-
-    });
-
+      )
+    );
 
   document
     .querySelectorAll(".nav-item")
-    .forEach(b => {
-
+    .forEach(b =>
       b.classList.toggle(
         "active",
         b.dataset.section === section
-      );
-
-    });
-
+      )
+    );
 
   const names = {
-    dashboard: "Dashboard",
-    "new-order": "New Order",
-    orders: "All Orders",
-    reports: "Monthly Reports"
-  };
 
+    dashboard: "Dashboard",
+
+    "new-order": "New Order",
+
+    orders: "All Orders",
+
+    reports: "Monthly Reports"
+
+  };
 
   $("pageTitle").textContent =
     names[section];
-
 
   if (section === "dashboard") {
     renderDashboard();
@@ -321,11 +340,11 @@ function navTo(section) {
     renderReport();
   }
 
-
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
+
 }
 
 
@@ -335,11 +354,11 @@ function navTo(section) {
 
 document
   .querySelectorAll(".nav-item")
-  .forEach(b => {
+  .forEach(button => {
 
-    b.onclick = () =>
+    button.onclick = () =>
       navTo(
-        b.dataset.section
+        button.dataset.section
       );
 
   });
@@ -347,11 +366,11 @@ document
 
 document
   .querySelectorAll("[data-go]")
-  .forEach(b => {
+  .forEach(button => {
 
-    b.onclick = () =>
+    button.onclick = () =>
       navTo(
-        b.dataset.go
+        button.dataset.go
       );
 
   });
@@ -366,6 +385,7 @@ $("quickAddBtn").onclick = () => {
   resetForm();
 
   navTo("new-order");
+
 };
 
 
@@ -374,50 +394,59 @@ $("ordersAddBtn").onclick = () => {
   resetForm();
 
   navTo("new-order");
+
 };
 
 
 /* =====================================================
-   PAYMENT CALCULATION
+   AMOUNT CALCULATION
 ===================================================== */
 
+function updatePending() {
+
+  const total =
+    Math.max(
+      0,
+      Number(
+        $("totalAmount").value
+      ) || 0
+    );
+
+  const received =
+    Math.max(
+      0,
+      Number(
+        $("amountReceived").value
+      ) || 0
+    );
+
+  $("pendingAmount").value =
+    Math.max(
+      0,
+      total - received
+    ).toFixed(2);
+
+}
+
+
 $("totalAmount").oninput =
+  updatePending;
+
 $("amountReceived").oninput =
-  () => {
-
-    const total =
-      Math.max(
-        0,
-        Number(
-          $("totalAmount").value
-        ) || 0
-      );
-
-
-    const received =
-      Math.max(
-        0,
-        Number(
-          $("amountReceived").value
-        ) || 0
-      );
-
-
-    $("pendingAmount").value =
-      Math.max(
-        0,
-        total - received
-      ).toFixed(2);
-
-  };
+  updatePending;
 
 
 /* =====================================================
-   ITEM BUTTONS
+   ADD ITEM
 ===================================================== */
 
-$("addItemBtn").onclick =
-  () => addItem();
+$("addItemBtn").onclick = () =>
+  addItem();
+
+
+/* =====================================================
+   CLEAR FORM
+===================================================== */
 
 $("cancelEditBtn").onclick =
   resetForm;
@@ -431,7 +460,6 @@ $("orderForm").onsubmit = e => {
 
   e.preventDefault();
 
-
   const total =
     Math.max(
       0,
@@ -439,7 +467,6 @@ $("orderForm").onsubmit = e => {
         $("totalAmount").value
       ) || 0
     );
-
 
   const received =
     Math.max(
@@ -449,10 +476,8 @@ $("orderForm").onsubmit = e => {
       ) || 0
     );
 
-
   const chosen =
     $("status").value;
-
 
   const auto =
     statusFor({
@@ -460,16 +485,18 @@ $("orderForm").onsubmit = e => {
       amountReceived: received
     });
 
-
   const itemData =
     itemsFromForm();
-
 
   const obj = {
 
     id:
       $("editId").value ||
-      crypto.randomUUID(),
+      (
+        crypto.randomUUID
+          ? crypto.randomUUID()
+          : Date.now().toString()
+      ),
 
     date:
       $("orderDate").value,
@@ -521,27 +548,6 @@ $("orderForm").onsubmit = e => {
   };
 
 
-  /* Prevent duplicate Job Numbers */
-
-  const duplicateJob =
-    orders.find(
-      o =>
-        o.jobNo.toLowerCase() ===
-          obj.jobNo.toLowerCase() &&
-        o.id !== obj.id
-    );
-
-
-  if (duplicateJob) {
-
-    toast(
-      `Job number ${obj.jobNo} already exists.`
-    );
-
-    return;
-  }
-
-
   const idx =
     orders.findIndex(
       x => x.id === obj.id
@@ -559,17 +565,9 @@ $("orderForm").onsubmit = e => {
   }
 
 
-  /* Newest first */
-
-  orders.sort((a, b) =>
-    (b.date || "").localeCompare(
-      a.date || ""
-    )
-  );
-
+  sortOrders();
 
   save();
-
 
   toast(
     idx >= 0
@@ -577,10 +575,10 @@ $("orderForm").onsubmit = e => {
       : "Order saved"
   );
 
-
   resetForm();
 
   navTo("orders");
+
 };
 
 
@@ -590,28 +588,28 @@ $("orderForm").onsubmit = e => {
 
 function renderDashboard() {
 
-  const mos =
+  sortOrders();
+
+  const month =
     currentMonth();
 
   const arr =
-    monthOrders(mos);
-
+    monthOrders(month);
 
   const received =
     arr.reduce(
-      (s, o) =>
-        s +
+      (sum, o) =>
+        sum +
         Number(
           o.amountReceived || 0
         ),
       0
     );
 
-
   const pending =
     arr.reduce(
-      (s, o) =>
-        s +
+      (sum, o) =>
+        sum +
         Number(
           o.pendingAmount || 0
         ),
@@ -619,117 +617,136 @@ function renderDashboard() {
     );
 
 
-  $("dashboardMonth").textContent =
-    new Date(
-      mos + "-01"
-    ).toLocaleDateString(
-      "en-US",
-      {
-        month: "long",
-        year: "numeric"
-      }
-    );
+  $("dashboardDateTime")
+    .textContent =
+      getDigitalDateTime();
 
 
-  $("statOrders").textContent =
-    arr.length;
+  $("statOrders")
+    .textContent =
+      arr.length;
 
 
-  $("statReceived").textContent =
-    money(received);
+  $("statReceived")
+    .textContent =
+      money(received);
 
 
-  $("statPending").textContent =
-    money(pending);
+  $("statPending")
+    .textContent =
+      money(pending);
 
 
-  $("statPendingOrders").textContent =
-    arr.filter(
-      o =>
-        o.status === "Pending" ||
-        o.status === "Partially Paid"
-    ).length;
+  $("statPendingOrders")
+    .textContent =
+      arr.filter(
+        o =>
+          o.status === "Pending" ||
+          o.status === "Partially Received"
+      ).length;
 
 
-  $("summaryPaid").textContent =
-    arr.filter(
-      o => o.status === "Paid"
-    ).length;
+  $("summaryReceived")
+    .textContent =
+      arr.filter(
+        o =>
+          o.status === "Received"
+      ).length;
 
 
-  $("summaryPartial").textContent =
-    arr.filter(
-      o => o.status === "Partially Paid"
-    ).length;
+  $("summaryPartial")
+    .textContent =
+      arr.filter(
+        o =>
+          o.status === "Partially Received"
+      ).length;
 
 
-  $("summaryPending").textContent =
-    arr.filter(
-      o => o.status === "Pending"
-    ).length;
+  $("summaryPending")
+    .textContent =
+      arr.filter(
+        o =>
+          o.status === "Pending"
+      ).length;
 
 
-  $("summaryNoAmount").textContent =
-    arr.filter(
-      o => o.status === "No Amount"
-    ).length;
+  $("summaryNoAmount")
+    .textContent =
+      arr.filter(
+        o =>
+          o.status === "No Amount"
+      ).length;
 
 
   const recent =
-    arr.slice(0, 7);
+    arr.slice()
+      .sort(
+        (a, b) =>
+          String(b.date || "")
+            .localeCompare(
+              String(a.date || "")
+            )
+      )
+      .slice(0, 7);
 
 
-  $("recentOrdersBody").innerHTML =
-    recent.length
+  $("recentOrdersBody")
+    .innerHTML =
+      recent.length
 
-      ? recent.map(o => `
+        ? recent
+            .map(
+              o => `
+
+                <tr>
+
+                  <td>
+                    ${esc(
+                      formatDate(o.date)
+                    )}
+                  </td>
+
+                  <td>
+                    <strong>
+                      ${esc(o.jobNo)}
+                    </strong>
+                  </td>
+
+                  <td>
+                    ${esc(o.party)}
+                  </td>
+
+                  <td>
+                    ${money(
+                      o.amountReceived
+                    )}
+                  </td>
+
+                  <td>
+                    ${badge(o.status)}
+                  </td>
+
+                </tr>
+
+              `
+            )
+            .join("")
+
+        : `
 
           <tr>
 
-            <td>
-              ${esc(
-                formatDate(o.date)
-              )}
-            </td>
-
-            <td>
-              <strong>
-                ${esc(o.jobNo)}
-              </strong>
-            </td>
-
-            <td>
-              ${esc(o.party)}
-            </td>
-
-            <td>
-              ${money(
-                o.amountReceived
-              )}
-            </td>
-
-            <td>
-              ${badge(o.status)}
+            <td
+              colspan="5"
+              class="empty"
+            >
+              No orders for this month.
             </td>
 
           </tr>
 
-        `).join("")
+        `;
 
-      : `
-
-        <tr>
-
-          <td
-            colspan="5"
-            class="empty"
-          >
-            No orders for this month.
-          </td>
-
-        </tr>
-
-      `;
 }
 
 
@@ -737,190 +754,193 @@ function renderDashboard() {
    DASHBOARD REPORT
 ===================================================== */
 
-$("dashboardReportBtn").onclick =
-  () => {
+$("dashboardReportBtn").onclick = () => {
 
-    $("reportMonth").value =
-      currentMonth();
+  $("reportMonth").value =
+    currentMonth();
 
-    navTo("reports");
+  navTo("reports");
 
-  };
+};
 
 
 /* =====================================================
    ALL ORDERS
-   NEWEST DATE FIRST
 ===================================================== */
 
 function renderOrders() {
 
+  sortOrders();
+
   const q =
     $("searchOrders")
       .value
-      .toLowerCase();
+      .toLowerCase()
+      .trim();
 
-
-  const m =
+  const month =
     $("filterMonth").value;
 
-
-  const st =
+  const status =
     $("filterStatus").value;
 
 
-  let arr =
-    orders
-      .filter(o => {
+  const arr =
+    orders.filter(order => {
 
-        const text = [
+      const text = [
 
-          o.jobNo,
-          o.party,
-          o.haflaId,
-          o.incharge,
-          o.receivedBy,
-          o.remarks,
+        order.jobNo,
 
-          ...(o.items || [])
-            .map(
-              i =>
-                i.description
-            )
+        order.party,
 
-        ]
-          .join(" ")
-          .toLowerCase();
+        order.haflaId,
 
+        order.incharge,
 
-        return (
+        order.receivedBy,
 
-          (!q ||
-            text.includes(q)) &&
+        order.remarks,
 
-          (!m ||
-            o.date?.startsWith(m)) &&
+        ...(order.items || [])
+          .map(i => i.description)
 
-          (!st ||
-            o.status === st)
-
-        );
-
-      })
-      .sort((a, b) => {
-
-        return (
-          b.date || ""
-        ).localeCompare(
-          a.date || ""
-        );
-
-      });
+      ]
+        .join(" ")
+        .toLowerCase();
 
 
-  $("ordersBody").innerHTML =
+      return (
 
-    arr.length
+        (!q ||
+          text.includes(q))
 
-      ? arr.map(o => {
+        &&
 
-          const items =
-            (o.items || [])
-              .map(i =>
+        (!month ||
+          order.date?.startsWith(month))
 
-                `${esc(i.description)}${
-                  i.quantity
-                    ? ` × ${esc(i.quantity)}`
-                    : ""
-                }`
+        &&
 
-              )
-              .join("<br>") ||
-            "—";
+        (!status ||
+          order.status === status)
+
+      );
+
+    });
 
 
-          return `
+  $("ordersBody")
+    .innerHTML =
 
-            <tr>
+      arr.length
 
-              <td>
-                ${esc(
-                  formatDate(o.date)
-                )}
-              </td>
+        ? arr
+            .map(order => {
 
-              <td>
-                <strong>
-                  ${esc(o.jobNo)}
-                </strong>
-              </td>
+              const items =
+                (order.items || [])
+                  .map(item =>
+                    `${esc(item.description)}
+                    ${
+                      item.quantity
+                        ? ` × ${esc(item.quantity)}`
+                        : ""
+                    }`
+                  )
+                  .join("<br>")
+                  ||
+                  "—";
 
-              <td>
-                ${esc(o.party)}
-              </td>
 
-              <td>
-                ${items}
-              </td>
+              return `
 
-              <td>
-                ${esc(o.incharge)}
-              </td>
+                <tr>
 
-              <td>
-                ${money(
-                  o.amountReceived
-                )}
-              </td>
+                  <td>
+                    ${esc(
+                      formatDate(
+                        order.date
+                      )
+                    )}
+                  </td>
 
-              <td>
-                ${money(
-                  o.pendingAmount
-                )}
-              </td>
+                  <td>
+                    <strong>
+                      ${esc(order.jobNo)}
+                    </strong>
+                  </td>
 
-              <td>
-                ${badge(o.status)}
-              </td>
+                  <td>
+                    ${esc(order.party)}
+                  </td>
 
-              <td>
+                  <td>
+                    ${items}
+                  </td>
 
-                <button
-                  class="action-btn"
-                  onclick="editOrder('${o.id}')"
-                >
-                  Edit
-                </button>
+                  <td>
+                    ${esc(order.incharge)}
+                  </td>
 
-                <button
-                  class="action-btn"
-                  onclick="deleteOrder('${o.id}')"
-                >
-                  Delete
-                </button>
+                  <td>
+                    ${money(
+                      order.amountReceived
+                    )}
+                  </td>
 
-              </td>
+                  <td>
+                    ${money(
+                      order.pendingAmount
+                    )}
+                  </td>
 
-            </tr>
+                  <td>
+                    ${badge(
+                      order.status
+                    )}
+                  </td>
 
-          `;
+                  <td>
 
-        }).join("")
+                    <button
+                      class="action-btn"
+                      onclick="editOrder('${order.id}')"
+                    >
+                      Edit
+                    </button>
 
-      : `
+                    <button
+                      class="action-btn"
+                      onclick="deleteOrder('${order.id}')"
+                    >
+                      Delete
+                    </button>
 
-        <tr>
+                  </td>
 
-          <td
-            colspan="9"
-            class="empty"
-          >
-            No orders match your filters.
-          </td>
+                </tr>
 
-        </tr>
+              `;
 
-      `;
+            })
+            .join("")
+
+        : `
+
+          <tr>
+
+            <td
+              colspan="9"
+              class="empty"
+            >
+              No orders match your filters.
+            </td>
+
+          </tr>
+
+        `;
+
 }
 
 
@@ -940,18 +960,17 @@ function renderOrders() {
 });
 
 
-$("clearFilters").onclick =
-  () => {
+$("clearFilters").onclick = () => {
 
-    $("searchOrders").value = "";
+  $("searchOrders").value = "";
 
-    $("filterMonth").value = "";
+  $("filterMonth").value = "";
 
-    $("filterStatus").value = "";
+  $("filterStatus").value = "";
 
-    renderOrders();
+  renderOrders();
 
-  };
+};
 
 
 /* =====================================================
@@ -960,92 +979,106 @@ $("clearFilters").onclick =
 
 window.editOrder = id => {
 
-  const o =
+  const order =
     orders.find(
       x => x.id === id
     );
 
-
-  if (!o) return;
+  if (!order) {
+    return;
+  }
 
 
   navTo("new-order");
 
 
   $("editId").value =
-    o.id;
-
+    order.id;
 
   $("orderDate").value =
-    o.date;
-
+    order.date;
 
   $("jobNo").value =
-    o.jobNo;
-
+    order.jobNo;
 
   $("haflaId").value =
-    o.haflaId;
-
+    order.haflaId || "";
 
   $("party").value =
-    o.party;
-
+    order.party || "";
 
   $("incharge").value =
-    o.incharge;
-
+    order.incharge || "";
 
   $("receivedBy").value =
-    o.receivedBy || "";
-
+    order.receivedBy || "";
 
   $("paymentMethod").value =
-    o.paymentMethod || "";
-
+    order.paymentMethod || "";
 
   $("totalAmount").value =
-    o.totalAmount || "";
-
+    order.totalAmount || "";
 
   $("amountReceived").value =
-    o.amountReceived || "";
-
+    order.amountReceived || "";
 
   $("pendingAmount").value =
     Number(
-      o.pendingAmount || 0
+      order.pendingAmount || 0
     ).toFixed(2);
 
 
+  /*
+    Old orders may still contain
+    "Paid" or "Partially Paid".
+    Convert them automatically.
+  */
+
+  let currentStatus =
+    order.status;
+
+  if (currentStatus === "Paid") {
+    currentStatus = "Received";
+  }
+
+  if (
+    currentStatus ===
+    "Partially Paid"
+  ) {
+    currentStatus =
+      "Partially Received";
+  }
+
+
   $("status").value =
-    "auto";
+    currentStatus || "auto";
 
 
   $("remarks").value =
-    o.remarks || "";
+    order.remarks || "";
 
 
-  $("itemsContainer")
-    .innerHTML = "";
+  $("itemsContainer").innerHTML =
+    "";
 
 
   (
-    o.items?.length
-      ? o.items
+    order.items?.length
+      ? order.items
       : [{}]
-  ).forEach(i => {
-
-    addItem(
-      i.description || "",
-      i.quantity || ""
+  )
+    .forEach(item =>
+      addItem(
+        item.description || "",
+        item.quantity || ""
+      )
     );
 
-  });
 
+  $("saveOrderBtn")
+    .textContent =
+      "Update Order";
 
-  $("saveOrderBtn").textContent =
-    "Update Order";
 };
 
 
@@ -1055,18 +1088,19 @@ window.editOrder = id => {
 
 window.deleteOrder = id => {
 
-  const o =
+  const order =
     orders.find(
       x => x.id === id
     );
 
-
-  if (!o) return;
+  if (!order) {
+    return;
+  }
 
 
   if (
     confirm(
-      `Delete ${o.jobNo}? This cannot be undone.`
+      `Delete ${order.jobNo}? This cannot be undone.`
     )
   ) {
 
@@ -1075,56 +1109,127 @@ window.deleteOrder = id => {
         x => x.id !== id
       );
 
-
     save();
 
     renderOrders();
 
     renderDashboard();
 
-    toast(
-      "Order deleted"
-    );
+    toast("Order deleted");
 
   }
+
 };
 
 
 /* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDate(date) {
+
+  if (!date) {
+    return "—";
+  }
+
+  return new Date(
+    date + "T00:00:00"
+  ).toLocaleDateString(
+    "en-GB",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+/* =====================================================
+   DIGITAL DATE + TIME
+===================================================== */
+
+function getDigitalDateTime() {
+
+  const now =
+    new Date();
+
+  const date =
+    now.toLocaleDateString(
+      "en-GB",
+      {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+  const time =
+    now.toLocaleTimeString(
+      "en-AE",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      }
+    );
+
+  return `${date} • ${time}`;
+
+}
+
+
+/* =====================================================
+   LIVE CLOCK
+===================================================== */
+
+function updateClock() {
+
+  const clock =
+    $("dashboardDateTime");
+
+  if (clock) {
+
+    clock.textContent =
+      getDigitalDateTime();
+
+  }
+
+}
+
+setInterval(
+  updateClock,
+  1000
+);
+
+
+/* =====================================================
    MONTHLY REPORT
-   OLDEST DATE FIRST
 ===================================================== */
 
 function renderReport() {
 
-  const m =
+  const month =
     $("reportMonth").value ||
     currentMonth();
 
-
   $("reportMonth").value =
-    m;
+    month;
 
 
   const arr =
-    monthOrders(m)
-      .sort((a, b) => {
-
-        return (
-          a.date || ""
-        ).localeCompare(
-          b.date || ""
-        );
-
-      });
+    monthOrders(month);
 
 
   const received =
     arr.reduce(
-      (s, o) =>
-        s +
+      (sum, order) =>
+        sum +
         Number(
-          o.amountReceived || 0
+          order.amountReceived || 0
         ),
       0
     );
@@ -1132,10 +1237,10 @@ function renderReport() {
 
   const pending =
     arr.reduce(
-      (s, o) =>
-        s +
+      (sum, order) =>
+        sum +
         Number(
-          o.pendingAmount || 0
+          order.pendingAmount || 0
         ),
       0
     );
@@ -1143,7 +1248,7 @@ function renderReport() {
 
   const label =
     new Date(
-      m + "-01"
+      month + "-01"
     ).toLocaleDateString(
       "en-US",
       {
@@ -1169,7 +1274,6 @@ function renderReport() {
 
       </div>
 
-
       <div class="report-title">
 
         <strong>
@@ -1177,7 +1281,8 @@ function renderReport() {
         </strong>
 
         <span>
-          Generated ${formatDate(todayISO())}
+          Generated
+          ${formatDate(todayISO())}
         </span>
 
       </div>
@@ -1236,9 +1341,10 @@ function renderReport() {
           ${
             arr.filter(
               o =>
-                o.status === "Pending" ||
                 o.status ===
-                  "Partially Paid"
+                  "Pending" ||
+                o.status ===
+                  "Partially Received"
             ).length
           }
         </strong>
@@ -1265,6 +1371,7 @@ function renderReport() {
             <th>Incharge</th>
             <th>Received</th>
             <th>Pending</th>
+            <th>Received By</th>
             <th>Status</th>
 
           </tr>
@@ -1277,84 +1384,114 @@ function renderReport() {
           ${
             arr.length
 
-              ? arr.map((o, i) => `
+              ? arr
+                  .map(
+                    (order, index) => `
 
-                <tr>
+                      <tr>
 
-                  <td>
-                    ${i + 1}
-                  </td>
+                        <td>
+                          ${index + 1}
+                        </td>
 
-                  <td>
-                    ${formatDate(o.date)}
-                  </td>
+                        <td>
+                          ${formatDate(
+                            order.date
+                          )}
+                        </td>
 
-                  <td>
-                    ${esc(o.jobNo)}
-                  </td>
+                        <td>
+                          ${esc(
+                            order.jobNo
+                          )}
+                        </td>
 
-                  <td>
-                    ${esc(o.haflaId) || "—"}
-                  </td>
+                        <td>
+                          ${
+                            esc(
+                              order.haflaId
+                            ) || "—"
+                          }
+                        </td>
 
-                  <td>
-                    ${esc(o.party)}
-                  </td>
+                        <td>
+                          ${esc(
+                            order.party
+                          )}
+                        </td>
 
-                  <td>
+                        <td>
+                          ${
+                            (
+                              order.items ||
+                              []
+                            )
+                              .map(
+                                item =>
+                                  `${esc(
+                                    item.description
+                                  )}
+                                  ${
+                                    item.quantity
+                                      ? ` × ${esc(
+                                          item.quantity
+                                        )}`
+                                      : ""
+                                  }`
+                              )
+                              .join("<br>")
+                              || "—"
+                          }
+                        </td>
 
-                    ${
-                      (o.items || [])
-                        .map(x =>
-                          `${esc(
-                            x.description
-                          )}${
-                            x.quantity
-                              ? ` × ${esc(
-                                  x.quantity
-                                )}`
-                              : ""
-                          }`
-                        )
-                        .join("<br>") ||
-                      "—"
-                    }
+                        <td>
+                          ${esc(
+                            order.incharge
+                          )}
+                        </td>
 
-                  </td>
+                        <td>
+                          ${money(
+                            order.amountReceived
+                          )}
+                        </td>
 
-                  <td>
-                    ${esc(o.incharge)}
-                  </td>
+                        <td>
+                          ${money(
+                            order.pendingAmount
+                          )}
+                        </td>
 
-                  <td>
-                    ${money(
-                      o.amountReceived
-                    )}
-                  </td>
+                        <td>
+                          ${
+                            esc(
+                              order.receivedBy
+                            ) || "—"
+                          }
+                        </td>
 
-                  <td>
-                    ${money(
-                      o.pendingAmount
-                    )}
-                  </td>
+                        <td>
+                          ${badge(
+                            order.status
+                          )}
+                        </td>
 
-                  <td>
-                    ${badge(o.status)}
-                  </td>
+                      </tr>
 
-                </tr>
-
-              `).join("")
+                    `
+                  )
+                  .join("")
 
               : `
 
                 <tr>
 
                   <td
-                    colspan="10"
+                    colspan="11"
                     class="empty"
                   >
-                    No orders for ${label}.
+                    No orders for
+                    ${label}.
                   </td>
 
                 </tr>
@@ -1390,6 +1527,7 @@ function renderReport() {
     </div>
 
   `;
+
 }
 
 
@@ -1413,7 +1551,7 @@ $("printReportBtn").onclick =
    TOAST
 ===================================================== */
 
-function toast(msg) {
+function toast(message) {
 
   let t =
     document.querySelector(
@@ -1437,467 +1575,61 @@ function toast(msg) {
 
 
   t.textContent =
-    msg;
-
+    message;
 
   t.classList.remove(
     "hidden"
   );
 
 
-  setTimeout(() => {
+  setTimeout(
+    () =>
+      t.classList.add(
+        "hidden"
+      ),
+    2200
+  );
 
-    t.classList.add(
-      "hidden"
-    );
-
-  }, 2200);
 }
 
 
 /* =====================================================
-   IMPORT EXISTING ORDERS
-   JB0419 - JB0432
+   CONVERT OLD STATUS VALUES
+   This protects your existing data.
 ===================================================== */
 
-const IMPORTED_ORDERS = [
+let dataChanged = false;
 
-  {
-    id: "JB0419",
-    date: "2026-08-01",
-    jobNo: "JB0419",
-    haflaId: "",
-    party: "Private Customer",
-    incharge: "Saud",
-    receivedBy: "Zohaib",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 170,
-    pendingAmount: 0,
-    status: "No Amount",
+orders.forEach(order => {
 
-    items: [
-      {
-        description: "Banquet Chair",
-        quantity: "10"
-      }
-    ],
+  if (order.status === "Paid") {
 
-    remarks: ""
-  },
+    order.status =
+      "Received";
 
+    dataChanged = true;
 
-  {
-    id: "JB0420",
-    date: "2026-08-01",
-    jobNo: "JB0420",
-    haflaId: "",
-    party: "Private Customer",
-    incharge: "Saud",
-    receivedBy: "Saud",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 1500,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Sofa",
-        quantity: "10"
-      },
-      {
-        description: "Cooler",
-        quantity: "2"
-      },
-      {
-        description: "Coffee Table",
-        quantity: "3"
-      },
-      {
-        description: "Buffet Table",
-        quantity: "1"
-      }
-    ],
-
-    remarks:
-      "Received 3000.00 for JB0417, JB0420. Transferred 2500 to Bank"
-  },
-
-
-  {
-    id: "JB0421",
-    date: "2026-08-01",
-    jobNo: "JB0421",
-    haflaId: "",
-    party: "Sikandar",
-    incharge: "Saud",
-    receivedBy: "",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 0,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Round Dish",
-        quantity: "10"
-      },
-      {
-        description: "Spoon",
-        quantity: "10+10"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0422",
-    date: "2026-08-01",
-    jobNo: "JB0422",
-    haflaId: "",
-    party: "Shj Events (Usman)",
-    incharge: "Saud",
-    receivedBy: "",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 0,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Golden Chiavari",
-        quantity: "50"
-      },
-      {
-        description: "Buffet Table",
-        quantity: "2"
-      },
-      {
-        description: "Cover",
-        quantity: "7"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0423",
-    date: "2026-08-06",
-    jobNo: "JB0423",
-    haflaId: "",
-    party: "Allah Baksh",
-    incharge: "Saud",
-    receivedBy: "",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 0,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "White Chiavari",
-        quantity: "10"
-      },
-      {
-        description: "Buffet Table",
-        quantity: "1"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0424",
-    date: "2026-08-07",
-    jobNo: "JB0424",
-    haflaId: "",
-    party: "Ismail",
-    incharge: "Saud",
-    receivedBy: "Saud",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 100,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Mist Fan",
-        quantity: "3"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0425",
-    date: "2026-08-07",
-    jobNo: "JB0425",
-    haflaId: "",
-    party: "Private Customer",
-    incharge: "Saud",
-    receivedBy: "Saud",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 600,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Majlis for 15pax",
-        quantity: ""
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0426",
-    date: "2026-08-08",
-    jobNo: "JB0426",
-    haflaId: "",
-    party: "Magic Kidz Nursery",
-    incharge: "Saud",
-    receivedBy: "Bank",
-    paymentMethod: "Bank",
-    totalAmount: 0,
-    amountReceived: 280,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Plastic Chair",
-        quantity: "90"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0427",
-    date: "2026-08-08",
-    jobNo: "JB0427",
-    haflaId: "",
-    party: "Private Customer",
-    incharge: "Saud",
-    receivedBy: "",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 0,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Banquet Chair",
-        quantity: "40"
-      },
-      {
-        description: "Round Table",
-        quantity: "6"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0428",
-    date: "2026-08-08",
-    jobNo: "JB0428",
-    haflaId: "",
-    party: "Ajmal",
-    incharge: "Saud",
-    receivedBy: "",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 0,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Buffet Table",
-        quantity: "6"
-      },
-      {
-        description: "Banquet Chair",
-        quantity: "6"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0429",
-    date: "2026-08-08",
-    jobNo: "JB0429",
-    haflaId: "",
-    party: "Moshi Restaurant 7/8/26",
-    incharge: "Saud",
-    receivedBy: "Bank",
-    paymentMethod: "Bank",
-    totalAmount: 0,
-    amountReceived: 1260,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Tower AC",
-        quantity: "1"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0430",
-    date: "2026-08-14",
-    jobNo: "JB0430",
-    haflaId: "",
-    party: "Shj Events (Usman)",
-    incharge: "Saud",
-    receivedBy: "",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 0,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Coolers",
-        quantity: "18"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0431",
-    date: "2026-08-14",
-    jobNo: "JB0431",
-    haflaId: "",
-    party: "Spicy Land",
-    incharge: "Saud",
-    receivedBy: "",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 0,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Tables",
-        quantity: "4"
-      }
-    ],
-
-    remarks: ""
-  },
-
-
-  {
-    id: "JB0432",
-    date: "2026-08-14",
-    jobNo: "JB0432",
-    haflaId: "",
-    party: "Shj Events (Usman)",
-    incharge: "Saud",
-    receivedBy: "",
-    paymentMethod: "",
-    totalAmount: 0,
-    amountReceived: 0,
-    pendingAmount: 0,
-    status: "No Amount",
-
-    items: [
-      {
-        description: "Welcome Carpet",
-        quantity: "60m"
-      }
-    ],
-
-    remarks: ""
   }
-
-];
-
-
-/* =====================================================
-   IMPORT EXISTING ORDERS ONLY ONCE
-===================================================== */
-
-function importExistingOrders() {
-
-  const existingJobs =
-    new Set(
-      orders.map(
-        order => order.jobNo
-      )
-    );
-
-
-  const newOrders =
-    IMPORTED_ORDERS.filter(
-      order =>
-        !existingJobs.has(
-          order.jobNo
-        )
-    );
-
 
   if (
-    newOrders.length === 0
+    order.status ===
+    "Partially Paid"
   ) {
-    return;
+
+    order.status =
+      "Partially Received";
+
+    dataChanged = true;
+
   }
 
-
-  orders.push(
-    ...newOrders
-  );
+});
 
 
-  orders.sort((a, b) => {
-
-    return (
-      b.date || ""
-    ).localeCompare(
-      a.date || ""
-    );
-
-  });
-
+if (dataChanged) {
 
   save();
+
 }
 
 
@@ -1905,12 +1637,13 @@ function importExistingOrders() {
    INITIALIZE
 ===================================================== */
 
-importExistingOrders();
+sortOrders();
 
-$("itemsContainer")
+document
+  .getElementById(
+    "itemsContainer"
+  )
   .innerHTML = "";
-
-addItem();
 
 resetForm();
 
@@ -1919,3 +1652,5 @@ renderDashboard();
 renderOrders();
 
 renderReport();
+
+updateClock();
