@@ -9,6 +9,9 @@
 
   <title>AL JEFOON TENTS — Order Tracker</title>
 
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -16,19 +19,15 @@
 
 <div class="app-shell">
 
-  <!-- =====================================================
+  <!-- ==================================================
        SIDEBAR
-  ====================================================== -->
+  =================================================== -->
 
   <aside class="sidebar">
 
+    <!-- BRAND
+         Logo and AJ brand removed -->
     <div class="brand">
-
-      <img
-        src="logo.png"
-        alt="AL JEFOON TENTS"
-        class="brand-logo"
-      >
 
       <div>
         <strong>AL JEFOON TENTS</strong>
@@ -99,16 +98,16 @@
   </aside>
 
 
-  <!-- =====================================================
+  <!-- ==================================================
        MAIN
-  ====================================================== -->
+  =================================================== -->
 
   <main class="main">
 
 
-    <!-- ===================================================
+    <!-- ==================================================
          TOP BAR
-    ==================================================== -->
+    =================================================== -->
 
     <header class="topbar">
 
@@ -135,16 +134,14 @@
     </header>
 
 
-    <!-- =====================================================
+    <!-- ==================================================
          DASHBOARD
-    ====================================================== -->
+    =================================================== -->
 
     <section
       id="dashboard"
       class="section active"
     >
-
-      <!-- WELCOME -->
 
       <div class="welcome">
 
@@ -157,6 +154,8 @@
           <h2>
             Monthly Order Overview
           </h2>
+
+          <!-- DIGITAL DATE + TIME -->
 
           <p
             id="dashboardDateTime"
@@ -406,6 +405,7 @@
 
             </div>
 
+
           </div>
 
         </div>
@@ -415,9 +415,9 @@
     </section>
 
 
-    <!-- =====================================================
+    <!-- ==================================================
          NEW ORDER
-    ====================================================== -->
+    =================================================== -->
 
     <section
       id="new-order"
@@ -545,36 +545,32 @@
                 Select
               </option>
 
-              <option value="Ali">
-                Ali
-              </option>
-
-              <option value="Ihsan">
-                Ihsan
-              </option>
-
-              <option value="Zohaib">
+              <option>
                 Zohaib
               </option>
 
-              <option value="Saud">
+              <option>
                 Saud
               </option>
 
-              <option value="Fahad">
+              <option>
                 Fahad
               </option>
 
-              <option value="Malik">
+              <option>
                 Malik
               </option>
 
-              <option value="Parvaiz">
+              <option>
                 Parvaiz
               </option>
 
-              <option value="Bank">
-                Bank
+              <option>
+                Ali
+              </option>
+
+              <option>
+                Ihsan
               </option>
 
             </select>
@@ -594,23 +590,23 @@
                 Select
               </option>
 
-              <option value="Cash">
+              <option>
                 Cash
               </option>
 
-              <option value="Bank">
+              <option>
                 Bank
               </option>
 
-              <option value="Online">
+              <option>
                 Online
               </option>
 
-              <option value="Card">
+              <option>
                 Card
               </option>
 
-              <option value="Other">
+              <option>
                 Other
               </option>
 
@@ -680,19 +676,19 @@
                 Automatic
               </option>
 
-              <option value="Received">
+              <option>
                 Received
               </option>
 
-              <option value="Partially Received">
+              <option>
                 Partially Received
               </option>
 
-              <option value="Pending">
+              <option>
                 Pending
               </option>
 
-              <option value="No Amount">
+              <option>
                 No Amount
               </option>
 
@@ -700,12 +696,13 @@
 
           </label>
 
+
         </div>
 
 
-        <!-- =================================================
+        <!-- ==================================================
              ORDER ITEMS
-        ================================================== -->
+        =================================================== -->
 
         <div class="items-section">
 
@@ -735,14 +732,16 @@
           </div>
 
 
-          <div id="itemsContainer"></div>
+          <div
+            id="itemsContainer"
+          ></div>
 
         </div>
 
 
-        <!-- =================================================
+        <!-- ==================================================
              REMARKS
-        ================================================== -->
+        =================================================== -->
 
         <label class="full-label">
 
@@ -757,9 +756,9 @@
         </label>
 
 
-        <!-- =================================================
+        <!-- ==================================================
              FORM ACTIONS
-        ================================================== -->
+        =================================================== -->
 
         <div class="form-actions">
 
@@ -787,9 +786,9 @@
     </section>
 
 
-    <!-- =====================================================
+    <!-- ==================================================
          ALL ORDERS
-    ====================================================== -->
+    =================================================== -->
 
     <section
       id="orders"
@@ -825,6 +824,7 @@
 
       <div class="panel filters">
 
+
         <input
           id="searchOrders"
           type="search"
@@ -844,19 +844,19 @@
             All Statuses
           </option>
 
-          <option value="Received">
+          <option>
             Received
           </option>
 
-          <option value="Partially Received">
+          <option>
             Partially Received
           </option>
 
-          <option value="Pending">
+          <option>
             Pending
           </option>
 
-          <option value="No Amount">
+          <option>
             No Amount
           </option>
 
@@ -939,9 +939,9 @@
     </section>
 
 
-    <!-- =====================================================
+    <!-- ==================================================
          MONTHLY REPORTS
-    ====================================================== -->
+    =================================================== -->
 
     <section
       id="reports"
@@ -1013,9 +1013,9 @@
 </div>
 
 
-<!-- =======================================================
+<!-- =====================================================
      JAVASCRIPT
-======================================================== -->
+===================================================== -->
 
 <script src="script.js"></script>
 
