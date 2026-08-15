@@ -1,81 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="theme-color" content="#fcc224">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#fcc224"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
 
   <title>AL JEFOON TENTS — Order Tracker</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
 
-  <link rel="stylesheet" href="style.css">
+  <!-- =====================================================
+       FAVICON
+  ====================================================== -->
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="favicon.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="favicon.png"
+  >
+
+
+  <!-- =====================================================
+       STYLESHEET
+  ====================================================== -->
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
+
 
 <body>
 
+
 <div class="app-shell">
 
-  <!-- SIDEBAR -->
+
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
   <aside class="sidebar">
+
+
+    <!-- BRAND -->
 
     <div class="brand">
 
-      <div class="brand-mark">AJ</div>
+      <div class="brand-mark">
+
+        <img
+          src="logo.png"
+          alt="AL JEFOON TENTS Logo"
+        >
+
+      </div>
+
 
       <div>
-        <strong>AL JEFOON TENTS</strong>
-        <span>Order Tracker</span>
+
+        <strong>
+          AL JEFOON TENTS
+        </strong>
+
+        <span>
+          Order Tracker
+        </span>
+
       </div>
 
     </div>
 
+
+    <!-- NAVIGATION -->
+
     <nav class="nav">
 
-      <button class="nav-item active" data-section="dashboard">
+
+      <button
+        class="nav-item active"
+        data-section="dashboard"
+      >
+
         <span>▦</span>
+
         Dashboard
+
       </button>
 
-      <button class="nav-item" data-section="new-order">
+
+      <button
+        class="nav-item"
+        data-section="new-order"
+      >
+
         <span>＋</span>
+
         New Order
+
       </button>
 
-      <button class="nav-item" data-section="orders">
+
+      <button
+        class="nav-item"
+        data-section="orders"
+      >
+
         <span>☷</span>
+
         All Orders
+
       </button>
 
-      <button class="nav-item" data-section="reports">
+
+      <button
+        class="nav-item"
+        data-section="reports"
+      >
+
         <span>▤</span>
+
         Monthly Reports
+
       </button>
+
 
     </nav>
+
+
+    <!-- SIDEBAR FOOTER -->
 
     <div class="sidebar-footer">
 
       <div class="brand-line"></div>
 
-      <small>Never miss an order.</small>
+      <small>
+        Never miss an order.
+      </small>
 
-      <small>© 2026 AL JEFOON TENTS</small>
+      <small>
+        © 2026 AL JEFOON TENTS
+      </small>
 
     </div>
+
 
   </aside>
 
 
-  <!-- MAIN -->
+
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
   <main class="main">
 
-    <!-- TOP BAR -->
+
+    <!-- ===================================================
+         TOP BAR
+    ==================================================== -->
+
     <header class="topbar">
+
 
       <div>
 
@@ -89,17 +196,35 @@
 
       </div>
 
-      <button class="primary-btn" id="quickAddBtn">
+
+      <button
+        class="primary-btn"
+        id="quickAddBtn"
+      >
+
         ＋ New Order
+
       </button>
+
 
     </header>
 
 
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="section active">
+
+    <!-- ===================================================
+         DASHBOARD
+    ==================================================== -->
+
+    <section
+      id="dashboard"
+      class="section active"
+    >
+
+
+      <!-- WELCOME -->
 
       <div class="welcome">
+
 
         <div>
 
@@ -107,152 +232,327 @@
             AL JEFOON TENTS
           </div>
 
+
           <h2>
             Monthly Order Overview
           </h2>
 
+
           <!-- DIGITAL DATE + TIME -->
-          <p id="dashboardDateTime" class="digital-clock">
+
+          <p
+            id="dashboardDateTime"
+            class="digital-clock"
+          >
             Loading...
           </p>
 
+
         </div>
 
-        <button class="outline-btn" id="dashboardReportBtn">
+
+        <button
+          class="outline-btn"
+          id="dashboardReportBtn"
+        >
+
           View Monthly Report
+
         </button>
 
+
       </div>
 
 
-      <!-- STATS -->
+
+      <!-- =================================================
+           STATISTICS
+      ================================================== -->
+
       <div class="stats-grid">
 
-        <div class="stat-card">
-          <span>Total Orders</span>
-          <strong id="statOrders">0</strong>
-          <small>This month</small>
-        </div>
 
         <div class="stat-card">
-          <span>Total Received</span>
-          <strong id="statReceived">AED 0.00</strong>
-          <small>This month</small>
+
+          <span>
+            Total Orders
+          </span>
+
+          <strong id="statOrders">
+            0
+          </strong>
+
+          <small>
+            This month
+          </small>
+
         </div>
 
-        <div class="stat-card">
-          <span>Total Pending</span>
-          <strong id="statPending">AED 0.00</strong>
-          <small>Outstanding</small>
-        </div>
 
         <div class="stat-card">
-          <span>Pending Orders</span>
-          <strong id="statPendingOrders">0</strong>
-          <small>Need attention</small>
+
+          <span>
+            Total Received
+          </span>
+
+          <strong id="statReceived">
+            AED 0.00
+          </strong>
+
+          <small>
+            This month
+          </small>
+
         </div>
+
+
+        <div class="stat-card">
+
+          <span>
+            Total Pending
+          </span>
+
+          <strong id="statPending">
+            AED 0.00
+          </strong>
+
+          <small>
+            Outstanding
+          </small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span>
+            Pending Orders
+          </span>
+
+          <strong id="statPendingOrders">
+            0
+          </strong>
+
+          <small>
+            Need attention
+          </small>
+
+        </div>
+
 
       </div>
 
+
+
+      <!-- =================================================
+           DASHBOARD GRID
+      ================================================== -->
 
       <div class="dashboard-grid">
 
+
         <!-- RECENT ORDERS -->
+
         <div class="panel">
+
 
           <div class="panel-head">
 
+
             <div>
-              <h3>Recent Orders</h3>
-              <p>Latest jobs entered into the system</p>
+
+              <h3>
+                Recent Orders
+              </h3>
+
+              <p>
+                Latest jobs entered into the system
+              </p>
+
             </div>
 
-            <button class="text-btn" data-go="orders">
+
+            <button
+              class="text-btn"
+              data-go="orders"
+            >
+
               View all
+
             </button>
+
 
           </div>
 
+
           <div class="table-wrap">
 
+
             <table>
+
 
               <thead>
 
                 <tr>
-                  <th>Date</th>
-                  <th>Job #</th>
-                  <th>Party</th>
-                  <th>Received</th>
-                  <th>Status</th>
+
+                  <th>
+                    Date
+                  </th>
+
+                  <th>
+                    Job #
+                  </th>
+
+                  <th>
+                    Party
+                  </th>
+
+                  <th>
+                    Received
+                  </th>
+
+                  <th>
+                    Status
+                  </th>
+
                 </tr>
 
               </thead>
 
-              <tbody id="recentOrdersBody"></tbody>
+
+              <tbody
+                id="recentOrdersBody"
+              ></tbody>
+
 
             </table>
 
+
           </div>
 
+
         </div>
+
 
 
         <!-- QUICK SUMMARY -->
+
         <div class="panel">
+
 
           <div class="panel-head">
 
+
             <div>
-              <h3>Quick Summary</h3>
-              <p>Order count by status</p>
+
+              <h3>
+                Quick Summary
+              </h3>
+
+              <p>
+                Order count by status
+              </p>
+
             </div>
 
+
           </div>
+
 
           <div class="summary-list">
 
+
             <div>
+
               <span class="dot paid"></span>
+
               Received
-              <strong id="summaryReceived">0</strong>
+
+              <strong
+                id="summaryReceived"
+              >
+                0
+              </strong>
+
             </div>
 
+
             <div>
+
               <span class="dot partial"></span>
+
               Partially Received
-              <strong id="summaryPartial">0</strong>
+
+              <strong
+                id="summaryPartial"
+              >
+                0
+              </strong>
+
             </div>
 
+
             <div>
+
               <span class="dot pending"></span>
+
               Pending
-              <strong id="summaryPending">0</strong>
+
+              <strong
+                id="summaryPending"
+              >
+                0
+              </strong>
+
             </div>
 
+
             <div>
+
               <span class="dot noamount"></span>
+
               No Amount
-              <strong id="summaryNoAmount">0</strong>
+
+              <strong
+                id="summaryNoAmount"
+              >
+                0
+              </strong>
+
             </div>
+
 
           </div>
 
+
         </div>
 
+
       </div>
+
 
     </section>
 
 
-    <!-- NEW ORDER -->
-    <section id="new-order" class="section">
+
+    <!-- ===================================================
+         NEW ORDER
+    ==================================================== -->
+
+    <section
+      id="new-order"
+      class="section"
+    >
+
 
       <div class="section-intro">
 
+
         <div>
 
-          <h2>Create New Order</h2>
+          <h2>
+            Create New Order
+          </h2>
 
           <p>
             Record a new job and collection details.
@@ -260,65 +560,116 @@
 
         </div>
 
+
       </div>
 
 
-      <form id="orderForm" class="panel form-panel">
 
-        <input type="hidden" id="editId">
+      <form
+        id="orderForm"
+        class="panel form-panel"
+      >
+
+
+        <input
+          type="hidden"
+          id="editId"
+        >
+
+
+
+        <!-- FORM GRID -->
 
         <div class="form-grid">
 
+
+          <!-- DATE -->
+
           <label>
+
             Date
-            <input type="date" id="orderDate" required>
+
+            <input
+              type="date"
+              id="orderDate"
+              required
+            >
+
           </label>
 
 
+
+          <!-- JOB NUMBER -->
+
           <label>
+
             Job #
+
             <input
               type="text"
               id="jobNo"
               placeholder="Automatic"
               required
             >
+
           </label>
 
 
+
+          <!-- HAFLA -->
+
           <label>
+
             HAFLA Order ID
+
             <input
               type="text"
               id="haflaId"
               placeholder="Optional"
             >
+
           </label>
 
 
+
+          <!-- PARTY -->
+
           <label>
+
             Party / Customer
+
             <input
               type="text"
               id="party"
               placeholder="Customer name"
               required
             >
+
           </label>
 
 
+
+          <!-- INCHARGE -->
+
           <label>
+
             Incharge
+
             <input
               type="text"
               id="incharge"
               placeholder="e.g. Saud"
               required
             >
+
           </label>
 
 
+
+          <!-- RECEIVED BY -->
+
           <label>
+
             Received By
 
             <select id="receivedBy">
@@ -327,18 +678,36 @@
                 Select
               </option>
 
-              <option>Zohaib</option>
-              <option>Saud</option>
-              <option>Fahad</option>
-              <option>Malik</option>
-              <option>Parvaiz</option>
+              <option>
+                Zohaib
+              </option>
+
+              <option>
+                Saud
+              </option>
+
+              <option>
+                Fahad
+              </option>
+
+              <option>
+                Malik
+              </option>
+
+              <option>
+                Parvaiz
+              </option>
 
             </select>
 
           </label>
 
 
+
+          <!-- PAYMENT METHOD -->
+
           <label>
+
             Payment Method
 
             <select id="paymentMethod">
@@ -347,18 +716,36 @@
                 Select
               </option>
 
-              <option>Cash</option>
-              <option>Bank</option>
-              <option>Online</option>
-              <option>Card</option>
-              <option>Other</option>
+              <option>
+                Cash
+              </option>
+
+              <option>
+                Bank
+              </option>
+
+              <option>
+                Online
+              </option>
+
+              <option>
+                Card
+              </option>
+
+              <option>
+                Other
+              </option>
 
             </select>
 
           </label>
 
 
+
+          <!-- TOTAL -->
+
           <label>
+
             Total Amount (AED)
 
             <input
@@ -372,7 +759,11 @@
           </label>
 
 
+
+          <!-- RECEIVED -->
+
           <label>
+
             Amount Received (AED)
 
             <input
@@ -386,7 +777,11 @@
           </label>
 
 
+
+          <!-- PENDING -->
+
           <label>
+
             Pending (AED)
 
             <input
@@ -398,7 +793,11 @@
           </label>
 
 
+
+          <!-- STATUS -->
+
           <label>
+
             Status
 
             <select id="status">
@@ -427,17 +826,26 @@
 
           </label>
 
+
         </div>
 
 
-        <!-- ORDER ITEMS -->
+
+        <!-- =================================================
+             ORDER ITEMS
+        ================================================== -->
+
         <div class="items-section">
+
 
           <div class="items-head">
 
+
             <div>
 
-              <h3>Order Items</h3>
+              <h3>
+                Order Items
+              </h3>
 
               <p>
                 Add each item separately for better future reports.
@@ -445,22 +853,34 @@
 
             </div>
 
+
             <button
               type="button"
               class="outline-btn"
               id="addItemBtn"
             >
+
               ＋ Add Item
+
             </button>
+
 
           </div>
 
-          <div id="itemsContainer"></div>
+
+          <div
+            id="itemsContainer"
+          ></div>
+
 
         </div>
 
 
-        <!-- REMARKS -->
+
+        <!-- =================================================
+             REMARKS
+        ================================================== -->
+
         <label class="full-label">
 
           Remarks
@@ -474,40 +894,64 @@
         </label>
 
 
-        <!-- ACTIONS -->
+
+        <!-- =================================================
+             FORM ACTIONS
+        ================================================== -->
+
         <div class="form-actions">
+
 
           <button
             type="button"
             class="outline-btn"
             id="cancelEditBtn"
           >
+
             Clear
+
           </button>
+
 
           <button
             type="submit"
             class="primary-btn"
             id="saveOrderBtn"
           >
+
             Save Order
+
           </button>
+
 
         </div>
 
+
       </form>
+
 
     </section>
 
 
-    <!-- ALL ORDERS -->
-    <section id="orders" class="section">
+
+    <!-- ===================================================
+         ALL ORDERS
+    ==================================================== -->
+
+    <section
+      id="orders"
+      class="section"
+    >
+
 
       <div class="section-intro">
 
+
         <div>
 
-          <h2>All Orders</h2>
+          <h2>
+            All Orders
+          </h2>
 
           <p>
             Search, filter and manage your jobs.
@@ -515,18 +959,27 @@
 
         </div>
 
+
         <button
           class="primary-btn"
           id="ordersAddBtn"
         >
+
           ＋ New Order
+
         </button>
+
 
       </div>
 
 
-      <!-- FILTERS -->
+
+      <!-- =================================================
+           FILTERS
+      ================================================== -->
+
       <div class="panel filters">
+
 
         <input
           id="searchOrders"
@@ -534,10 +987,12 @@
           placeholder="Search job, customer, item, HAFLA ID..."
         >
 
+
         <input
           id="filterMonth"
           type="month"
         >
+
 
         <select id="filterStatus">
 
@@ -545,78 +1000,135 @@
             All Statuses
           </option>
 
-          <option>
+          <option value="Received">
             Received
           </option>
 
-          <option>
+          <option value="Partially Received">
             Partially Received
           </option>
 
-          <option>
+          <option value="Pending">
             Pending
           </option>
 
-          <option>
+          <option value="No Amount">
             No Amount
           </option>
 
         </select>
 
+
         <button
           class="outline-btn"
           id="clearFilters"
         >
+
           Reset
+
         </button>
+
 
       </div>
 
 
-      <!-- ORDERS TABLE -->
+
+      <!-- =================================================
+           ORDERS TABLE
+      ================================================== -->
+
       <div class="panel">
+
 
         <div class="table-wrap">
 
+
           <table class="orders-table">
+
 
             <thead>
 
+
               <tr>
 
-                <th>Date</th>
-                <th>Job #</th>
-                <th>Party</th>
-                <th>Orders</th>
-                <th>Incharge</th>
-                <th>Received</th>
-                <th>Pending</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>
+                  Date
+                </th>
+
+                <th>
+                  Job #
+                </th>
+
+                <th>
+                  Party
+                </th>
+
+                <th>
+                  Orders
+                </th>
+
+                <th>
+                  Incharge
+                </th>
+
+                <th>
+                  Received
+                </th>
+
+                <th>
+                  Pending
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Actions
+                </th>
 
               </tr>
 
+
             </thead>
 
-            <tbody id="ordersBody"></tbody>
+
+            <tbody
+              id="ordersBody"
+            ></tbody>
+
 
           </table>
 
+
         </div>
 
+
       </div>
+
 
     </section>
 
 
-    <!-- REPORTS -->
-    <section id="reports" class="section">
+
+    <!-- ===================================================
+         REPORTS
+    ==================================================== -->
+
+    <section
+      id="reports"
+      class="section"
+    >
+
 
       <div class="section-intro">
 
+
         <div>
 
-          <h2>Monthly Reports</h2>
+          <h2>
+            Monthly Reports
+          </h2>
 
           <p>
             Generate a print-ready order and collection report.
@@ -624,17 +1136,25 @@
 
         </div>
 
+
         <button
           class="primary-btn"
           id="printReportBtn"
         >
+
           🖨 Print Report
+
         </button>
+
 
       </div>
 
 
+
+      <!-- REPORT CONTROLS -->
+
       <div class="panel report-controls">
+
 
         <label>
 
@@ -647,29 +1167,46 @@
 
         </label>
 
+
         <button
           class="outline-btn"
           id="generateReportBtn"
         >
+
           Generate Report
+
         </button>
+
 
       </div>
 
+
+
+      <!-- REPORT -->
 
       <div
         id="reportPreview"
         class="report-page"
       ></div>
 
+
     </section>
 
+
   </main>
+
 
 </div>
 
 
+
+<!-- =====================================================
+     SCRIPT
+====================================================== -->
+
 <script src="script.js"></script>
 
+
 </body>
+
 </html>
