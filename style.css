@@ -462,27 +462,15 @@ button {
 ===================================================== */
 
 .welcome {
-
-  background: #ffffff;
-
-  border-radius: var(--radius);
-
-  padding: 25px 27px;
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  gap: 20px;
-
-  box-shadow: var(--shadow);
-
-  border-left: 4px solid var(--primary);
-
+  background: #000000 !important;
+  color: #ffffff !important;
 }
 
+.welcome h2,
+.welcome p,
+.welcome .eyebrow {
+  color: #ffffff !important;
+}
 
 .welcome h2 {
 
