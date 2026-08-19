@@ -13,6 +13,169 @@
   <link rel="apple-touch-icon" href="favicon.png">
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- PRINT STYLES -->
+  <style>
+    #printArea {
+      display: none;
+    }
+
+    @media print {
+
+      body {
+        background: #fff !important;
+      }
+
+      .app-shell,
+      .print-options-modal {
+        display: none !important;
+      }
+
+      #printArea {
+        display: block !important;
+        width: 100%;
+        color: #000;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      @page {
+        size: A4 landscape;
+        margin: 12mm;
+      }
+
+      .print-header {
+        margin-bottom: 18px;
+      }
+
+      .print-header h1 {
+        margin: 0 0 5px;
+        font-size: 22px;
+      }
+
+      .print-header p {
+        margin: 3px 0;
+        font-size: 12px;
+      }
+
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10px;
+      }
+
+      .print-table th,
+      .print-table td {
+        border: 1px solid #999;
+        padding: 6px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .print-table th {
+        background: #f2f2f2 !important;
+        font-weight: 700;
+      }
+
+      .print-summary {
+        display: flex;
+        gap: 30px;
+        margin-top: 15px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .print-footer {
+        margin-top: 20px;
+        font-size: 10px;
+      }
+    }
+
+    /* PRINT OPTIONS MODAL */
+
+    .print-options-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: rgba(0,0,0,.60);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .print-options-modal.show {
+      display: flex;
+    }
+
+    .print-options-box {
+      width: min(560px, 100%);
+      background: #fff;
+      border-radius: 14px;
+      padding: 25px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.30);
+    }
+
+    .print-options-box h3 {
+      margin: 0 0 6px;
+      font-size: 21px;
+    }
+
+    .print-options-box > p {
+      margin: 0 0 20px;
+      color: #666;
+    }
+
+    .print-option-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .print-option-btn {
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      text-align: left;
+      font-weight: 700;
+      transition: .15s ease;
+    }
+
+    .print-option-btn:hover {
+      border-color: #fcc224;
+      background: #fffaf0;
+      transform: translateY(-1px);
+    }
+
+    .print-option-btn small {
+      display: block;
+      margin-top: 5px;
+      color: #777;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .print-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .print-cancel-btn {
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px 18px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 650px) {
+      .print-option-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -25,8 +188,6 @@
 
   <aside class="sidebar">
 
-    <!-- BRAND
-         Logo and AJ brand removed -->
     <div class="brand">
 
       <div>
@@ -35,7 +196,6 @@
       </div>
 
     </div>
-
 
     <!-- NAVIGATION -->
 
@@ -49,7 +209,6 @@
         Dashboard
       </button>
 
-
       <button
         class="nav-item"
         data-section="new-order"
@@ -58,7 +217,6 @@
         New Order
       </button>
 
-
       <button
         class="nav-item"
         data-section="orders"
@@ -66,7 +224,6 @@
         <span>☷</span>
         All Orders
       </button>
-
 
       <button
         class="nav-item"
@@ -77,7 +234,6 @@
       </button>
 
     </nav>
-
 
     <!-- SIDEBAR FOOTER -->
 
@@ -155,8 +311,6 @@
             Monthly Order Overview
           </h2>
 
-          <!-- DIGITAL DATE + TIME -->
-
           <p
             id="dashboardDateTime"
             class="digital-clock"
@@ -180,7 +334,6 @@
       <!-- STATS -->
 
       <div class="stats-grid">
-
 
         <div class="stat-card">
 
@@ -548,7 +701,7 @@
               <option>
                 Bank
               </option>
-           
+
               <option>
                 Zohaib
               </option>
@@ -704,9 +857,7 @@
         </div>
 
 
-        <!-- ==================================================
-             ORDER ITEMS
-        =================================================== -->
+        <!-- ORDER ITEMS -->
 
         <div class="items-section">
 
@@ -743,9 +894,7 @@
         </div>
 
 
-        <!-- ==================================================
-             REMARKS
-        =================================================== -->
+        <!-- REMARKS -->
 
         <label class="full-label">
 
@@ -760,9 +909,7 @@
         </label>
 
 
-        <!-- ==================================================
-             FORM ACTIONS
-        =================================================== -->
+        <!-- FORM ACTIONS -->
 
         <div class="form-actions">
 
@@ -814,12 +961,35 @@
         </div>
 
 
-        <button
-          class="primary-btn"
-          id="ordersAddBtn"
+        <div
+          style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            justify-content:flex-end;
+          "
         >
-          ＋ New Order
-        </button>
+
+          <!-- NEW PRINT BUTTON -->
+
+          <button
+            class="outline-btn"
+            id="printOrdersBtn"
+            type="button"
+          >
+            🖨 Print Orders
+          </button>
+
+
+          <button
+            class="primary-btn"
+            id="ordersAddBtn"
+            type="button"
+          >
+            ＋ New Order
+          </button>
+
+        </div>
 
       </div>
 
@@ -870,6 +1040,7 @@
         <button
           class="outline-btn"
           id="clearFilters"
+          type="button"
         >
           Reset
         </button>
@@ -970,6 +1141,7 @@
         <button
           class="primary-btn"
           id="printReportBtn"
+          type="button"
         >
           🖨 Print Report
         </button>
@@ -996,6 +1168,7 @@
         <button
           class="outline-btn"
           id="generateReportBtn"
+          type="button"
         >
           Generate Report
         </button>
@@ -1018,10 +1191,961 @@
 
 
 <!-- =====================================================
-     JAVASCRIPT
+     PRINT OPTIONS MODAL
+===================================================== -->
+
+<div
+  id="printOptionsModal"
+  class="print-options-modal"
+>
+
+  <div class="print-options-box">
+
+    <h3>
+      Print Orders
+    </h3>
+
+    <p>
+      Choose exactly what you want to print.
+    </p>
+
+
+    <div class="print-option-grid">
+
+
+      <button
+        type="button"
+        class="print-option-btn"
+        data-print-filter="current"
+      >
+
+        Current Results
+
+        <small>
+          Print whatever is currently filtered.
+        </small>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="print-option-btn"
+        data-print-filter="all"
+      >
+
+        All Orders
+
+        <small>
+          Print every order in the tracker.
+        </small>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="print-option-btn"
+        data-print-filter="Pending"
+      >
+
+        Pending Orders
+
+        <small>
+          Orders with payment still pending.
+        </small>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="print-option-btn"
+        data-print-filter="Partially Received"
+      >
+
+        Partially Received
+
+        <small>
+          Orders with partial payment received.
+        </small>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="print-option-btn"
+        data-print-filter="Received"
+      >
+
+        Received Orders
+
+        <small>
+          Orders marked as fully received.
+        </small>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="print-option-btn"
+        data-print-filter="No Amount"
+      >
+
+        No Amount
+
+        <small>
+          Orders with no payment amount.
+        </small>
+
+      </button>
+
+
+    </div>
+
+
+    <div class="print-modal-actions">
+
+      <button
+        type="button"
+        class="print-cancel-btn"
+        id="closePrintOptions"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     PRINT AREA
+===================================================== -->
+
+<div id="printArea"></div>
+
+
+<!-- =====================================================
+     ORIGINAL SCRIPT
 ===================================================== -->
 
 <script src="script.js"></script>
+
+
+<!-- =====================================================
+     PRINT FUNCTIONALITY
+===================================================== -->
+
+<script>
+
+(function () {
+
+  "use strict";
+
+
+  const modal =
+    document.getElementById("printOptionsModal");
+
+  const openBtn =
+    document.getElementById("printOrdersBtn");
+
+  const closeBtn =
+    document.getElementById("closePrintOptions");
+
+
+  if (!modal || !openBtn) {
+    return;
+  }
+
+
+  /* =====================================================
+     OPEN / CLOSE MODAL
+  ===================================================== */
+
+  openBtn.addEventListener("click", function () {
+
+    modal.classList.add("show");
+
+  });
+
+
+  closeBtn.addEventListener("click", function () {
+
+    modal.classList.remove("show");
+
+  });
+
+
+  modal.addEventListener("click", function (event) {
+
+    if (event.target === modal) {
+
+      modal.classList.remove("show");
+
+    }
+
+  });
+
+
+  /* =====================================================
+     ESCAPE HTML
+  ===================================================== */
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+
+      .replace(/&/g, "&amp;")
+
+      .replace(/</g, "&lt;")
+
+      .replace(/>/g, "&gt;")
+
+      .replace(/"/g, "&quot;")
+
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =====================================================
+     CLEAN TEXT
+  ===================================================== */
+
+  function cleanText(value) {
+
+    return String(value ?? "")
+
+      .replace(/\s+/g, " ")
+
+      .trim();
+
+  }
+
+
+  /* =====================================================
+     GET CURRENT TABLE ROWS
+  ===================================================== */
+
+  function getCurrentRows() {
+
+    const body =
+      document.getElementById("ordersBody");
+
+    if (!body) {
+      return [];
+    }
+
+
+    return Array.from(
+      body.querySelectorAll("tr")
+    ).filter(function (row) {
+
+      return !row.querySelector(
+        'td[colspan]'
+      );
+
+    });
+
+  }
+
+
+  /* =====================================================
+     READ ORDERS FROM LOCAL STORAGE
+     Used for ALL / STATUS printing
+  ===================================================== */
+
+  function getStoredOrders() {
+
+    try {
+
+      const raw =
+        localStorage.getItem(
+          "alJefoonOrdersV1"
+        );
+
+      if (!raw) {
+        return [];
+      }
+
+
+      const orders =
+        JSON.parse(raw);
+
+
+      return Array.isArray(orders)
+        ? orders
+        : [];
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Unable to read saved orders:",
+        error
+      );
+
+      return [];
+
+    }
+
+  }
+
+
+  /* =====================================================
+     CONVERT STORED ORDER TO PRINT DATA
+  ===================================================== */
+
+  function convertOrder(order) {
+
+    const items =
+      Array.isArray(order.items)
+        ? order.items
+        : [];
+
+
+    let orderText = "";
+
+
+    if (items.length) {
+
+      orderText =
+        items.map(function (item) {
+
+          if (typeof item === "string") {
+            return item;
+          }
+
+          return (
+            item.name ||
+            item.item ||
+            item.description ||
+            ""
+          );
+
+        })
+
+        .filter(Boolean)
+
+        .join(", ");
+
+    }
+
+
+    return {
+
+      date:
+        order.date ||
+        "",
+
+      job:
+        order.jobNo ||
+        order.job ||
+        "",
+
+      party:
+        order.party ||
+        "",
+
+      orders:
+        orderText ||
+        order.orders ||
+        "",
+
+      incharge:
+        order.incharge ||
+        "",
+
+      received:
+        order.amountReceived ??
+        order.received ??
+        0,
+
+      pending:
+        order.pendingAmount ??
+        order.pending ??
+        0,
+
+      status:
+        order.status ||
+        ""
+
+    };
+
+  }
+
+
+  /* =====================================================
+     CONVERT TABLE ROW
+  ===================================================== */
+
+  function convertTableRow(row) {
+
+    const cells =
+      Array.from(
+        row.querySelectorAll("td")
+      );
+
+
+    if (cells.length < 8) {
+      return null;
+    }
+
+
+    return {
+
+      date:
+        cleanText(cells[0].innerText),
+
+      job:
+        cleanText(cells[1].innerText),
+
+      party:
+        cleanText(cells[2].innerText),
+
+      orders:
+        cleanText(cells[3].innerText),
+
+      incharge:
+        cleanText(cells[4].innerText),
+
+      received:
+        cleanText(cells[5].innerText),
+
+      pending:
+        cleanText(cells[6].innerText),
+
+      status:
+        cleanText(cells[7].innerText)
+
+    };
+
+  }
+
+
+  /* =====================================================
+     GET CURRENT FILTERED RESULTS
+  ===================================================== */
+
+  function getCurrentResults() {
+
+    return getCurrentRows()
+
+      .map(convertTableRow)
+
+      .filter(Boolean);
+
+  }
+
+
+  /* =====================================================
+     GET ALL ORDERS
+  ===================================================== */
+
+  function getAllResults() {
+
+    const stored =
+      getStoredOrders();
+
+
+    if (stored.length) {
+
+      return stored
+
+        .map(convertOrder)
+
+        .filter(function (order) {
+
+          return (
+            order.job ||
+            order.party ||
+            order.date
+          );
+
+        });
+
+    }
+
+
+    /*
+      Fallback:
+      If the storage structure ever changes,
+      use the currently rendered table.
+    */
+
+    return getCurrentResults();
+
+  }
+
+
+  /* =====================================================
+     FILTER BY STATUS
+  ===================================================== */
+
+  function getStatusResults(status) {
+
+    return getAllResults()
+
+      .filter(function (order) {
+
+        return cleanText(
+          order.status
+        ).toLowerCase() ===
+        status.toLowerCase();
+
+      });
+
+  }
+
+
+  /* =====================================================
+     GET PRINT DATA
+  ===================================================== */
+
+  function getPrintData(type) {
+
+    if (type === "current") {
+
+      return getCurrentResults();
+
+    }
+
+
+    if (type === "all") {
+
+      return getAllResults();
+
+    }
+
+
+    return getStatusResults(type);
+
+  }
+
+
+  /* =====================================================
+     NUMBER
+  ===================================================== */
+
+  function numberValue(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+
+      return 0;
+
+    }
+
+
+    const cleaned =
+      String(value)
+        .replace(/[^0-9.-]/g, "");
+
+
+    const number =
+      parseFloat(cleaned);
+
+
+    return Number.isFinite(number)
+      ? number
+      : 0;
+
+  }
+
+
+  /* =====================================================
+     FORMAT MONEY
+  ===================================================== */
+
+  function formatMoney(value) {
+
+    return numberValue(value)
+      .toLocaleString(
+        "en-AE",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }
+      );
+
+  }
+
+
+  /* =====================================================
+     FORMAT DATE
+  ===================================================== */
+
+  function formatDate(value) {
+
+    if (!value) {
+      return "";
+    }
+
+
+    const date =
+      new Date(value);
+
+
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+
+    return date.toLocaleDateString(
+      "en-GB"
+    );
+
+  }
+
+
+  /* =====================================================
+     PRINT
+  ===================================================== */
+
+  function printOrders(type) {
+
+    modal.classList.remove("show");
+
+
+    const data =
+      getPrintData(type);
+
+
+    if (!data.length) {
+
+      alert(
+        "There are no orders available to print for this selection."
+      );
+
+      return;
+
+    }
+
+
+    let receivedTotal = 0;
+
+    let pendingTotal = 0;
+
+
+    data.forEach(function (order) {
+
+      receivedTotal +=
+        numberValue(
+          order.received
+        );
+
+      pendingTotal +=
+        numberValue(
+          order.pending
+        );
+
+    });
+
+
+    const titles = {
+
+      current:
+        "Current Order Results",
+
+      all:
+        "All Orders",
+
+      "Pending":
+        "Pending Orders",
+
+      "Partially Received":
+        "Partially Received Orders",
+
+      "Received":
+        "Received Orders",
+
+      "No Amount":
+        "No Amount Orders"
+
+    };
+
+
+    const title =
+      titles[type] ||
+      "Order Report";
+
+
+    const filterMonth =
+      document.getElementById(
+        "filterMonth"
+      );
+
+
+    let period =
+      "All Dates";
+
+
+    if (
+      filterMonth &&
+      filterMonth.value
+    ) {
+
+      const date =
+        new Date(
+          filterMonth.value +
+          "-01T00:00:00"
+        );
+
+
+      period =
+        date.toLocaleDateString(
+          "en-GB",
+          {
+            month: "long",
+            year: "numeric"
+          }
+        );
+
+    }
+
+
+    const printArea =
+      document.getElementById(
+        "printArea"
+      );
+
+
+    printArea.innerHTML = `
+
+      <div class="print-header">
+
+        <h1>
+          AL JEFOON TENTS
+        </h1>
+
+        <p>
+          <strong>
+            ${escapeHtml(title)}
+          </strong>
+        </p>
+
+        <p>
+          Period:
+          ${escapeHtml(period)}
+        </p>
+
+        <p>
+          Printed:
+          ${escapeHtml(
+            new Date().toLocaleString(
+              "en-GB"
+            )
+          )}
+        </p>
+
+      </div>
+
+
+      <table class="print-table">
+
+        <thead>
+
+          <tr>
+
+            <th>Date</th>
+
+            <th>Job #</th>
+
+            <th>Party</th>
+
+            <th>Orders</th>
+
+            <th>Incharge</th>
+
+            <th>Received</th>
+
+            <th>Pending</th>
+
+            <th>Status</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          ${data.map(function (order) {
+
+            return `
+
+              <tr>
+
+                <td>
+                  ${escapeHtml(
+                    formatDate(order.date)
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    order.job
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    order.party
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    order.orders
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    order.incharge
+                  )}
+                </td>
+
+                <td>
+                  ${formatMoney(
+                    order.received
+                  )}
+                </td>
+
+                <td>
+                  ${formatMoney(
+                    order.pending
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    order.status
+                  )}
+                </td>
+
+              </tr>
+
+            `;
+
+          }).join("")}
+
+        </tbody>
+
+      </table>
+
+
+      <div class="print-summary">
+
+        <span>
+          Total Orders:
+          ${data.length}
+        </span>
+
+        <span>
+          Total Received:
+          ${formatMoney(
+            receivedTotal
+          )}
+        </span>
+
+        <span>
+          Total Pending:
+          ${formatMoney(
+            pendingTotal
+          )}
+        </span>
+
+      </div>
+
+
+      <div class="print-footer">
+
+        AL JEFOON TENTS — Order Tracker
+
+      </div>
+
+    `;
+
+
+    /*
+      Small delay gives the browser time
+      to render the print page.
+    */
+
+    setTimeout(function () {
+
+      window.print();
+
+    }, 200);
+
+  }
+
+
+  /* =====================================================
+     PRINT OPTION BUTTONS
+  ===================================================== */
+
+  document
+    .querySelectorAll(
+      "[data-print-filter]"
+    )
+    .forEach(function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          const type =
+            this.getAttribute(
+              "data-print-filter"
+            );
+
+
+          printOrders(type);
+
+        }
+      );
+
+    });
+
+
+  /* =====================================================
+     AFTER PRINT
+  ===================================================== */
+
+  window.addEventListener(
+    "afterprint",
+    function () {
+
+      const printArea =
+        document.getElementById(
+          "printArea"
+        );
+
+
+      if (printArea) {
+
+        printArea.innerHTML = "";
+
+      }
+
+    }
+  );
+
+
+})();
+
+</script>
 
 </body>
 </html>
