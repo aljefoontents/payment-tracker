@@ -103,29 +103,43 @@ button {
 ===================================================== */
 
 .sidebar {
-
-  width: 245px;
-
-  min-width: 245px;
-
-  background: #000000;
-
-  color: #ffffff;
-
-  display: flex;
-
-  flex-direction: column;
-
-  min-height: 100vh;
-
-  position: sticky;
-
+  position: fixed;
   top: 0;
-
+  left: 0;
+  width: 240px;
   height: 100vh;
-
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  padding: 25px 18px;
+  z-index: 1000;
 }
 
+.sidebar-brand h2 {
+  color: #fcc224 !important;
+}
+
+.sidebar-brand span {
+  color: #ffffff !important;
+}
+
+.sidebar nav button,
+.sidebar nav a {
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.sidebar nav button:hover,
+.sidebar nav a:hover {
+  background-color: #1a1a1a !important;
+  color: #fcc224 !important;
+}
+
+.sidebar nav button.active,
+.sidebar nav a.active {
+  background-color: #fcc224 !important;
+  color: #000000 !important;
+}
 
 /* =====================================================
    BRAND
