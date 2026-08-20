@@ -13,6 +13,266 @@
   <link rel="apple-touch-icon" href="favicon.png">
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- =====================================================
+       MONTHLY REPORT PRINT STYLES
+  ====================================================== -->
+
+  <style>
+
+    @media print {
+
+      /*
+        Hide the entire application first.
+        The report will then be made visible below.
+      */
+
+      body * {
+        visibility: hidden !important;
+      }
+
+
+      /*
+        Show ONLY the monthly reports section.
+      */
+
+      #reports,
+      #reports * {
+        visibility: visible !important;
+      }
+
+
+      /*
+        Make the reports section visible even though
+        it normally has display:none because it is
+        not the active section.
+      */
+
+      #reports {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+
+
+      /*
+        Hide navigation and report controls.
+      */
+
+      .sidebar,
+      .topbar,
+      .section-intro,
+      .report-controls,
+      #printReportBtn,
+      #generateReportBtn,
+      #reportMonth {
+        display: none !important;
+      }
+
+
+      /*
+        Make the report itself occupy the page.
+      */
+
+      #reportPreview {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+
+
+      /*
+        Remove unnecessary visual effects.
+      */
+
+      .panel,
+      .report-page {
+        box-shadow: none !important;
+        border: none !important;
+      }
+
+
+      /*
+        Prevent table rows from splitting between pages.
+      */
+
+      table {
+        page-break-inside: auto;
+      }
+
+      tr {
+        page-break-inside: avoid !important;
+        page-break-after: auto;
+      }
+
+
+      /*
+        Keep the report header and summary together.
+      */
+
+      .report-header,
+      .report-summary {
+        page-break-inside: avoid !important;
+      }
+
+
+      /*
+        A4 landscape is best for the monthly report
+        because it contains many columns.
+      */
+
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+
+    }
+
+
+    /* =====================================================
+       PRINT MODAL STYLES
+    ====================================================== */
+
+    .print-modal.hidden {
+      display:none;
+    }
+
+    .print-modal {
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .print-modal-backdrop {
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,.55);
+    }
+
+    .print-modal-card {
+      position:relative;
+      width:min(680px,100%);
+      max-height:90vh;
+      overflow:auto;
+      background:#fff;
+      border-radius:16px;
+      padding:24px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25);
+    }
+
+    .print-modal-head {
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:flex-start;
+      margin-bottom:20px;
+    }
+
+    .print-modal-head h3 {
+      margin:0 0 5px;
+      font-size:22px;
+    }
+
+    .print-modal-head p {
+      margin:0;
+      color:#777;
+    }
+
+    .print-close-btn {
+      border:0;
+      background:#f1f1f1;
+      border-radius:50%;
+      width:34px;
+      height:34px;
+      font-size:24px;
+      line-height:1;
+      cursor:pointer;
+    }
+
+    .print-option-group {
+      border-top:1px solid #eee;
+      padding-top:16px;
+      margin-top:16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .print-option-group label {
+      display:flex;
+      align-items:center;
+      gap:9px;
+      cursor:pointer;
+    }
+
+    .print-check-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .print-modal-actions {
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:24px;
+    }
+
+    @media(max-width:600px) {
+
+      .print-check-grid {
+        grid-template-columns:1fr;
+      }
+
+    }
+
+
+    /* =====================================================
+       PRINT ORDERS
+       Keep existing Print Orders functionality working
+    ====================================================== */
+
+    @media print {
+
+      body.printing-orders * {
+        visibility:hidden!important;
+      }
+
+      body.printing-orders #printArea,
+      body.printing-orders #printArea * {
+        visibility:visible!important;
+      }
+
+      body.printing-orders #printArea {
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+        background:#fff;
+      }
+
+      body.printing-orders .print-modal {
+        display:none!important;
+      }
+
+    }
+
+  </style>
+
 </head>
 
 <body>
@@ -451,8 +711,6 @@
         <div class="form-grid">
 
 
-          <!-- DATE -->
-
           <label>
 
             Date
@@ -465,8 +723,6 @@
 
           </label>
 
-
-          <!-- JOB NUMBER -->
 
           <label>
 
@@ -482,8 +738,6 @@
           </label>
 
 
-          <!-- HAFLA -->
-
           <label>
 
             HAFLA Order ID
@@ -496,8 +750,6 @@
 
           </label>
 
-
-          <!-- PARTY -->
 
           <label>
 
@@ -513,8 +765,6 @@
           </label>
 
 
-          <!-- INCHARGE -->
-
           <label>
 
             Incharge
@@ -528,8 +778,6 @@
 
           </label>
 
-
-          <!-- RECEIVED BY -->
 
           <label>
 
@@ -578,8 +826,6 @@
           </label>
 
 
-          <!-- PAYMENT METHOD -->
-
           <label>
 
             Payment Method
@@ -615,8 +861,6 @@
           </label>
 
 
-          <!-- TOTAL -->
-
           <label>
 
             Total Amount
@@ -631,8 +875,6 @@
 
           </label>
 
-
-          <!-- RECEIVED -->
 
           <label>
 
@@ -649,8 +891,6 @@
           </label>
 
 
-          <!-- PENDING -->
-
           <label>
 
             Pending
@@ -663,8 +903,6 @@
 
           </label>
 
-
-          <!-- STATUS -->
 
           <label>
 
@@ -1248,6 +1486,7 @@
         <button
           class="primary-btn"
           id="printReportBtn"
+          type="button"
         >
           🖨 Print Report
         </button>
@@ -1274,6 +1513,7 @@
         <button
           class="outline-btn"
           id="generateReportBtn"
+          type="button"
         >
           Generate Report
         </button>
@@ -1296,7 +1536,7 @@
 
 
 <!-- =====================================================
-     PRINT MODAL STYLES
+     PRINT MODAL + EXTRA STYLES
 ===================================================== -->
 
 <style>
@@ -1397,6 +1637,11 @@
   }
 
 }
+
+
+/* =====================================================
+   PRINT ORDERS
+===================================================== */
 
 @media print {
 
