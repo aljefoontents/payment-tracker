@@ -1056,17 +1056,6 @@
           </button>
 
 
-          <!-- PDF BUTTON -->
-
-          <button
-            class="primary-btn pdf-download-main-btn"
-            id="downloadPdfBtn"
-            type="button"
-          >
-            📄 Download PDF
-          </button>
-
-
           <button
             class="primary-btn"
             id="ordersAddBtn"
@@ -1584,9 +1573,6 @@
   const openBtn =
     document.getElementById("printOrdersBtn");
 
-  const pdfMainBtn =
-    document.getElementById("downloadPdfBtn");
-
   const closeBtn =
     document.getElementById("closePrintOptions");
 
@@ -1610,16 +1596,6 @@
   if (openBtn) {
 
     openBtn.addEventListener(
-      "click",
-      openPrintPdfModal
-    );
-
-  }
-
-
-  if (pdfMainBtn) {
-
-    pdfMainBtn.addEventListener(
       "click",
       openPrintPdfModal
     );
