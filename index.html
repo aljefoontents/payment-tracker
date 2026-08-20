@@ -285,51 +285,33 @@
 
 <div class="app-shell">
 
-  <!-- ==================================================
-       SIDEBAR
-  =================================================== -->
-
   <aside class="sidebar">
 
     <div class="brand">
-
       <div>
         <strong>AL JEFOON TENTS</strong>
         <span>Order Tracker</span>
       </div>
-
     </div>
 
     <nav class="nav">
 
-      <button
-        class="nav-item active"
-        data-section="dashboard"
-      >
+      <button class="nav-item active" data-section="dashboard">
         <span>▦</span>
         Dashboard
       </button>
 
-      <button
-        class="nav-item"
-        data-section="new-order"
-      >
+      <button class="nav-item" data-section="new-order">
         <span>＋</span>
         New Order
       </button>
 
-      <button
-        class="nav-item"
-        data-section="orders"
-      >
+      <button class="nav-item" data-section="orders">
         <span>☷</span>
         All Orders
       </button>
 
-      <button
-        class="nav-item"
-        data-section="reports"
-      >
+      <button class="nav-item" data-section="reports">
         <span>▤</span>
         Monthly Reports
       </button>
@@ -353,10 +335,6 @@
   </aside>
 
 
-  <!-- ==================================================
-       MAIN
-  =================================================== -->
-
   <main class="main">
 
     <header class="topbar">
@@ -373,24 +351,16 @@
 
       </div>
 
-      <button
-        class="primary-btn"
-        id="quickAddBtn"
-      >
+      <button class="primary-btn" id="quickAddBtn">
         ＋ New Order
       </button>
 
     </header>
 
 
-    <!-- ==================================================
-         DASHBOARD
-    =================================================== -->
+    <!-- DASHBOARD -->
 
-    <section
-      id="dashboard"
-      class="section active"
-    >
+    <section id="dashboard" class="section active">
 
       <div class="welcome">
 
@@ -404,19 +374,13 @@
             Monthly Order Overview
           </h2>
 
-          <p
-            id="dashboardDateTime"
-            class="digital-clock"
-          >
+          <p id="dashboardDateTime" class="digital-clock">
             Loading...
           </p>
 
         </div>
 
-        <button
-          class="outline-btn"
-          id="dashboardReportBtn"
-        >
+        <button class="outline-btn" id="dashboardReportBtn">
           View Monthly Report
         </button>
 
@@ -427,68 +391,52 @@
 
         <div class="stat-card">
 
-          <span>
-            Total Orders
-          </span>
+          <span>Total Orders</span>
 
           <strong id="statOrders">
             0
           </strong>
 
-          <small>
-            This month
-          </small>
+          <small>This month</small>
 
         </div>
 
 
         <div class="stat-card">
 
-          <span>
-            Total Received
-          </span>
+          <span>Total Received</span>
 
           <strong id="statReceived">
             0.00
           </strong>
 
-          <small>
-            This month
-          </small>
+          <small>This month</small>
 
         </div>
 
 
         <div class="stat-card">
 
-          <span>
-            Total Pending
-          </span>
+          <span>Total Pending</span>
 
           <strong id="statPending">
             0.00
           </strong>
 
-          <small>
-            Outstanding
-          </small>
+          <small>Outstanding</small>
 
         </div>
 
 
         <div class="stat-card">
 
-          <span>
-            Pending Orders
-          </span>
+          <span>Pending Orders</span>
 
           <strong id="statPendingOrders">
             0
           </strong>
 
-          <small>
-            Need attention
-          </small>
+          <small>Need attention</small>
 
         </div>
 
@@ -503,9 +451,7 @@
 
             <div>
 
-              <h3>
-                Recent Orders
-              </h3>
+              <h3>Recent Orders</h3>
 
               <p>
                 Latest jobs entered into the system
@@ -513,10 +459,7 @@
 
             </div>
 
-            <button
-              class="text-btn"
-              data-go="orders"
-            >
+            <button class="text-btn" data-go="orders">
               View all
             </button>
 
@@ -530,33 +473,17 @@
 
                 <tr>
 
-                  <th>
-                    Date
-                  </th>
-
-                  <th>
-                    Job #
-                  </th>
-
-                  <th>
-                    Party
-                  </th>
-
-                  <th>
-                    Received
-                  </th>
-
-                  <th>
-                    Status
-                  </th>
+                  <th>Date</th>
+                  <th>Job #</th>
+                  <th>Party</th>
+                  <th>Received</th>
+                  <th>Status</th>
 
                 </tr>
 
               </thead>
 
-              <tbody
-                id="recentOrdersBody"
-              ></tbody>
+              <tbody id="recentOrdersBody"></tbody>
 
             </table>
 
@@ -571,9 +498,7 @@
 
             <div>
 
-              <h3>
-                Quick Summary
-              </h3>
+              <h3>Quick Summary</h3>
 
               <p>
                 Order count by status
@@ -587,54 +512,27 @@
           <div class="summary-list">
 
             <div>
-
               <span class="dot paid"></span>
-
               Received
-
-              <strong id="summaryReceived">
-                0
-              </strong>
-
+              <strong id="summaryReceived">0</strong>
             </div>
 
-
             <div>
-
               <span class="dot partial"></span>
-
               Partially Received
-
-              <strong id="summaryPartial">
-                0
-              </strong>
-
+              <strong id="summaryPartial">0</strong>
             </div>
 
-
             <div>
-
               <span class="dot pending"></span>
-
               Pending
-
-              <strong id="summaryPending">
-                0
-              </strong>
-
+              <strong id="summaryPending">0</strong>
             </div>
 
-
             <div>
-
               <span class="dot noamount"></span>
-
               No Amount
-
-              <strong id="summaryNoAmount">
-                0
-              </strong>
-
+              <strong id="summaryNoAmount">0</strong>
             </div>
 
           </div>
@@ -646,22 +544,15 @@
     </section>
 
 
-    <!-- ==================================================
-         NEW ORDER
-    =================================================== -->
+    <!-- NEW ORDER -->
 
-    <section
-      id="new-order"
-      class="section"
-    >
+    <section id="new-order" class="section">
 
       <div class="section-intro">
 
         <div>
 
-          <h2>
-            Create New Order
-          </h2>
+          <h2>Create New Order</h2>
 
           <p>
             Record a new job and collection details.
@@ -672,21 +563,14 @@
       </div>
 
 
-      <form
-        id="orderForm"
-        class="panel form-panel"
-      >
+      <form id="orderForm" class="panel form-panel">
 
-        <input
-          type="hidden"
-          id="editId"
-        >
+        <input type="hidden" id="editId">
 
 
         <div class="form-grid">
 
           <label>
-
             Date
 
             <input
@@ -699,7 +583,6 @@
 
 
           <label>
-
             Job #
 
             <input
@@ -713,7 +596,6 @@
 
 
           <label>
-
             HAFLA Order ID
 
             <input
@@ -726,7 +608,6 @@
 
 
           <label>
-
             Party / Customer
 
             <input
@@ -740,7 +621,6 @@
 
 
           <label>
-
             Incharge
 
             <input
@@ -754,7 +634,6 @@
 
 
           <label>
-
             Received By
 
             <select id="receivedBy">
@@ -763,37 +642,14 @@
                 Select
               </option>
 
-              <option>
-                Bank
-              </option>
-
-              <option>
-                Zohaib
-              </option>
-
-              <option>
-                Saud
-              </option>
-
-              <option>
-                Fahad
-              </option>
-
-              <option>
-                Malik
-              </option>
-
-              <option>
-                Parvaiz
-              </option>
-
-              <option>
-                Ali
-              </option>
-
-              <option>
-                Ihsan
-              </option>
+              <option>Bank</option>
+              <option>Zohaib</option>
+              <option>Saud</option>
+              <option>Fahad</option>
+              <option>Malik</option>
+              <option>Parvaiz</option>
+              <option>Ali</option>
+              <option>Ihsan</option>
 
             </select>
 
@@ -801,7 +657,6 @@
 
 
           <label>
-
             Payment Method
 
             <select id="paymentMethod">
@@ -810,25 +665,11 @@
                 Select
               </option>
 
-              <option>
-                Cash
-              </option>
-
-              <option>
-                Bank
-              </option>
-
-              <option>
-                Online
-              </option>
-
-              <option>
-                Card
-              </option>
-
-              <option>
-                Other
-              </option>
+              <option>Cash</option>
+              <option>Bank</option>
+              <option>Online</option>
+              <option>Card</option>
+              <option>Other</option>
 
             </select>
 
@@ -836,7 +677,6 @@
 
 
           <label>
-
             Total Amount
 
             <input
@@ -851,7 +691,6 @@
 
 
           <label>
-
             Amount Received
 
             <input
@@ -866,7 +705,6 @@
 
 
           <label>
-
             Pending
 
             <input
@@ -879,7 +717,6 @@
 
 
           <label>
-
             Status
 
             <select id="status">
@@ -888,26 +725,14 @@
                 Automatic
               </option>
 
-              <option>
-                Received
-              </option>
-
-              <option>
-                Partially Received
-              </option>
-
-              <option>
-                Pending
-              </option>
-
-              <option>
-                No Amount
-              </option>
+              <option>Received</option>
+              <option>Partially Received</option>
+              <option>Pending</option>
+              <option>No Amount</option>
 
             </select>
 
           </label>
-
 
         </div>
 
@@ -918,9 +743,7 @@
 
             <div>
 
-              <h3>
-                Order Items
-              </h3>
+              <h3>Order Items</h3>
 
               <p>
                 Add each item separately for better future reports.
@@ -940,9 +763,7 @@
           </div>
 
 
-          <div
-            id="itemsContainer"
-          ></div>
+          <div id="itemsContainer"></div>
 
         </div>
 
@@ -986,22 +807,15 @@
     </section>
 
 
-    <!-- ==================================================
-         ALL ORDERS
-    =================================================== -->
+    <!-- ALL ORDERS -->
 
-    <section
-      id="orders"
-      class="section"
-    >
+    <section id="orders" class="section">
 
       <div class="section-intro">
 
         <div>
 
-          <h2>
-            All Orders
-          </h2>
+          <h2>All Orders</h2>
 
           <p>
             Search, filter and manage your jobs.
@@ -1062,21 +876,10 @@
             All Statuses
           </option>
 
-          <option>
-            Received
-          </option>
-
-          <option>
-            Partially Received
-          </option>
-
-          <option>
-            Pending
-          </option>
-
-          <option>
-            No Amount
-          </option>
+          <option>Received</option>
+          <option>Partially Received</option>
+          <option>Pending</option>
+          <option>No Amount</option>
 
         </select>
 
@@ -1102,50 +905,22 @@
 
               <tr>
 
-                <th>
-                  Date
-                </th>
-
-                <th>
-                  Job #
-                </th>
-
-                <th>
-                  Party
-                </th>
-
-                <th>
-                  Orders
-                </th>
-
-                <th>
-                  Incharge
-                </th>
-
-                <th>
-                  Received
-                </th>
-
-                <th>
-                  Pending
-                </th>
-
-                <th>
-                  Status
-                </th>
-
-                <th>
-                  Actions
-                </th>
+                <th>Date</th>
+                <th>Job #</th>
+                <th>Party</th>
+                <th>Orders</th>
+                <th>Incharge</th>
+                <th>Received</th>
+                <th>Pending</th>
+                <th>Status</th>
+                <th>Actions</th>
 
               </tr>
 
             </thead>
 
 
-            <tbody
-              id="ordersBody"
-            ></tbody>
+            <tbody id="ordersBody"></tbody>
 
           </table>
 
@@ -1156,22 +931,15 @@
     </section>
 
 
-    <!-- ==================================================
-         MONTHLY REPORTS
-    =================================================== -->
+    <!-- MONTHLY REPORTS -->
 
-    <section
-      id="reports"
-      class="section"
-    >
+    <section id="reports" class="section">
 
       <div class="section-intro">
 
         <div>
 
-          <h2>
-            Monthly Reports
-          </h2>
+          <h2>Monthly Reports</h2>
 
           <p>
             Generate a print-ready order and collection report.
@@ -1228,9 +996,7 @@
 </div>
 
 
-<!-- =====================================================
-     PRINT / PDF OPTIONS MODAL
-===================================================== -->
+<!-- PRINT / PDF OPTIONS MODAL -->
 
 <div
   id="printOptionsModal"
@@ -1248,9 +1014,7 @@
     </p>
 
 
-    <!-- =====================================================
-         SORTING OPTION
-    ===================================================== -->
+    <!-- SORTING -->
 
     <div class="print-sort-section">
 
@@ -1273,10 +1037,9 @@
     </div>
 
 
+    <!-- CURRENT RESULTS -->
+
     <div class="print-option-grid">
-
-
-      <!-- CURRENT RESULTS -->
 
       <div class="print-option-row">
 
@@ -1509,7 +1272,6 @@
 
       </div>
 
-
     </div>
 
 
@@ -1530,23 +1292,17 @@
 </div>
 
 
-<!-- =====================================================
-     PRINT AREA
-===================================================== -->
+<!-- PRINT AREA -->
 
 <div id="printArea"></div>
 
 
-<!-- =====================================================
-     ORIGINAL SCRIPT
-===================================================== -->
+<!-- ORIGINAL SCRIPT -->
 
 <script src="script.js"></script>
 
 
-<!-- =====================================================
-     PRINT + PDF FUNCTIONALITY
-===================================================== -->
+<!-- PRINT + PDF FUNCTIONALITY -->
 
 <script>
 
@@ -1954,7 +1710,139 @@
 
 
   /* =====================================================
-     SORT PRINT DATA
+     PARSE ORDER DATE CORRECTLY
+     
+     IMPORTANT:
+     The tracker stores dates as YYYY-MM-DD.
+     We parse that format manually so the browser
+     cannot swap day/month or timezone values.
+  ===================================================== */
+
+  function parseOrderDate(value) {
+
+    if (!value) {
+      return NaN;
+    }
+
+
+    const text =
+      String(value).trim();
+
+
+    /*
+       YYYY-MM-DD
+    */
+
+    let match =
+      text.match(
+        /^(\d{4})-(\d{2})-(\d{2})$/
+      );
+
+
+    if (match) {
+
+      return Date.UTC(
+        Number(match[1]),
+        Number(match[2]) - 1,
+        Number(match[3])
+      );
+
+    }
+
+
+    /*
+       YYYY-MM-DD with time
+    */
+
+    match =
+      text.match(
+        /^(\d{4})-(\d{2})-(\d{2})[T\s]/
+      );
+
+
+    if (match) {
+
+      return Date.UTC(
+        Number(match[1]),
+        Number(match[2]) - 1,
+        Number(match[3])
+      );
+
+    }
+
+
+    /*
+       DD/MM/YYYY
+    */
+
+    match =
+      text.match(
+        /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+      );
+
+
+    if (match) {
+
+      return Date.UTC(
+        Number(match[3]),
+        Number(match[2]) - 1,
+        Number(match[1])
+      );
+
+    }
+
+
+    /*
+       DD-MM-YYYY
+    */
+
+    match =
+      text.match(
+        /^(\d{1,2})-(\d{1,2})-(\d{4})$/
+      );
+
+
+    if (match) {
+
+      return Date.UTC(
+        Number(match[3]),
+        Number(match[2]) - 1,
+        Number(match[1])
+      );
+
+    }
+
+
+    /*
+       Final fallback for other valid
+       JavaScript date formats.
+    */
+
+    const parsed =
+      new Date(text);
+
+
+    return Number.isNaN(parsed.getTime())
+      ? NaN
+      : parsed.getTime();
+
+  }
+
+
+  /* =====================================================
+     SORT PRINT DATA — CORRECTED
+     
+     Oldest → Newest:
+       2026-07-01
+       2026-07-02
+       2026-07-03
+       ...
+
+     Newest → Oldest:
+       2026-07-31
+       2026-07-30
+       2026-07-29
+       ...
   ===================================================== */
 
   function sortPrintData(data) {
@@ -1971,38 +1859,67 @@
         : "newest";
 
 
-    return data.slice().sort(
-      function (a, b) {
-
-        const dateA =
-          new Date(a.date);
-
-        const dateB =
-          new Date(b.date);
-
+    return data
+      .slice()
+      .sort(function (a, b) {
 
         const timeA =
-          Number.isNaN(dateA.getTime())
-            ? 0
-            : dateA.getTime();
+          parseOrderDate(a.date);
 
         const timeB =
-          Number.isNaN(dateB.getTime())
-            ? 0
-            : dateB.getTime();
+          parseOrderDate(b.date);
 
 
-        if (sortOrder === "oldest") {
+        /*
+           If both dates are valid,
+           compare the actual dates.
+        */
 
-          return timeA - timeB;
+        if (
+          !Number.isNaN(timeA) &&
+          !Number.isNaN(timeB)
+        ) {
+
+          if (sortOrder === "oldest") {
+
+            return timeA - timeB;
+
+          }
+
+          return timeB - timeA;
 
         }
 
 
-        return timeB - timeA;
+        /*
+           Orders without valid dates are
+           placed after dated orders.
+        */
 
-      }
-    );
+        if (Number.isNaN(timeA) &&
+            !Number.isNaN(timeB)) {
+
+          return 1;
+
+        }
+
+
+        if (!Number.isNaN(timeA) &&
+            Number.isNaN(timeB)) {
+
+          return -1;
+
+        }
+
+
+        /*
+           If both have no usable date,
+           keep their existing order.
+        */
+
+        return 0;
+
+      });
 
   }
 
@@ -2069,17 +1986,24 @@
     }
 
 
-    const date =
-      new Date(value);
+    const parsed =
+      parseOrderDate(value);
 
 
-    if (Number.isNaN(date.getTime())) {
+    if (Number.isNaN(parsed)) {
       return value;
     }
 
 
+    const date =
+      new Date(parsed);
+
+
     return date.toLocaleDateString(
-      "en-GB"
+      "en-GB",
+      {
+        timeZone: "UTC"
+      }
     );
 
   }
@@ -2297,19 +2221,12 @@
           <tr>
 
             <th>Date</th>
-
             <th>Job #</th>
-
             <th>Party</th>
-
             <th>Orders</th>
-
             <th>Incharge</th>
-
             <th>Received</th>
-
             <th>Pending</th>
-
             <th>Status</th>
 
           </tr>
@@ -2428,7 +2345,7 @@
 
   /* =====================================================
      DOWNLOAD PDF
-     ===================================================== */
+  ===================================================== */
 
   function downloadPDF(type) {
 
@@ -2507,10 +2424,6 @@
     });
 
 
-    /* =====================================================
-       PDF HEADER
-    ===================================================== */
-
     doc.setFont(
       "helvetica",
       "bold"
@@ -2568,10 +2481,6 @@
     );
 
 
-    /* =====================================================
-       TABLE DATA
-    ===================================================== */
-
     const tableHead = [[
       "Date",
       "Job #",
@@ -2615,10 +2524,6 @@
 
       });
 
-
-    /* =====================================================
-       AUTOTABLE
-    ===================================================== */
 
     doc.autoTable({
 
@@ -2749,10 +2654,6 @@
     });
 
 
-    /* =====================================================
-       SUMMARY
-    ===================================================== */
-
     let finalY = 45;
 
 
@@ -2766,10 +2667,6 @@
 
     }
 
-
-    /* =====================================================
-       CHECK IF SUMMARY NEEDS NEW PAGE
-    ===================================================== */
 
     if (finalY > 180) {
 
@@ -2812,10 +2709,6 @@
     );
 
 
-    /* =====================================================
-       FILE NAME
-    ===================================================== */
-
     let safeTitle =
       title
         .replace(/[^a-z0-9]+/gi, "_")
@@ -2835,10 +2728,6 @@
       dateStamp +
       ".pdf";
 
-
-    /* =====================================================
-       SAVE PDF
-    ===================================================== */
 
     doc.save(fileName);
 
