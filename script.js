@@ -1934,15 +1934,328 @@ function renderDashboard() {
 
 
 /* =====================================================
-   DASHBOARD REPORT
+   REPORT BUTTONS
 ===================================================== */
 
-$("dashboardReportBtn").onclick = () => {
+$("reportMonth").value =
+  currentMonth();
 
-  $("reportMonth").value =
-    currentMonth();
 
-  navTo("reports");
+$("generateReportBtn").onclick =
+  renderReport;
+
+
+/* =====================================================
+   PRINT REPORT
+   Opens a clean print window containing ONLY
+   the currently generated monthly report.
+===================================================== */
+
+$("printReportBtn").onclick = () => {
+
+  // Make sure the latest selected month is rendered
+  renderReport();
+
+  const report =
+    $("reportPreview").innerHTML;
+
+  if (!report || !report.trim()) {
+
+    toast("Please generate the report first.");
+
+    return;
+
+  }
+
+  const printWindow =
+    window.open(
+      "",
+      "_blank",
+      "width=1200,height=800"
+    );
+
+
+  if (!printWindow) {
+
+    alert(
+      "Printing was blocked by your browser. Please allow pop-ups for this site."
+    );
+
+    return;
+
+  }
+
+
+  printWindow.document.open();
+
+  printWindow.document.write(`
+
+    <!DOCTYPE html>
+
+    <html>
+
+    <head>
+
+      <meta charset="UTF-8">
+
+      <title>
+        AL JEFOON TENTS - Monthly Report
+      </title>
+
+
+      <style>
+
+        * {
+          box-sizing: border-box;
+        }
+
+
+        body {
+
+          margin: 0;
+
+          padding: 25px;
+
+          font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+          background: white;
+
+          color: #111;
+
+        }
+
+
+        .report-header {
+
+          display: flex;
+
+          justify-content: space-between;
+
+          align-items: flex-start;
+
+          margin-bottom: 25px;
+
+          border-bottom: 2px solid #000;
+
+          padding-bottom: 15px;
+
+        }
+
+
+        .report-header h2 {
+
+          margin: 0 0 5px 0;
+
+          font-size: 24px;
+
+        }
+
+
+        .report-header p {
+
+          margin: 0;
+
+          font-size: 13px;
+
+        }
+
+
+        .report-title {
+
+          text-align: right;
+
+        }
+
+
+        .report-title strong {
+
+          display: block;
+
+          font-size: 18px;
+
+        }
+
+
+        .report-title span {
+
+          display: block;
+
+          margin-top: 5px;
+
+          font-size: 11px;
+
+          color: #666;
+
+        }
+
+
+        .report-summary {
+
+          display: grid;
+
+          grid-template-columns:
+            repeat(4, 1fr);
+
+          gap: 12px;
+
+          margin-bottom: 25px;
+
+        }
+
+
+        .report-box {
+
+          border: 1px solid #ccc;
+
+          padding: 12px;
+
+          text-align: center;
+
+        }
+
+
+        .report-box span {
+
+          display: block;
+
+          font-size: 11px;
+
+          margin-bottom: 5px;
+
+          color: #555;
+
+        }
+
+
+        .report-box strong {
+
+          font-size: 18px;
+
+        }
+
+
+        .table-wrap {
+
+          width: 100%;
+
+        }
+
+
+        table {
+
+          width: 100%;
+
+          border-collapse: collapse;
+
+          font-size: 10px;
+
+        }
+
+
+        th {
+
+          background: #f2f2f2;
+
+          font-weight: bold;
+
+        }
+
+
+        th,
+        td {
+
+          border: 1px solid #999;
+
+          padding: 6px;
+
+          text-align: left;
+
+          vertical-align: top;
+
+        }
+
+
+        .badge {
+
+          display: inline-block;
+
+          padding: 3px 7px;
+
+          border-radius: 4px;
+
+          font-size: 9px;
+
+          font-weight: bold;
+
+          border: 1px solid #999;
+
+          background: white;
+
+          color: black;
+
+        }
+
+
+        .empty {
+
+          text-align: center;
+
+          padding: 20px;
+
+        }
+
+
+        @page {
+
+          size: A4 landscape;
+
+          margin: 10mm;
+
+        }
+
+
+        @media print {
+
+          body {
+
+            padding: 0;
+
+          }
+
+        }
+
+      </style>
+
+    </head>
+
+
+    <body>
+
+      ${report}
+
+    </body>
+
+
+    </html>
+
+  `);
+
+  printWindow.document.close();
+
+
+  printWindow.focus();
+
+
+  setTimeout(() => {
+
+    printWindow.print();
+
+    printWindow.close();
+
+  }, 500);
 
 };
 
