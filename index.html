@@ -227,8 +227,6 @@
       background: #f5f5f5;
     }
 
-    /* PDF DOWNLOAD BUTTON */
-
     .pdf-download-main-btn {
       margin-right: 8px;
     }
@@ -257,9 +255,7 @@
 
 <div class="app-shell">
 
-  <!-- ==================================================
-       SIDEBAR
-  =================================================== -->
+  <!-- SIDEBAR -->
 
   <aside class="sidebar">
 
@@ -272,45 +268,29 @@
 
     </div>
 
-    <!-- NAVIGATION -->
-
     <nav class="nav">
 
-      <button
-        class="nav-item active"
-        data-section="dashboard"
-      >
+      <button class="nav-item active" data-section="dashboard">
         <span>▦</span>
         Dashboard
       </button>
 
-      <button
-        class="nav-item"
-        data-section="new-order"
-      >
+      <button class="nav-item" data-section="new-order">
         <span>＋</span>
         New Order
       </button>
 
-      <button
-        class="nav-item"
-        data-section="orders"
-      >
+      <button class="nav-item" data-section="orders">
         <span>☷</span>
         All Orders
       </button>
 
-      <button
-        class="nav-item"
-        data-section="reports"
-      >
+      <button class="nav-item" data-section="reports">
         <span>▤</span>
         Monthly Reports
       </button>
 
     </nav>
-
-    <!-- SIDEBAR FOOTER -->
 
     <div class="sidebar-footer">
 
@@ -329,16 +309,11 @@
   </aside>
 
 
-  <!-- ==================================================
-       MAIN
-  =================================================== -->
+  <!-- MAIN -->
 
   <main class="main">
 
-
-    <!-- ==================================================
-         TOP BAR
-    =================================================== -->
+    <!-- TOP BAR -->
 
     <header class="topbar">
 
@@ -354,25 +329,16 @@
 
       </div>
 
-
-      <button
-        class="primary-btn"
-        id="quickAddBtn"
-      >
+      <button class="primary-btn" id="quickAddBtn">
         ＋ New Order
       </button>
 
     </header>
 
 
-    <!-- ==================================================
-         DASHBOARD
-    =================================================== -->
+    <!-- DASHBOARD -->
 
-    <section
-      id="dashboard"
-      class="section active"
-    >
+    <section id="dashboard" class="section active">
 
       <div class="welcome">
 
@@ -386,27 +352,18 @@
             Monthly Order Overview
           </h2>
 
-          <p
-            id="dashboardDateTime"
-            class="digital-clock"
-          >
+          <p id="dashboardDateTime" class="digital-clock">
             Loading...
           </p>
 
         </div>
 
-
-        <button
-          class="outline-btn"
-          id="dashboardReportBtn"
-        >
+        <button class="outline-btn" id="dashboardReportBtn">
           View Monthly Report
         </button>
 
       </div>
 
-
-      <!-- STATS -->
 
       <div class="stats-grid">
 
@@ -455,7 +412,7 @@
           </strong>
 
           <small>
-            Outstanding
+            This month
           </small>
 
         </div>
@@ -480,12 +437,7 @@
       </div>
 
 
-      <!-- DASHBOARD GRID -->
-
       <div class="dashboard-grid">
-
-
-        <!-- RECENT ORDERS -->
 
         <div class="panel">
 
@@ -503,16 +455,11 @@
 
             </div>
 
-
-            <button
-              class="text-btn"
-              data-go="orders"
-            >
+            <button class="text-btn" data-go="orders">
               View all
             </button>
 
           </div>
-
 
           <div class="table-wrap">
 
@@ -522,34 +469,17 @@
 
                 <tr>
 
-                  <th>
-                    Date
-                  </th>
-
-                  <th>
-                    Job #
-                  </th>
-
-                  <th>
-                    Party
-                  </th>
-
-                  <th>
-                    Received
-                  </th>
-
-                  <th>
-                    Status
-                  </th>
+                  <th>Date</th>
+                  <th>Job #</th>
+                  <th>Party</th>
+                  <th>Received</th>
+                  <th>Status</th>
 
                 </tr>
 
               </thead>
 
-
-              <tbody
-                id="recentOrdersBody"
-              ></tbody>
+              <tbody id="recentOrdersBody"></tbody>
 
             </table>
 
@@ -557,8 +487,6 @@
 
         </div>
 
-
-        <!-- QUICK SUMMARY -->
 
         <div class="panel">
 
@@ -580,7 +508,6 @@
 
 
           <div class="summary-list">
-
 
             <div>
 
@@ -633,7 +560,6 @@
 
             </div>
 
-
           </div>
 
         </div>
@@ -643,14 +569,9 @@
     </section>
 
 
-    <!-- ==================================================
-         NEW ORDER
-    =================================================== -->
+    <!-- NEW ORDER -->
 
-    <section
-      id="new-order"
-      class="section"
-    >
+    <section id="new-order" class="section">
 
       <div class="section-intro">
 
@@ -669,21 +590,11 @@
       </div>
 
 
-      <form
-        id="orderForm"
-        class="panel form-panel"
-      >
+      <form id="orderForm" class="panel form-panel">
 
-        <input
-          type="hidden"
-          id="editId"
-        >
-
+        <input type="hidden" id="editId">
 
         <div class="form-grid">
-
-
-          <!-- DATE -->
 
           <label>
 
@@ -697,8 +608,6 @@
 
           </label>
 
-
-          <!-- JOB NUMBER -->
 
           <label>
 
@@ -714,8 +623,6 @@
           </label>
 
 
-          <!-- HAFLA -->
-
           <label>
 
             HAFLA Order ID
@@ -728,8 +635,6 @@
 
           </label>
 
-
-          <!-- PARTY -->
 
           <label>
 
@@ -745,8 +650,6 @@
           </label>
 
 
-          <!-- INCHARGE -->
-
           <label>
 
             Incharge
@@ -761,8 +664,6 @@
           </label>
 
 
-          <!-- RECEIVED BY -->
-
           <label>
 
             Received By
@@ -773,44 +674,19 @@
                 Select
               </option>
 
-              <option>
-                Bank
-              </option>
-
-              <option>
-                Zohaib
-              </option>
-
-              <option>
-                Saud
-              </option>
-
-              <option>
-                Fahad
-              </option>
-
-              <option>
-                Malik
-              </option>
-
-              <option>
-                Parvaiz
-              </option>
-
-              <option>
-                Ali
-              </option>
-
-              <option>
-                Ihsan
-              </option>
+              <option>Bank</option>
+              <option>Zohaib</option>
+              <option>Saud</option>
+              <option>Fahad</option>
+              <option>Malik</option>
+              <option>Parvaiz</option>
+              <option>Ali</option>
+              <option>Ihsan</option>
 
             </select>
 
           </label>
 
-
-          <!-- PAYMENT METHOD -->
 
           <label>
 
@@ -822,32 +698,16 @@
                 Select
               </option>
 
-              <option>
-                Cash
-              </option>
-
-              <option>
-                Bank
-              </option>
-
-              <option>
-                Online
-              </option>
-
-              <option>
-                Card
-              </option>
-
-              <option>
-                Other
-              </option>
+              <option>Cash</option>
+              <option>Bank</option>
+              <option>Online</option>
+              <option>Card</option>
+              <option>Other</option>
 
             </select>
 
           </label>
 
-
-          <!-- TOTAL -->
 
           <label>
 
@@ -864,8 +724,6 @@
           </label>
 
 
-          <!-- RECEIVED -->
-
           <label>
 
             Amount Received
@@ -881,8 +739,6 @@
           </label>
 
 
-          <!-- PENDING -->
-
           <label>
 
             Pending
@@ -896,8 +752,6 @@
           </label>
 
 
-          <!-- STATUS -->
-
           <label>
 
             Status
@@ -908,31 +762,17 @@
                 Automatic
               </option>
 
-              <option>
-                Received
-              </option>
-
-              <option>
-                Partially Received
-              </option>
-
-              <option>
-                Pending
-              </option>
-
-              <option>
-                No Amount
-              </option>
+              <option>Received</option>
+              <option>Partially Received</option>
+              <option>Pending</option>
+              <option>No Amount</option>
 
             </select>
 
           </label>
 
-
         </div>
 
-
-        <!-- ORDER ITEMS -->
 
         <div class="items-section">
 
@@ -950,7 +790,6 @@
 
             </div>
 
-
             <button
               type="button"
               class="outline-btn"
@@ -961,15 +800,10 @@
 
           </div>
 
-
-          <div
-            id="itemsContainer"
-          ></div>
+          <div id="itemsContainer"></div>
 
         </div>
 
-
-        <!-- REMARKS -->
 
         <label class="full-label">
 
@@ -984,8 +818,6 @@
         </label>
 
 
-        <!-- FORM ACTIONS -->
-
         <div class="form-actions">
 
           <button
@@ -995,7 +827,6 @@
           >
             Clear
           </button>
-
 
           <button
             type="submit"
@@ -1012,14 +843,9 @@
     </section>
 
 
-    <!-- ==================================================
-         ALL ORDERS
-    =================================================== -->
+    <!-- ALL ORDERS -->
 
-    <section
-      id="orders"
-      class="section"
-    >
+    <section id="orders" class="section">
 
       <div class="section-intro">
 
@@ -1045,8 +871,6 @@
           "
         >
 
-          <!-- PRINT BUTTON -->
-
           <button
             class="outline-btn"
             id="printOrdersBtn"
@@ -1055,8 +879,6 @@
             🖨 Print Orders
           </button>
 
-
-          <!-- PDF BUTTON -->
 
           <button
             class="primary-btn pdf-download-main-btn"
@@ -1080,10 +902,7 @@
       </div>
 
 
-      <!-- FILTERS -->
-
       <div class="panel filters">
-
 
         <input
           id="searchOrders"
@@ -1091,12 +910,10 @@
           placeholder="Search job, customer, item, HAFLA ID..."
         >
 
-
         <input
           id="filterMonth"
           type="month"
         >
-
 
         <select id="filterStatus">
 
@@ -1104,21 +921,10 @@
             All Statuses
           </option>
 
-          <option>
-            Received
-          </option>
-
-          <option>
-            Partially Received
-          </option>
-
-          <option>
-            Pending
-          </option>
-
-          <option>
-            No Amount
-          </option>
+          <option>Received</option>
+          <option>Partially Received</option>
+          <option>Pending</option>
+          <option>No Amount</option>
 
         </select>
 
@@ -1134,8 +940,6 @@
       </div>
 
 
-      <!-- ORDERS TABLE -->
-
       <div class="panel">
 
         <div class="table-wrap">
@@ -1146,50 +950,21 @@
 
               <tr>
 
-                <th>
-                  Date
-                </th>
-
-                <th>
-                  Job #
-                </th>
-
-                <th>
-                  Party
-                </th>
-
-                <th>
-                  Orders
-                </th>
-
-                <th>
-                  Incharge
-                </th>
-
-                <th>
-                  Received
-                </th>
-
-                <th>
-                  Pending
-                </th>
-
-                <th>
-                  Status
-                </th>
-
-                <th>
-                  Actions
-                </th>
+                <th>Date</th>
+                <th>Job #</th>
+                <th>Party</th>
+                <th>Orders</th>
+                <th>Incharge</th>
+                <th>Received</th>
+                <th>Pending</th>
+                <th>Status</th>
+                <th>Actions</th>
 
               </tr>
 
             </thead>
 
-
-            <tbody
-              id="ordersBody"
-            ></tbody>
+            <tbody id="ordersBody"></tbody>
 
           </table>
 
@@ -1200,14 +975,9 @@
     </section>
 
 
-    <!-- ==================================================
-         MONTHLY REPORTS
-    =================================================== -->
+    <!-- MONTHLY REPORTS -->
 
-    <section
-      id="reports"
-      class="section"
-    >
+    <section id="reports" class="section">
 
       <div class="section-intro">
 
@@ -1235,8 +1005,6 @@
       </div>
 
 
-      <!-- REPORT CONTROLS -->
-
       <div class="panel report-controls">
 
         <label>
@@ -1261,8 +1029,6 @@
 
       </div>
 
-
-      <!-- REPORT -->
 
       <div
         id="reportPreview"
@@ -1298,8 +1064,6 @@
 
     <div class="print-option-grid">
 
-
-      <!-- CURRENT RESULTS -->
 
       <div class="print-option-row">
 
@@ -1338,8 +1102,6 @@
       </div>
 
 
-      <!-- ALL ORDERS -->
-
       <div class="print-option-row">
 
         <div class="print-option-info">
@@ -1377,8 +1139,6 @@
       </div>
 
 
-      <!-- PENDING -->
-
       <div class="print-option-row">
 
         <div class="print-option-info">
@@ -1388,7 +1148,7 @@
           </div>
 
           <span class="print-option-description">
-            Orders with payment still pending.
+            Only pending orders from the selected report/filter month.
           </span>
 
         </div>
@@ -1416,8 +1176,6 @@
       </div>
 
 
-      <!-- PARTIALLY RECEIVED -->
-
       <div class="print-option-row">
 
         <div class="print-option-info">
@@ -1427,7 +1185,7 @@
           </div>
 
           <span class="print-option-description">
-            Orders with partial payment received.
+            Only partially received orders from the selected month.
           </span>
 
         </div>
@@ -1455,8 +1213,6 @@
       </div>
 
 
-      <!-- RECEIVED -->
-
       <div class="print-option-row">
 
         <div class="print-option-info">
@@ -1466,7 +1222,7 @@
           </div>
 
           <span class="print-option-description">
-            Orders marked as fully received.
+            Only fully received orders from the selected month.
           </span>
 
         </div>
@@ -1494,8 +1250,6 @@
       </div>
 
 
-      <!-- NO AMOUNT -->
-
       <div class="print-option-row">
 
         <div class="print-option-info">
@@ -1505,7 +1259,7 @@
           </div>
 
           <span class="print-option-description">
-            Orders with no payment amount.
+            Only no-amount orders from the selected month.
           </span>
 
         </div>
@@ -1559,10 +1313,6 @@
 
 <div id="printArea"></div>
 
-
-<!-- =====================================================
-     ORIGINAL SCRIPT
-===================================================== -->
 
 <script src="script.js"></script>
 
@@ -1668,13 +1418,9 @@
     return String(value ?? "")
 
       .replace(/&/g, "&amp;")
-
       .replace(/</g, "&lt;")
-
       .replace(/>/g, "&gt;")
-
       .replace(/"/g, "&quot;")
-
       .replace(/'/g, "&#039;");
 
   }
@@ -1687,9 +1433,7 @@
   function cleanText(value) {
 
     return String(value ?? "")
-
       .replace(/\s+/g, " ")
-
       .trim();
 
   }
@@ -1945,19 +1689,164 @@
 
 
   /* =====================================================
-     FILTER BY STATUS
+     GET SELECTED / ACTIVE MONTH
+     
+     IMPORTANT:
+     1. Monthly Reports uses reportMonth.
+     2. All Orders uses filterMonth.
+     3. If neither is selected, current calendar month
+        is used for monthly pending calculations.
+  ===================================================== */
+
+  function getActiveMonth() {
+
+    const reportMonth =
+      document.getElementById("reportMonth");
+
+    const filterMonth =
+      document.getElementById("filterMonth");
+
+
+    /*
+       If the Monthly Reports section has a selected
+       month, that month has priority.
+    */
+
+    if (
+      reportMonth &&
+      reportMonth.value
+    ) {
+
+      return reportMonth.value;
+
+    }
+
+
+    /*
+       Otherwise use the All Orders month filter.
+    */
+
+    if (
+      filterMonth &&
+      filterMonth.value
+    ) {
+
+      return filterMonth.value;
+
+    }
+
+
+    /*
+       Finally use the current month.
+    */
+
+    const now =
+      new Date();
+
+    return (
+      now.getFullYear() +
+      "-" +
+      String(
+        now.getMonth() + 1
+      ).padStart(2, "0")
+    );
+
+  }
+
+
+  /* =====================================================
+     CHECK ORDER MONTH
+  ===================================================== */
+
+  function orderBelongsToMonth(
+    order,
+    month
+  ) {
+
+    if (!order || !order.date || !month) {
+      return false;
+    }
+
+
+    /*
+       The order date is stored as YYYY-MM-DD.
+       Comparing the first 7 characters avoids timezone
+       problems.
+    */
+
+    return String(order.date)
+      .slice(0, 7) === month;
+
+  }
+
+
+  /* =====================================================
+     GET MONTHLY ORDERS
+     
+     This is the important correction.
+     
+     Every status report is restricted to the selected
+     month. This prevents July orders appearing when
+     August is selected, etc.
+  ===================================================== */
+
+  function getMonthlyResults() {
+
+    const month =
+      getActiveMonth();
+
+    return getAllResults()
+      .filter(function (order) {
+
+        return orderBelongsToMonth(
+          order,
+          month
+        );
+
+      });
+
+  }
+
+
+  /* =====================================================
+     FILTER BY STATUS + CURRENT MONTH
   ===================================================== */
 
   function getStatusResults(status) {
+
+    const month =
+      getActiveMonth();
+
 
     return getAllResults()
 
       .filter(function (order) {
 
+        /*
+           First make sure the order belongs to
+           the selected/current month.
+        */
+
+        if (
+          !orderBelongsToMonth(
+            order,
+            month
+          )
+        ) {
+
+          return false;
+
+        }
+
+
+        /*
+           Then match the status.
+        */
+
         return cleanText(
           order.status
         ).toLowerCase() ===
-        status.toLowerCase();
+        cleanText(status).toLowerCase();
 
       });
 
@@ -1970,6 +1859,12 @@
 
   function getPrintData(type) {
 
+    /*
+       CURRENT:
+       Whatever is currently displayed in the All Orders
+       table, respecting its filters.
+    */
+
     if (type === "current") {
 
       return getCurrentResults();
@@ -1977,12 +1872,24 @@
     }
 
 
+    /*
+       ALL:
+       Every order, all months.
+    */
+
     if (type === "all") {
 
       return getAllResults();
 
     }
 
+
+    /*
+       STATUS:
+       IMPORTANT:
+       Status reports are now restricted to the selected
+       month.
+    */
 
     return getStatusResults(type);
 
@@ -2051,6 +1958,34 @@
     }
 
 
+    /*
+       Handle YYYY-MM-DD without timezone shifting.
+    */
+
+    const stringValue =
+      String(value);
+
+
+    if (
+      /^\d{4}-\d{2}-\d{2}$/.test(
+        stringValue
+      )
+    ) {
+
+      const parts =
+        stringValue.split("-");
+
+      return (
+        parts[2] +
+        "/" +
+        parts[1] +
+        "/" +
+        parts[0]
+      );
+
+    }
+
+
     const date =
       new Date(value);
 
@@ -2069,9 +2004,17 @@
 
   /* =====================================================
      GET REPORT PERIOD
+     
+     Priority:
+     reportMonth -> filterMonth -> current month
   ===================================================== */
 
   function getReportPeriod() {
+
+    const reportMonth =
+      document.getElementById(
+        "reportMonth"
+      );
 
     const filterMonth =
       document.getElementById(
@@ -2079,35 +2022,75 @@
       );
 
 
-    let period =
-      "All Dates";
+    let monthValue = "";
 
 
     if (
+      reportMonth &&
+      reportMonth.value
+    ) {
+
+      monthValue =
+        reportMonth.value;
+
+    }
+
+    else if (
       filterMonth &&
       filterMonth.value
     ) {
 
-      const date =
-        new Date(
-          filterMonth.value +
-          "-01T00:00:00"
-        );
-
-
-      period =
-        date.toLocaleDateString(
-          "en-GB",
-          {
-            month: "long",
-            year: "numeric"
-          }
-        );
+      monthValue =
+        filterMonth.value;
 
     }
 
 
-    return period;
+    /*
+       If there is no selected month,
+       use current month.
+    */
+
+    if (!monthValue) {
+
+      const now =
+        new Date();
+
+      monthValue =
+        now.getFullYear() +
+        "-" +
+        String(
+          now.getMonth() + 1
+        ).padStart(2, "0");
+
+    }
+
+
+    const date =
+      new Date(
+        monthValue +
+        "-01T00:00:00"
+      );
+
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+
+      return "Current Month";
+
+    }
+
+
+    return date.toLocaleDateString(
+      "en-GB",
+      {
+        month: "long",
+        year: "numeric"
+      }
+    );
 
   }
 
@@ -2126,13 +2109,13 @@
       all:
         "All Orders",
 
-      "Pending":
+      Pending:
         "Pending Orders",
 
       "Partially Received":
         "Partially Received Orders",
 
-      "Received":
+      Received:
         "Received Orders",
 
       "No Amount":
@@ -2143,6 +2126,76 @@
 
     return titles[type] ||
       "Order Report";
+
+  }
+
+
+  /* =====================================================
+     GET MONTHLY PENDING TOTAL
+     
+     IMPORTANT:
+     Pending is calculated from orders belonging to
+     the active month only.
+     
+     This includes:
+       - Pending
+       - Partially Received
+       
+     because both can still have money outstanding.
+  ===================================================== */
+
+  function getMonthlyPendingTotal() {
+
+    const monthlyOrders =
+      getMonthlyResults();
+
+
+    let total = 0;
+
+
+    monthlyOrders.forEach(
+      function (order) {
+
+        total +=
+          numberValue(
+            order.pending
+          );
+
+      }
+    );
+
+
+    return total;
+
+  }
+
+
+  /* =====================================================
+     GET MONTHLY RECEIVED TOTAL
+  ===================================================== */
+
+  function getMonthlyReceivedTotal() {
+
+    const monthlyOrders =
+      getMonthlyResults();
+
+
+    let total = 0;
+
+
+    monthlyOrders.forEach(
+      function (order) {
+
+        total +=
+          numberValue(
+            order.received
+          );
+
+      }
+    );
+
+
+    return total;
 
   }
 
@@ -2189,6 +2242,34 @@
         );
 
     });
+
+
+    /*
+       For monthly/status reports, ensure pending is
+       ALWAYS based only on the active month.
+    */
+
+    if (
+      type !== "all" &&
+      type !== "current"
+    ) {
+
+      pendingTotal =
+        data.reduce(
+          function (total, order) {
+
+            return (
+              total +
+              numberValue(
+                order.pending
+              )
+            );
+
+          },
+          0
+        );
+
+    }
 
 
     const title =
@@ -2243,19 +2324,12 @@
           <tr>
 
             <th>Date</th>
-
             <th>Job #</th>
-
             <th>Party</th>
-
             <th>Orders</th>
-
             <th>Incharge</th>
-
             <th>Received</th>
-
             <th>Pending</th>
-
             <th>Status</th>
 
           </tr>
@@ -2409,6 +2483,19 @@
     }
 
 
+    if (
+      typeof window.jspdf.jsPDF !== "function"
+    ) {
+
+      alert(
+        "PDF generator is not available. Please refresh the page and try again."
+      );
+
+      return;
+
+    }
+
+
     const jsPDF =
       window.jspdf.jsPDF;
 
@@ -2555,6 +2642,19 @@
        AUTOTABLE
     ===================================================== */
 
+    if (
+      typeof doc.autoTable !== "function"
+    ) {
+
+      alert(
+        "PDF table plugin could not be loaded. Please refresh the page and try again."
+      );
+
+      return;
+
+    }
+
+
     doc.autoTable({
 
       head: tableHead,
@@ -2636,7 +2736,6 @@
       margin: {
 
         left: 14,
-
         right: 14
 
       },
@@ -2648,7 +2747,8 @@
             doc.internal.getNumberOfPages();
 
           const currentPage =
-            doc.internal.getCurrentPageInfo()
+            doc.internal
+              .getCurrentPageInfo()
               .pageNumber;
 
 
@@ -2701,10 +2801,6 @@
 
     }
 
-
-    /* =====================================================
-       CHECK IF SUMMARY NEEDS NEW PAGE
-    ===================================================== */
 
     if (finalY > 180) {
 
@@ -2770,10 +2866,6 @@
       dateStamp +
       ".pdf";
 
-
-    /* =====================================================
-       SAVE PDF
-    ===================================================== */
 
     doc.save(fileName);
 
