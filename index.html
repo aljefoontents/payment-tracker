@@ -14,8 +14,13 @@
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- PDF LIBRARIES -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
   <!-- PRINT STYLES -->
   <style>
+
     #printArea {
       display: none;
     }
@@ -90,7 +95,9 @@
       }
     }
 
-    /* PRINT OPTIONS MODAL */
+    /* =====================================================
+       PRINT / PDF OPTIONS MODAL
+    ===================================================== */
 
     .print-options-modal {
       display: none;
@@ -108,7 +115,9 @@
     }
 
     .print-options-box {
-      width: min(560px, 100%);
+      width: min(650px, 100%);
+      max-height: 90vh;
+      overflow-y: auto;
       background: #fff;
       border-radius: 14px;
       padding: 25px;
@@ -127,33 +136,77 @@
 
     .print-option-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 10px;
     }
 
-    .print-option-btn {
+    .print-option-row {
       border: 1px solid #ddd;
-      background: #fff;
       border-radius: 10px;
-      padding: 14px;
-      cursor: pointer;
-      text-align: left;
-      font-weight: 700;
+      padding: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      background: #fff;
       transition: .15s ease;
     }
 
-    .print-option-btn:hover {
+    .print-option-row:hover {
       border-color: #fcc224;
       background: #fffaf0;
-      transform: translateY(-1px);
     }
 
-    .print-option-btn small {
+    .print-option-info {
+      flex: 1;
+    }
+
+    .print-option-title {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .print-option-description {
       display: block;
-      margin-top: 5px;
+      margin-top: 4px;
       color: #777;
       font-weight: 400;
+      font-size: 12px;
       line-height: 1.4;
+    }
+
+    .print-option-actions {
+      display: flex;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .print-action-btn {
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 8px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: .15s ease;
+      white-space: nowrap;
+    }
+
+    .print-action-btn:hover {
+      border-color: #fcc224;
+      background: #fffaf0;
+    }
+
+    .print-action-btn.pdf-btn {
+      background: #fcc224;
+      border-color: #fcc224;
+      color: #000;
+    }
+
+    .print-action-btn.pdf-btn:hover {
+      background: #e5ad00;
+      border-color: #e5ad00;
     }
 
     .print-modal-actions {
@@ -170,11 +223,33 @@
       cursor: pointer;
     }
 
-    @media (max-width: 650px) {
-      .print-option-grid {
-        grid-template-columns: 1fr;
-      }
+    .print-cancel-btn:hover {
+      background: #f5f5f5;
     }
+
+    /* PDF DOWNLOAD BUTTON */
+
+    .pdf-download-main-btn {
+      margin-right: 8px;
+    }
+
+    @media (max-width: 650px) {
+
+      .print-option-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .print-option-actions {
+        width: 100%;
+      }
+
+      .print-action-btn {
+        flex: 1;
+      }
+
+    }
+
   </style>
 </head>
 
@@ -970,7 +1045,7 @@
           "
         >
 
-          <!-- NEW PRINT BUTTON -->
+          <!-- PRINT BUTTON -->
 
           <button
             class="outline-btn"
@@ -978,6 +1053,17 @@
             type="button"
           >
             🖨 Print Orders
+          </button>
+
+
+          <!-- PDF BUTTON -->
+
+          <button
+            class="primary-btn pdf-download-main-btn"
+            id="downloadPdfBtn"
+            type="button"
+          >
+            📄 Download PDF
           </button>
 
 
@@ -1191,7 +1277,7 @@
 
 
 <!-- =====================================================
-     PRINT OPTIONS MODAL
+     PRINT / PDF OPTIONS MODAL
 ===================================================== -->
 
 <div
@@ -1202,105 +1288,249 @@
   <div class="print-options-box">
 
     <h3>
-      Print Orders
+      Print / Download Orders
     </h3>
 
     <p>
-      Choose exactly what you want to print.
+      Choose what you want to print or download as PDF.
     </p>
 
 
     <div class="print-option-grid">
 
 
-      <button
-        type="button"
-        class="print-option-btn"
-        data-print-filter="current"
-      >
+      <!-- CURRENT RESULTS -->
 
-        Current Results
+      <div class="print-option-row">
 
-        <small>
-          Print whatever is currently filtered.
-        </small>
+        <div class="print-option-info">
 
-      </button>
+          <div class="print-option-title">
+            Current Results
+          </div>
 
+          <span class="print-option-description">
+            Print or download whatever is currently filtered.
+          </span>
 
-      <button
-        type="button"
-        class="print-option-btn"
-        data-print-filter="all"
-      >
+        </div>
 
-        All Orders
+        <div class="print-option-actions">
 
-        <small>
-          Print every order in the tracker.
-        </small>
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="current"
+          >
+            🖨 Print
+          </button>
 
-      </button>
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="current"
+          >
+            📄 PDF
+          </button>
 
+        </div>
 
-      <button
-        type="button"
-        class="print-option-btn"
-        data-print-filter="Pending"
-      >
-
-        Pending Orders
-
-        <small>
-          Orders with payment still pending.
-        </small>
-
-      </button>
+      </div>
 
 
-      <button
-        type="button"
-        class="print-option-btn"
-        data-print-filter="Partially Received"
-      >
+      <!-- ALL ORDERS -->
 
-        Partially Received
+      <div class="print-option-row">
 
-        <small>
-          Orders with partial payment received.
-        </small>
+        <div class="print-option-info">
 
-      </button>
+          <div class="print-option-title">
+            All Orders
+          </div>
+
+          <span class="print-option-description">
+            Print or download every order in the tracker.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="all"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="all"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
 
 
-      <button
-        type="button"
-        class="print-option-btn"
-        data-print-filter="Received"
-      >
+      <!-- PENDING -->
 
-        Received Orders
+      <div class="print-option-row">
 
-        <small>
-          Orders marked as fully received.
-        </small>
+        <div class="print-option-info">
 
-      </button>
+          <div class="print-option-title">
+            Pending Orders
+          </div>
+
+          <span class="print-option-description">
+            Orders with payment still pending.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="Pending"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="Pending"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
 
 
-      <button
-        type="button"
-        class="print-option-btn"
-        data-print-filter="No Amount"
-      >
+      <!-- PARTIALLY RECEIVED -->
 
-        No Amount
+      <div class="print-option-row">
 
-        <small>
-          Orders with no payment amount.
-        </small>
+        <div class="print-option-info">
 
-      </button>
+          <div class="print-option-title">
+            Partially Received
+          </div>
+
+          <span class="print-option-description">
+            Orders with partial payment received.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="Partially Received"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="Partially Received"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- RECEIVED -->
+
+      <div class="print-option-row">
+
+        <div class="print-option-info">
+
+          <div class="print-option-title">
+            Received Orders
+          </div>
+
+          <span class="print-option-description">
+            Orders marked as fully received.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="Received"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="Received"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- NO AMOUNT -->
+
+      <div class="print-option-row">
+
+        <div class="print-option-info">
+
+          <div class="print-option-title">
+            No Amount
+          </div>
+
+          <span class="print-option-description">
+            Orders with no payment amount.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="No Amount"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="No Amount"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
 
 
     </div>
@@ -1338,7 +1568,7 @@
 
 
 <!-- =====================================================
-     PRINT FUNCTIONALITY
+     PRINT + PDF FUNCTIONALITY
 ===================================================== -->
 
 <script>
@@ -1354,42 +1584,79 @@
   const openBtn =
     document.getElementById("printOrdersBtn");
 
+  const pdfMainBtn =
+    document.getElementById("downloadPdfBtn");
+
   const closeBtn =
     document.getElementById("closePrintOptions");
 
 
-  if (!modal || !openBtn) {
+  if (!modal) {
     return;
   }
 
 
   /* =====================================================
-     OPEN / CLOSE MODAL
+     OPEN MODAL
   ===================================================== */
 
-  openBtn.addEventListener("click", function () {
+  function openPrintPdfModal() {
 
     modal.classList.add("show");
 
-  });
+  }
 
 
-  closeBtn.addEventListener("click", function () {
+  if (openBtn) {
 
-    modal.classList.remove("show");
+    openBtn.addEventListener(
+      "click",
+      openPrintPdfModal
+    );
 
-  });
+  }
 
 
-  modal.addEventListener("click", function (event) {
+  if (pdfMainBtn) {
 
-    if (event.target === modal) {
+    pdfMainBtn.addEventListener(
+      "click",
+      openPrintPdfModal
+    );
 
-      modal.classList.remove("show");
+  }
+
+
+  /* =====================================================
+     CLOSE MODAL
+  ===================================================== */
+
+  if (closeBtn) {
+
+    closeBtn.addEventListener(
+      "click",
+      function () {
+
+        modal.classList.remove("show");
+
+      }
+    );
+
+  }
+
+
+  modal.addEventListener(
+    "click",
+    function (event) {
+
+      if (event.target === modal) {
+
+        modal.classList.remove("show");
+
+      }
 
     }
-
-  });
+  );
 
 
   /* =====================================================
@@ -1457,7 +1724,6 @@
 
   /* =====================================================
      READ ORDERS FROM LOCAL STORAGE
-     Used for ALL / STATUS printing
   ===================================================== */
 
   function getStoredOrders() {
@@ -1673,12 +1939,6 @@
     }
 
 
-    /*
-      Fallback:
-      If the storage structure ever changes,
-      use the currently rendered table.
-    */
-
     return getCurrentResults();
 
   }
@@ -1808,6 +2068,86 @@
 
 
   /* =====================================================
+     GET REPORT PERIOD
+  ===================================================== */
+
+  function getReportPeriod() {
+
+    const filterMonth =
+      document.getElementById(
+        "filterMonth"
+      );
+
+
+    let period =
+      "All Dates";
+
+
+    if (
+      filterMonth &&
+      filterMonth.value
+    ) {
+
+      const date =
+        new Date(
+          filterMonth.value +
+          "-01T00:00:00"
+        );
+
+
+      period =
+        date.toLocaleDateString(
+          "en-GB",
+          {
+            month: "long",
+            year: "numeric"
+          }
+        );
+
+    }
+
+
+    return period;
+
+  }
+
+
+  /* =====================================================
+     GET REPORT TITLE
+  ===================================================== */
+
+  function getReportTitle(type) {
+
+    const titles = {
+
+      current:
+        "Current Order Results",
+
+      all:
+        "All Orders",
+
+      "Pending":
+        "Pending Orders",
+
+      "Partially Received":
+        "Partially Received Orders",
+
+      "Received":
+        "Received Orders",
+
+      "No Amount":
+        "No Amount Orders"
+
+    };
+
+
+    return titles[type] ||
+      "Order Report";
+
+  }
+
+
+  /* =====================================================
      PRINT
   ===================================================== */
 
@@ -1851,66 +2191,12 @@
     });
 
 
-    const titles = {
-
-      current:
-        "Current Order Results",
-
-      all:
-        "All Orders",
-
-      "Pending":
-        "Pending Orders",
-
-      "Partially Received":
-        "Partially Received Orders",
-
-      "Received":
-        "Received Orders",
-
-      "No Amount":
-        "No Amount Orders"
-
-    };
-
-
     const title =
-      titles[type] ||
-      "Order Report";
+      getReportTitle(type);
 
 
-    const filterMonth =
-      document.getElementById(
-        "filterMonth"
-      );
-
-
-    let period =
-      "All Dates";
-
-
-    if (
-      filterMonth &&
-      filterMonth.value
-    ) {
-
-      const date =
-        new Date(
-          filterMonth.value +
-          "-01T00:00:00"
-        );
-
-
-      period =
-        date.toLocaleDateString(
-          "en-GB",
-          {
-            month: "long",
-            year: "numeric"
-          }
-        );
-
-    }
+    const period =
+      getReportPeriod();
 
 
     const printArea =
@@ -2077,11 +2363,6 @@
     `;
 
 
-    /*
-      Small delay gives the browser time
-      to render the print page.
-    */
-
     setTimeout(function () {
 
       window.print();
@@ -2092,7 +2373,415 @@
 
 
   /* =====================================================
-     PRINT OPTION BUTTONS
+     DOWNLOAD PDF
+  ===================================================== */
+
+  function downloadPDF(type) {
+
+    modal.classList.remove("show");
+
+
+    const data =
+      getPrintData(type);
+
+
+    if (!data.length) {
+
+      alert(
+        "There are no orders available to download for this selection."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      typeof window.jspdf === "undefined"
+    ) {
+
+      alert(
+        "PDF library could not be loaded. Please check your internet connection and try again."
+      );
+
+      return;
+
+    }
+
+
+    const jsPDF =
+      window.jspdf.jsPDF;
+
+
+    const doc =
+      new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4"
+      });
+
+
+    const title =
+      getReportTitle(type);
+
+
+    const period =
+      getReportPeriod();
+
+
+    let receivedTotal = 0;
+
+    let pendingTotal = 0;
+
+
+    data.forEach(function (order) {
+
+      receivedTotal +=
+        numberValue(
+          order.received
+        );
+
+      pendingTotal +=
+        numberValue(
+          order.pending
+        );
+
+    });
+
+
+    /* =====================================================
+       PDF HEADER
+    ===================================================== */
+
+    doc.setFont(
+      "helvetica",
+      "bold"
+    );
+
+    doc.setFontSize(20);
+
+    doc.text(
+      "AL JEFOON TENTS",
+      14,
+      15
+    );
+
+
+    doc.setFontSize(12);
+
+    doc.setFont(
+      "helvetica",
+      "bold"
+    );
+
+    doc.text(
+      title,
+      14,
+      22
+    );
+
+
+    doc.setFont(
+      "helvetica",
+      "normal"
+    );
+
+    doc.setFontSize(9);
+
+    doc.text(
+      "Period: " + period,
+      14,
+      28
+    );
+
+
+    doc.text(
+      "Printed: " +
+      new Date().toLocaleString("en-GB"),
+      14,
+      33
+    );
+
+
+    /* =====================================================
+       TABLE DATA
+    ===================================================== */
+
+    const tableHead = [[
+      "Date",
+      "Job #",
+      "Party",
+      "Orders",
+      "Incharge",
+      "Received",
+      "Pending",
+      "Status"
+    ]];
+
+
+    const tableBody =
+      data.map(function (order) {
+
+        return [
+
+          formatDate(
+            order.date
+          ),
+
+          order.job || "",
+
+          order.party || "",
+
+          order.orders || "",
+
+          order.incharge || "",
+
+          formatMoney(
+            order.received
+          ),
+
+          formatMoney(
+            order.pending
+          ),
+
+          order.status || ""
+
+        ];
+
+      });
+
+
+    /* =====================================================
+       AUTOTABLE
+    ===================================================== */
+
+    doc.autoTable({
+
+      head: tableHead,
+
+      body: tableBody,
+
+      startY: 39,
+
+      theme: "grid",
+
+      styles: {
+
+        font: "helvetica",
+
+        fontSize: 7.5,
+
+        cellPadding: 3,
+
+        valign: "top",
+
+        textColor: [0, 0, 0],
+
+        lineColor: [150, 150, 150],
+
+        lineWidth: 0.2
+
+      },
+
+      headStyles: {
+
+        fillColor: [242, 242, 242],
+
+        textColor: [0, 0, 0],
+
+        fontStyle: "bold",
+
+        halign: "left"
+
+      },
+
+      columnStyles: {
+
+        0: {
+          cellWidth: 23
+        },
+
+        1: {
+          cellWidth: 20
+        },
+
+        2: {
+          cellWidth: 40
+        },
+
+        3: {
+          cellWidth: 70
+        },
+
+        4: {
+          cellWidth: 28
+        },
+
+        5: {
+          cellWidth: 28,
+          halign: "right"
+        },
+
+        6: {
+          cellWidth: 28,
+          halign: "right"
+        },
+
+        7: {
+          cellWidth: 30
+        }
+
+      },
+
+      margin: {
+
+        left: 14,
+
+        right: 14
+
+      },
+
+      didDrawPage:
+        function () {
+
+          const pageCount =
+            doc.internal.getNumberOfPages();
+
+          const currentPage =
+            doc.internal.getCurrentPageInfo()
+              .pageNumber;
+
+
+          doc.setFontSize(7);
+
+          doc.setFont(
+            "helvetica",
+            "normal"
+          );
+
+
+          doc.text(
+            "AL JEFOON TENTS — Order Tracker",
+            14,
+            202
+          );
+
+
+          doc.text(
+            "Page " +
+            currentPage +
+            " of " +
+            pageCount,
+            283,
+            202,
+            {
+              align: "right"
+            }
+          );
+
+        }
+
+    });
+
+
+    /* =====================================================
+       SUMMARY
+    ===================================================== */
+
+    let finalY = 45;
+
+
+    if (
+      doc.lastAutoTable &&
+      doc.lastAutoTable.finalY
+    ) {
+
+      finalY =
+        doc.lastAutoTable.finalY + 10;
+
+    }
+
+
+    /* =====================================================
+       CHECK IF SUMMARY NEEDS NEW PAGE
+    ===================================================== */
+
+    if (finalY > 180) {
+
+      doc.addPage();
+
+      finalY = 20;
+
+    }
+
+
+    doc.setFont(
+      "helvetica",
+      "bold"
+    );
+
+    doc.setFontSize(10);
+
+
+    doc.text(
+      "Total Orders: " +
+      data.length,
+      14,
+      finalY
+    );
+
+
+    doc.text(
+      "Total Received: " +
+      formatMoney(receivedTotal),
+      75,
+      finalY
+    );
+
+
+    doc.text(
+      "Total Pending: " +
+      formatMoney(pendingTotal),
+      155,
+      finalY
+    );
+
+
+    /* =====================================================
+       FILE NAME
+    ===================================================== */
+
+    let safeTitle =
+      title
+        .replace(/[^a-z0-9]+/gi, "_")
+        .replace(/^_+|_+$/g, "");
+
+
+    const dateStamp =
+      new Date()
+        .toISOString()
+        .slice(0, 10);
+
+
+    const fileName =
+      "AL_JEFOON_TENTS_" +
+      safeTitle +
+      "_" +
+      dateStamp +
+      ".pdf";
+
+
+    /* =====================================================
+       SAVE PDF
+    ===================================================== */
+
+    doc.save(fileName);
+
+  }
+
+
+  /* =====================================================
+     PRINT BUTTONS
   ===================================================== */
 
   document
@@ -2117,6 +2806,55 @@
       );
 
     });
+
+
+  /* =====================================================
+     PDF BUTTONS
+  ===================================================== */
+
+  document
+    .querySelectorAll(
+      "[data-pdf-filter]"
+    )
+    .forEach(function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          const type =
+            this.getAttribute(
+              "data-pdf-filter"
+            );
+
+
+          downloadPDF(type);
+
+        }
+      );
+
+    });
+
+
+  /* =====================================================
+     ESC KEY
+  ===================================================== */
+
+  document.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (
+        event.key === "Escape" &&
+        modal.classList.contains("show")
+      ) {
+
+        modal.classList.remove("show");
+
+      }
+
+    }
+  );
 
 
   /* =====================================================
