@@ -136,9 +136,7 @@ button {
 
   padding: 28px 24px 30px;
 
-  display: flex;
-
-  align-items: center;
+  display: block;
 
 }
 
