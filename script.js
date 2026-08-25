@@ -55,15 +55,119 @@ const esc = s =>
 
 
 /* =====================================================
-   SAVE
+   GOOGLE DRIVE BACKUP
+===================================================== */
+
+const GOOGLE_BACKUP_URL =
+  "https://script.google.com/macros/s/AKfycbzN-hhju1kss7zf46kDKQYDXuE5mptq2fie_pi2tCL8GAt8ZWEltWtPW_iRZzuhFGWN/exec";
+
+
+let backupTimer = null;
+
+
+/* =====================================================
+   SAVE LOCALLY + GOOGLE DRIVE BACKUP
 ===================================================== */
 
 function save() {
+
+  /*
+    Always save locally first.
+    The application continues working
+    even if the internet is unavailable.
+  */
 
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(orders)
   );
+
+
+  /*
+    Send the backup shortly after saving.
+    The delay prevents multiple quick changes
+    from sending many backup requests.
+  */
+
+  clearTimeout(backupTimer);
+
+
+  backupTimer = setTimeout(
+    () => backupToGoogleDrive(),
+    800
+  );
+
+}
+
+
+/* =====================================================
+   BACKUP TO GOOGLE DRIVE
+===================================================== */
+
+async function backupToGoogleDrive() {
+
+  try {
+
+    const backupData = {
+
+      app:
+        "AL JEFOON TENTS - Order Tracker",
+
+      version:
+        "1.0",
+
+      storageKey:
+        STORAGE_KEY,
+
+      backupDate:
+        new Date().toISOString(),
+
+      orders:
+        orders
+
+    };
+
+
+    await fetch(
+      GOOGLE_BACKUP_URL,
+      {
+
+        method: "POST",
+
+        mode: "no-cors",
+
+        headers: {
+          "Content-Type":
+            "text/plain;charset=utf-8"
+        },
+
+        body:
+          JSON.stringify(
+            backupData
+          )
+
+      }
+    );
+
+
+    console.log(
+      "Order Tracker Google Drive backup sent."
+    );
+
+
+  } catch (error) {
+
+    /*
+      Backup failure must never stop
+      the Order Tracker itself.
+    */
+
+    console.error(
+      "Google Drive backup failed:",
+      error
+    );
+
+  }
 
 }
 
@@ -3257,3 +3361,12 @@ renderReport();
 
 
 updateClock();
+
+/* =====================================================
+   INITIAL GOOGLE DRIVE BACKUP
+===================================================== */
+
+setTimeout(
+  () => backupToGoogleDrive(),
+  1500
+);
