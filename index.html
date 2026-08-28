@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -15,10 +16,13 @@
   <link rel="stylesheet" href="style.css">
 
   <!-- PDF LIBRARIES -->
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
   <!-- PRINT STYLES -->
+
   <style>
 
     #printArea {
@@ -32,7 +36,8 @@
       }
 
       .app-shell,
-      .print-options-modal {
+      .print-options-modal,
+      #customerSelectionModal {
         display: none !important;
       }
 
@@ -261,6 +266,100 @@
       border-color: #fcc224;
     }
 
+    /* =====================================================
+       CUSTOMER SELECTION
+    ===================================================== */
+
+    .customer-select-section {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 14px;
+      background: #fafafa;
+    }
+
+    .customer-select-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .customer-select-header strong {
+      font-size: 14px;
+    }
+
+    .customer-select-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .customer-select-buttons button {
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .customer-select-buttons button:hover {
+      border-color: #fcc224;
+      background: #fffaf0;
+    }
+
+    .customer-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .customer-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 8px;
+      padding: 9px 10px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: .15s ease;
+    }
+
+    .customer-checkbox:hover {
+      border-color: #fcc224;
+      background: #fffaf0;
+    }
+
+    .customer-checkbox input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .customer-checkbox span {
+      word-break: break-word;
+    }
+
+    .customer-selection-empty {
+      padding: 15px;
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+    }
+
+    .customer-selection-count {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #666;
+      font-weight: 700;
+    }
+
     @media (max-width: 650px) {
 
       .print-option-row {
@@ -276,9 +375,27 @@
         flex: 1;
       }
 
+      .customer-list {
+        grid-template-columns: 1fr;
+      }
+
+      .customer-select-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .customer-select-buttons {
+        width: 100%;
+      }
+
+      .customer-select-buttons button {
+        flex: 1;
+      }
+
     }
 
   </style>
+
 </head>
 
 <body>
@@ -287,275 +404,223 @@
 
   <aside class="sidebar">
 
-    <div class="brand">
-      <div>
-        <strong>AL JEFOON TENTS</strong>
-        <span>Order Tracker</span>
-      </div>
-    </div>
+```
+<div class="brand">
+  <div>
+    <strong>AL JEFOON TENTS</strong>
+    <span>Order Tracker</span>
+  </div>
+</div>
 
-    <nav class="nav">
+<nav class="nav">
 
-      <button class="nav-item active" data-section="dashboard">
-        <span>▦</span>
-        Dashboard
-      </button>
+  <button class="nav-item active" data-section="dashboard">
+    <span>▦</span>
+    Dashboard
+  </button>
 
-      <button class="nav-item" data-section="new-order">
-        <span>＋</span>
-        New Order
-      </button>
+  <button class="nav-item" data-section="new-order">
+    <span>＋</span>
+    New Order
+  </button>
 
-      <button class="nav-item" data-section="orders">
-        <span>☷</span>
-        All Orders
-      </button>
+  <button class="nav-item" data-section="orders">
+    <span>☷</span>
+    All Orders
+  </button>
 
-      <button class="nav-item" data-section="reports">
-        <span>▤</span>
-        Monthly Reports
-      </button>
+  <button class="nav-item" data-section="reports">
+    <span>▤</span>
+    Monthly Reports
+  </button>
 
-    </nav>
+</nav>
 
-    <div class="sidebar-footer">
+<div class="sidebar-footer">
 
-      <div class="brand-line"></div>
+  <div class="brand-line"></div>
 
-      <small>
-        Never miss an order.
-      </small>
+  <small>
+    Never miss an order.
+  </small>
 
-      <small>
-        © 2026 AL JEFOON TENTS
-      </small>
+  <small>
+    © 2026 AL JEFOON TENTS
+  </small>
 
-    </div>
+</div>
+```
 
   </aside>
 
-
   <main class="main">
 
-    <header class="topbar">
+```
+<header class="topbar">
 
-      <div>
+  <div>
 
-        <div class="eyebrow">
-          ORDER MANAGEMENT
-        </div>
+    <div class="eyebrow">
+      ORDER MANAGEMENT
+    </div>
 
-        <h1 id="pageTitle">
-          Dashboard
-        </h1>
+    <h1 id="pageTitle">
+      Dashboard
+    </h1>
 
+  </div>
+
+  <button class="primary-btn" id="quickAddBtn">
+    ＋ New Order
+  </button>
+
+</header>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="section active">
+
+  <div class="welcome">
+
+    <div>
+
+      <div class="eyebrow">
+        AL JEFOON TENTS
       </div>
 
-      <button class="primary-btn" id="quickAddBtn">
-        ＋ New Order
-      </button>
+      <h2>
+        Monthly Order Overview
+      </h2>
 
-    </header>
+      <p id="dashboardDateTime" class="digital-clock">
+        Loading...
+      </p>
+
+    </div>
+
+    <button class="outline-btn" id="dashboardReportBtn">
+      View Monthly Report
+    </button>
+
+  </div>
 
 
-    <!-- DASHBOARD -->
+  <div class="stats-grid">
 
-    <section id="dashboard" class="section active">
+    <div class="stat-card">
 
-      <div class="welcome">
+      <span>Total Orders</span>
+
+      <strong id="statOrders">
+        0
+      </strong>
+
+      <small>This month</small>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>Total Received</span>
+
+      <strong id="statReceived">
+        0.00
+      </strong>
+
+      <small>This month</small>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>Total Pending</span>
+
+      <strong id="statPending">
+        0.00
+      </strong>
+
+      <small>Outstanding</small>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>Pending Orders</span>
+
+      <strong id="statPendingOrders">
+        0
+      </strong>
+
+      <small>Need attention</small>
+
+    </div>
+
+  </div>
+
+
+  <div class="dashboard-grid">
+
+    <div class="panel">
+
+      <div class="panel-head">
 
         <div>
 
-          <div class="eyebrow">
-            AL JEFOON TENTS
-          </div>
+          <h3>Recent Orders</h3>
 
-          <h2>
-            Monthly Order Overview
-          </h2>
-
-          <p id="dashboardDateTime" class="digital-clock">
-            Loading...
+          <p>
+            Latest jobs entered into the system
           </p>
 
         </div>
 
-        <button class="outline-btn" id="dashboardReportBtn">
-          View Monthly Report
+        <button class="text-btn" data-go="orders">
+          View all
         </button>
 
       </div>
 
+      <div class="table-wrap">
 
-      <div class="stats-grid">
+        <table>
 
-        <div class="stat-card">
+          <thead>
 
-          <span>Total Orders</span>
+            <tr>
 
-          <strong id="statOrders">
-            0
-          </strong>
+              <th>Date</th>
+              <th>Job #</th>
+              <th>Party</th>
+              <th>Received</th>
+              <th>Status</th>
 
-          <small>This month</small>
+            </tr>
 
-        </div>
+          </thead>
 
+          <tbody id="recentOrdersBody"></tbody>
 
-        <div class="stat-card">
-
-          <span>Total Received</span>
-
-          <strong id="statReceived">
-            0.00
-          </strong>
-
-          <small>This month</small>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <span>Total Pending</span>
-
-          <strong id="statPending">
-            0.00
-          </strong>
-
-          <small>Outstanding</small>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <span>Pending Orders</span>
-
-          <strong id="statPendingOrders">
-            0
-          </strong>
-
-          <small>Need attention</small>
-
-        </div>
+        </table>
 
       </div>
 
-
-      <div class="dashboard-grid">
-
-        <div class="panel">
-
-          <div class="panel-head">
-
-            <div>
-
-              <h3>Recent Orders</h3>
-
-              <p>
-                Latest jobs entered into the system
-              </p>
-
-            </div>
-
-            <button class="text-btn" data-go="orders">
-              View all
-            </button>
-
-          </div>
-
-          <div class="table-wrap">
-
-            <table>
-
-              <thead>
-
-                <tr>
-
-                  <th>Date</th>
-                  <th>Job #</th>
-                  <th>Party</th>
-                  <th>Received</th>
-                  <th>Status</th>
-
-                </tr>
-
-              </thead>
-
-              <tbody id="recentOrdersBody"></tbody>
-
-            </table>
-
-          </div>
-
-        </div>
+    </div>
 
 
-        <div class="panel">
+    <div class="panel">
 
-          <div class="panel-head">
-
-            <div>
-
-              <h3>Quick Summary</h3>
-
-              <p>
-                Order count by status
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <div class="summary-list">
-
-            <div>
-              <span class="dot paid"></span>
-              Received
-              <strong id="summaryReceived">0</strong>
-            </div>
-
-            <div>
-              <span class="dot partial"></span>
-              Partially Received
-              <strong id="summaryPartial">0</strong>
-            </div>
-
-            <div>
-              <span class="dot pending"></span>
-              Pending
-              <strong id="summaryPending">0</strong>
-            </div>
-
-            <div>
-              <span class="dot noamount"></span>
-              No Amount
-              <strong id="summaryNoAmount">0</strong>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- NEW ORDER -->
-
-    <section id="new-order" class="section">
-
-      <div class="section-intro">
+      <div class="panel-head">
 
         <div>
 
-          <h2>Create New Order</h2>
+          <h3>Quick Summary</h3>
 
           <p>
-            Record a new job and collection details.
+            Order count by status
           </p>
 
         </div>
@@ -563,317 +628,220 @@
       </div>
 
 
-      <form id="orderForm" class="panel form-panel">
-
-        <input type="hidden" id="editId">
-
-
-        <div class="form-grid">
-
-          <label>
-            Date
-
-            <input
-              type="date"
-              id="orderDate"
-              required
-            >
-
-          </label>
-
-
-          <label>
-            Job #
-
-            <input
-              type="text"
-              id="jobNo"
-              placeholder="Automatic"
-              required
-            >
-
-          </label>
-
-
-          <label>
-            HAFLA Order ID
-
-            <input
-              type="text"
-              id="haflaId"
-              placeholder="Optional"
-            >
-
-          </label>
-
-
-          <label>
-            Party / Customer
-
-            <input
-              type="text"
-              id="party"
-              placeholder="Customer name"
-              required
-            >
-
-          </label>
-
-
-          <label>
-            Incharge
-
-            <input
-              type="text"
-              id="incharge"
-              placeholder="e.g. Ali"
-              required
-            >
-
-          </label>
-
-
-          <label>
-            Received By
-
-            <select id="receivedBy">
-
-              <option value="">
-                Select
-              </option>
-
-              <option>Bank</option>
-              <option>Zohaib</option>
-              <option>Saud</option>
-              <option>Fahad</option>
-              <option>Malik</option>
-              <option>Parvaiz</option>
-              <option>Ali</option>
-              <option>Ihsan</option>
-
-            </select>
-
-          </label>
-
-
-          <label>
-            Payment Method
-
-            <select id="paymentMethod">
-
-              <option value="">
-                Select
-              </option>
-
-              <option>Cash</option>
-              <option>Bank</option>
-              <option>Online</option>
-              <option>Card</option>
-              <option>Other</option>
-
-            </select>
-
-          </label>
-
-
-          <label>
-            Total Amount
-
-            <input
-              type="number"
-              id="totalAmount"
-              min="0"
-              step="0.01"
-              placeholder="0.00"
-            >
-
-          </label>
-
-
-          <label>
-            Amount Received
-
-            <input
-              type="number"
-              id="amountReceived"
-              min="0"
-              step="0.01"
-              placeholder="0.00"
-            >
-
-          </label>
-
-
-          <label>
-            Pending
-
-            <input
-              type="number"
-              id="pendingAmount"
-              readonly
-            >
-
-          </label>
-
-
-          <label>
-            Status
-
-            <select id="status">
-
-              <option value="auto">
-                Automatic
-              </option>
-
-              <option>Received</option>
-              <option>Partially Received</option>
-              <option>Pending</option>
-              <option>No Amount</option>
-
-            </select>
-
-          </label>
-
-        </div>
-
-
-        <div class="items-section">
-
-          <div class="items-head">
-
-            <div>
-
-              <h3>Order Items</h3>
-
-              <p>
-                Add each item separately for better future reports.
-              </p>
-
-            </div>
-
-
-            <button
-              type="button"
-              class="outline-btn"
-              id="addItemBtn"
-            >
-              ＋ Add Item
-            </button>
-
-          </div>
-
-
-          <div id="itemsContainer"></div>
-
-        </div>
-
-
-        <label class="full-label">
-
-          Remarks
-
-          <textarea
-            id="remarks"
-            rows="4"
-            placeholder="Payment notes, delivery notes, special instructions, etc."
-          ></textarea>
-
-        </label>
-
-
-        <div class="form-actions">
-
-          <button
-            type="button"
-            class="outline-btn"
-            id="cancelEditBtn"
-          >
-            Clear
-          </button>
-
-
-          <button
-            type="submit"
-            class="primary-btn"
-            id="saveOrderBtn"
-          >
-            Save Order
-          </button>
-
-        </div>
-
-      </form>
-
-    </section>
-
-
-    <!-- ALL ORDERS -->
-
-    <section id="orders" class="section">
-
-      <div class="section-intro">
+      <div class="summary-list">
 
         <div>
-
-          <h2>All Orders</h2>
-
-          <p>
-            Search, filter and manage your jobs.
-          </p>
-
+          <span class="dot paid"></span>
+          Received
+          <strong id="summaryReceived">0</strong>
         </div>
 
+        <div>
+          <span class="dot partial"></span>
+          Partially Received
+          <strong id="summaryPartial">0</strong>
+        </div>
 
-        <div
-          style="
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
-            justify-content:flex-end;
-          "
-        >
+        <div>
+          <span class="dot pending"></span>
+          Pending
+          <strong id="summaryPending">0</strong>
+        </div>
 
-          <button
-            class="outline-btn"
-            id="printOrdersBtn"
-            type="button"
-          >
-            🖨 Print Orders
-          </button>
-
-
-          <button
-            class="primary-btn"
-            id="ordersAddBtn"
-            type="button"
-          >
-            ＋ New Order
-          </button>
-
+        <div>
+          <span class="dot noamount"></span>
+          No Amount
+          <strong id="summaryNoAmount">0</strong>
         </div>
 
       </div>
 
+    </div>
 
-      <div class="panel filters">
+  </div>
+
+</section>
+
+
+<!-- NEW ORDER -->
+
+<section id="new-order" class="section">
+
+  <div class="section-intro">
+
+    <div>
+
+      <h2>Create New Order</h2>
+
+      <p>
+        Record a new job and collection details.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <form id="orderForm" class="panel form-panel">
+
+    <input type="hidden" id="editId">
+
+
+    <div class="form-grid">
+
+      <label>
+        Date
 
         <input
-          id="searchOrders"
-          type="search"
-          placeholder="Search job, customer, item, HAFLA ID..."
+          type="date"
+          id="orderDate"
+          required
         >
 
+      </label>
+
+
+      <label>
+        Job #
 
         <input
-          id="filterMonth"
-          type="month"
+          type="text"
+          id="jobNo"
+          placeholder="Automatic"
+          required
         >
 
+      </label>
 
-        <select id="filterStatus">
+
+      <label>
+        HAFLA Order ID
+
+        <input
+          type="text"
+          id="haflaId"
+          placeholder="Optional"
+        >
+
+      </label>
+
+
+      <label>
+        Party / Customer
+
+        <input
+          type="text"
+          id="party"
+          placeholder="Customer name"
+          required
+        >
+
+      </label>
+
+
+      <label>
+        Incharge
+
+        <input
+          type="text"
+          id="incharge"
+          placeholder="e.g. Ali"
+          required
+        >
+
+      </label>
+
+
+      <label>
+        Received By
+
+        <select id="receivedBy">
 
           <option value="">
-            All Statuses
+            Select
+          </option>
+
+          <option>Bank</option>
+          <option>Zohaib</option>
+          <option>Saud</option>
+          <option>Fahad</option>
+          <option>Malik</option>
+          <option>Parvaiz</option>
+          <option>Ali</option>
+          <option>Ihsan</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+        Payment Method
+
+        <select id="paymentMethod">
+
+          <option value="">
+            Select
+          </option>
+
+          <option>Cash</option>
+          <option>Bank</option>
+          <option>Online</option>
+          <option>Card</option>
+          <option>Other</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+        Total Amount
+
+        <input
+          type="number"
+          id="totalAmount"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+        >
+
+      </label>
+
+
+      <label>
+        Amount Received
+
+        <input
+          type="number"
+          id="amountReceived"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+        >
+
+      </label>
+
+
+      <label>
+        Pending
+
+        <input
+          type="number"
+          id="pendingAmount"
+          readonly
+        >
+
+      </label>
+
+
+      <label>
+        Status
+
+        <select id="status">
+
+          <option value="auto">
+            Automatic
           </option>
 
           <option>Received</option>
@@ -883,118 +851,269 @@
 
         </select>
 
+      </label>
 
-        <button
-          class="outline-btn"
-          id="clearFilters"
-          type="button"
-        >
-          Reset
-        </button>
-
-      </div>
+    </div>
 
 
-      <div class="panel">
+    <div class="items-section">
 
-        <div class="table-wrap">
-
-          <table class="orders-table">
-
-            <thead>
-
-              <tr>
-
-                <th>Date</th>
-                <th>Job #</th>
-                <th>Party</th>
-                <th>Orders</th>
-                <th>Incharge</th>
-                <th>Received</th>
-                <th>Pending</th>
-                <th>Status</th>
-                <th>Actions</th>
-
-              </tr>
-
-            </thead>
-
-
-            <tbody id="ordersBody"></tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- MONTHLY REPORTS -->
-
-    <section id="reports" class="section">
-
-      <div class="section-intro">
+      <div class="items-head">
 
         <div>
 
-          <h2>Monthly Reports</h2>
+          <h3>Order Items</h3>
 
           <p>
-            Generate a print-ready order and collection report.
+            Add each item separately for better future reports.
           </p>
 
         </div>
 
 
         <button
-          class="primary-btn"
-          id="printReportBtn"
           type="button"
-        >
-          🖨 Print Report
-        </button>
-
-      </div>
-
-
-      <div class="panel report-controls">
-
-        <label>
-
-          Report Month
-
-          <input
-            type="month"
-            id="reportMonth"
-          >
-
-        </label>
-
-
-        <button
           class="outline-btn"
-          id="generateReportBtn"
-          type="button"
+          id="addItemBtn"
         >
-          Generate Report
+          ＋ Add Item
         </button>
 
       </div>
 
 
-      <div
-        id="reportPreview"
-        class="report-page"
-      ></div>
+      <div id="itemsContainer"></div>
 
-    </section>
+    </div>
+
+
+    <label class="full-label">
+
+      Remarks
+
+      <textarea
+        id="remarks"
+        rows="4"
+        placeholder="Payment notes, delivery notes, special instructions, etc."
+      ></textarea>
+
+    </label>
+
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="outline-btn"
+        id="cancelEditBtn"
+      >
+        Clear
+      </button>
+
+
+      <button
+        type="submit"
+        class="primary-btn"
+        id="saveOrderBtn"
+      >
+        Save Order
+      </button>
+
+    </div>
+
+  </form>
+
+</section>
+
+
+<!-- ALL ORDERS -->
+
+<section id="orders" class="section">
+
+  <div class="section-intro">
+
+    <div>
+
+      <h2>All Orders</h2>
+
+      <p>
+        Search, filter and manage your jobs.
+      </p>
+
+    </div>
+
+
+    <div
+      style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        justify-content:flex-end;
+      "
+    >
+
+      <button
+        class="outline-btn"
+        id="printOrdersBtn"
+        type="button"
+      >
+        🖨 Print Orders
+      </button>
+
+
+      <button
+        class="primary-btn"
+        id="ordersAddBtn"
+        type="button"
+      >
+        ＋ New Order
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="panel filters">
+
+    <input
+      id="searchOrders"
+      type="search"
+      placeholder="Search job, customer, item, HAFLA ID..."
+    >
+
+
+    <input
+      id="filterMonth"
+      type="month"
+    >
+
+
+    <select id="filterStatus">
+
+      <option value="">
+        All Statuses
+      </option>
+
+      <option>Received</option>
+      <option>Partially Received</option>
+      <option>Pending</option>
+      <option>No Amount</option>
+
+    </select>
+
+
+    <button
+      class="outline-btn"
+      id="clearFilters"
+      type="button"
+    >
+      Reset
+    </button>
+
+  </div>
+
+
+  <div class="panel">
+
+    <div class="table-wrap">
+
+      <table class="orders-table">
+
+        <thead>
+
+          <tr>
+
+            <th>Date</th>
+            <th>Job #</th>
+            <th>Party</th>
+            <th>Orders</th>
+            <th>Incharge</th>
+            <th>Received</th>
+            <th>Pending</th>
+            <th>Status</th>
+            <th>Actions</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="ordersBody"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- MONTHLY REPORTS -->
+
+<section id="reports" class="section">
+
+  <div class="section-intro">
+
+    <div>
+
+      <h2>Monthly Reports</h2>
+
+      <p>
+        Generate a print-ready order and collection report.
+      </p>
+
+    </div>
+
+
+    <button
+      class="primary-btn"
+      id="printReportBtn"
+      type="button"
+    >
+      🖨 Print Report
+    </button>
+
+  </div>
+
+
+  <div class="panel report-controls">
+
+    <label>
+
+      Report Month
+
+      <input
+        type="month"
+        id="reportMonth"
+      >
+
+    </label>
+
+
+    <button
+      class="outline-btn"
+      id="generateReportBtn"
+      type="button"
+    >
+      Generate Report
+    </button>
+
+  </div>
+
+
+  <div
+    id="reportPreview"
+    class="report-page"
+  ></div>
+
+</section>
+```
 
   </main>
 
 </div>
-
 
 <!-- PRINT / PDF OPTIONS MODAL -->
 
@@ -1005,284 +1124,268 @@
 
   <div class="print-options-box">
 
-    <h3>
-      Print / Download Orders
-    </h3>
+```
+<h3>
+  Print / Download Orders
+</h3>
 
-    <p>
-      Choose what you want to print or download as PDF.
-    </p>
+<p>
+  Choose what you want to print or download as PDF.
+</p>
 
 
-    <!-- SORTING -->
+<!-- SORTING -->
 
-    <div class="print-sort-section">
+<div class="print-sort-section">
 
-      <label for="printSortOrder">
-        Sort Order
-      </label>
+  <label for="printSortOrder">
+    Sort Order
+  </label>
 
-      <select id="printSortOrder">
+  <select id="printSortOrder">
 
-        <option value="oldest">
-          Oldest → Newest
-        </option>
+    <option value="oldest">
+      Oldest → Newest
+    </option>
 
-        <option value="newest" selected>
-          Newest → Oldest
-        </option>
+    <option value="newest" selected>
+      Newest → Oldest
+    </option>
 
-      </select>
+  </select>
+
+</div>
+
+
+<!-- CURRENT RESULTS -->
+
+<div class="print-option-grid">
+
+  <div class="print-option-row">
+
+    <div class="print-option-info">
+
+      <div class="print-option-title">
+        Current Results
+      </div>
+
+      <span class="print-option-description">
+        Print or download whatever is currently filtered.
+      </span>
 
     </div>
 
-
-    <!-- CURRENT RESULTS -->
-
-    <div class="print-option-grid">
-
-      <div class="print-option-row">
-
-        <div class="print-option-info">
-
-          <div class="print-option-title">
-            Current Results
-          </div>
-
-          <span class="print-option-description">
-            Print or download whatever is currently filtered.
-          </span>
-
-        </div>
-
-        <div class="print-option-actions">
-
-          <button
-            type="button"
-            class="print-action-btn"
-            data-print-filter="current"
-          >
-            🖨 Print
-          </button>
-
-          <button
-            type="button"
-            class="print-action-btn pdf-btn"
-            data-pdf-filter="current"
-          >
-            📄 PDF
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- ALL ORDERS -->
-
-      <div class="print-option-row">
-
-        <div class="print-option-info">
-
-          <div class="print-option-title">
-            All Orders
-          </div>
-
-          <span class="print-option-description">
-            Print or download every order in the tracker.
-          </span>
-
-        </div>
-
-        <div class="print-option-actions">
-
-          <button
-            type="button"
-            class="print-action-btn"
-            data-print-filter="all"
-          >
-            🖨 Print
-          </button>
-
-          <button
-            type="button"
-            class="print-action-btn pdf-btn"
-            data-pdf-filter="all"
-          >
-            📄 PDF
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- PENDING -->
-
-      <div class="print-option-row">
-
-        <div class="print-option-info">
-
-          <div class="print-option-title">
-            Pending Orders
-          </div>
-
-          <span class="print-option-description">
-            Orders with payment still pending.
-          </span>
-
-        </div>
-
-        <div class="print-option-actions">
-
-          <button
-            type="button"
-            class="print-action-btn"
-            data-print-filter="Pending"
-          >
-            🖨 Print
-          </button>
-
-          <button
-            type="button"
-            class="print-action-btn pdf-btn"
-            data-pdf-filter="Pending"
-          >
-            📄 PDF
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- PARTIALLY RECEIVED -->
-
-      <div class="print-option-row">
-
-        <div class="print-option-info">
-
-          <div class="print-option-title">
-            Partially Received
-          </div>
-
-          <span class="print-option-description">
-            Orders with partial payment received.
-          </span>
-
-        </div>
-
-        <div class="print-option-actions">
-
-          <button
-            type="button"
-            class="print-action-btn"
-            data-print-filter="Partially Received"
-          >
-            🖨 Print
-          </button>
-
-          <button
-            type="button"
-            class="print-action-btn pdf-btn"
-            data-pdf-filter="Partially Received"
-          >
-            📄 PDF
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- RECEIVED -->
-
-      <div class="print-option-row">
-
-        <div class="print-option-info">
-
-          <div class="print-option-title">
-            Received Orders
-          </div>
-
-          <span class="print-option-description">
-            Orders marked as fully received.
-          </span>
-
-        </div>
-
-        <div class="print-option-actions">
-
-          <button
-            type="button"
-            class="print-action-btn"
-            data-print-filter="Received"
-          >
-            🖨 Print
-          </button>
-
-          <button
-            type="button"
-            class="print-action-btn pdf-btn"
-            data-pdf-filter="Received"
-          >
-            📄 PDF
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- NO AMOUNT -->
-
-      <div class="print-option-row">
-
-        <div class="print-option-info">
-
-          <div class="print-option-title">
-            No Amount
-          </div>
-
-          <span class="print-option-description">
-            Orders with no payment amount.
-          </span>
-
-        </div>
-
-        <div class="print-option-actions">
-
-          <button
-            type="button"
-            class="print-action-btn"
-            data-print-filter="No Amount"
-          >
-            🖨 Print
-          </button>
-
-          <button
-            type="button"
-            class="print-action-btn pdf-btn"
-            data-pdf-filter="No Amount"
-          >
-            📄 PDF
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="print-modal-actions">
+    <div class="print-option-actions">
 
       <button
         type="button"
-        class="print-cancel-btn"
-        id="closePrintOptions"
+        class="print-action-btn"
+        data-print-filter="current"
       >
-        Cancel
+        🖨 Print
+      </button>
+
+      <button
+        type="button"
+        class="print-action-btn pdf-btn"
+        data-pdf-filter="current"
+      >
+        📄 PDF
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ALL ORDERS -->
+
+  <div class="print-option-row">
+
+    <div class="print-option-info">
+
+      <div class="print-option-title">
+        All Orders
+      </div>
+
+      <span class="print-option-description">
+        Print or download every order in the tracker.
+      </span>
+
+    </div>
+
+    <div class="print-option-actions">
+
+      <button
+        type="button"
+        class="print-action-btn"
+        data-print-filter="all"
+      >
+        🖨 Print
+      </button>
+
+      <button
+        type="button"
+        class="print-action-btn pdf-btn"
+        data-pdf-filter="all"
+      >
+        📄 PDF
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- PENDING -->
+
+  <div class="print-option-row">
+
+    <div class="print-option-info">
+
+      <div class="print-option-title">
+        Pending Orders
+      </div>
+
+      <span class="print-option-description">
+        Orders with payment still pending.
+      </span>
+
+    </div>
+
+    <div class="print-option-actions">
+
+      <button
+        type="button"
+        class="print-action-btn"
+        data-print-filter="Pending"
+      >
+        🖨 Print
+      </button>
+
+      <button
+        type="button"
+        class="print-action-btn pdf-btn"
+        data-pdf-filter="Pending"
+      >
+        📄 PDF
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- PARTIALLY RECEIVED -->
+
+  <div class="print-option-row">
+
+    <div class="print-option-info">
+
+      <div class="print-option-title">
+        Partially Received
+      </div>
+
+      <span class="print-option-description">
+        Orders with partial payment received.
+      </span>
+
+    </div>
+
+    <div class="print-option-actions">
+
+      <button
+        type="button"
+        class="print-action-btn"
+        data-print-filter="Partially Received"
+      >
+        🖨 Print
+      </button>
+
+      <button
+        type="button"
+        class="print-action-btn pdf-btn"
+        data-pdf-filter="Partially Received"
+      >
+        📄 PDF
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- RECEIVED -->
+
+  <div class="print-option-row">
+
+    <div class="print-option-info">
+
+      <div class="print-option-title">
+        Received Orders
+      </div>
+
+      <span class="print-option-description">
+        Orders marked as fully received.
+      </span>
+
+    </div>
+
+    <div class="print-option-actions">
+
+      <button
+        type="button"
+        class="print-action-btn"
+        data-print-filter="Received"
+      >
+        🖨 Print
+      </button>
+
+      <button
+        type="button"
+        class="print-action-btn pdf-btn"
+        data-pdf-filter="Received"
+      >
+        📄 PDF
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- NO AMOUNT -->
+
+  <div class="print-option-row">
+
+    <div class="print-option-info">
+
+      <div class="print-option-title">
+        No Amount
+      </div>
+
+      <span class="print-option-description">
+        Orders with no payment amount.
+      </span>
+
+    </div>
+
+    <div class="print-option-actions">
+
+      <button
+        type="button"
+        class="print-action-btn"
+        data-print-filter="No Amount"
+      >
+        🖨 Print
+      </button>
+
+      <button
+        type="button"
+        class="print-action-btn pdf-btn"
+        data-pdf-filter="No Amount"
+      >
+        📄 PDF
       </button>
 
     </div>
@@ -1292,15 +1395,30 @@
 </div>
 
 
+<div class="print-modal-actions">
+
+  <button
+    type="button"
+    class="print-cancel-btn"
+    id="closePrintOptions"
+  >
+    Cancel
+  </button>
+
+</div>
+```
+
+  </div>
+
+</div>
+
 <!-- PRINT AREA -->
 
 <div id="printArea"></div>
 
-
 <!-- ORIGINAL SCRIPT -->
 
 <script src="script.js"></script>
-
 
 <!-- PRINT + PDF FUNCTIONALITY -->
 
@@ -1710,12 +1828,510 @@
 
 
   /* =====================================================
+     GET UNIQUE CUSTOMERS
+  ===================================================== */
+
+  function getUniqueCustomers(data) {
+
+    const customers =
+      data
+
+        .map(function (order) {
+
+          return cleanText(
+            order.party
+          );
+
+        })
+
+        .filter(Boolean);
+
+
+    return Array.from(
+      new Set(customers)
+    ).sort(function (a, b) {
+
+      return a.localeCompare(
+        b,
+        undefined,
+        {
+          sensitivity: "base"
+        }
+      );
+
+    });
+
+  }
+
+
+  /* =====================================================
+     CUSTOMER SELECTION MODAL
+  ===================================================== */
+
+  let pendingPrintType = null;
+
+  let pendingPrintAction = null;
+
+
+  function showCustomerSelection(
+    type,
+    action
+  ) {
+
+    const data =
+      getPrintData(type);
+
+
+    if (!data.length) {
+
+      alert(
+        "There are no orders available for this selection."
+      );
+
+      return;
+
+    }
+
+
+    const customers =
+      getUniqueCustomers(data);
+
+
+    if (!customers.length) {
+
+      alert(
+        "No customers were found in this report."
+      );
+
+      return;
+
+    }
+
+
+    pendingPrintType = type;
+
+    pendingPrintAction = action;
+
+
+    const oldModal =
+      document.getElementById(
+        "customerSelectionModal"
+      );
+
+
+    if (oldModal) {
+
+      oldModal.remove();
+
+    }
+
+
+    const customerModal =
+      document.createElement("div");
+
+
+    customerModal.id =
+      "customerSelectionModal";
+
+
+    customerModal.className =
+      "print-options-modal show";
+
+
+    customerModal.innerHTML = `
+
+      <div class="print-options-box">
+
+        <h3>
+          Select Customers
+        </h3>
+
+        <p>
+          Choose which customers should be included
+          in this printout. Unchecked customers will
+          not appear in the report.
+        </p>
+
+
+        <div class="customer-select-section">
+
+          <div class="customer-select-header">
+
+            <strong>
+              Customers
+            </strong>
+
+            <div class="customer-select-buttons">
+
+              <button
+                type="button"
+                id="selectAllCustomers"
+              >
+                Select All
+              </button>
+
+              <button
+                type="button"
+                id="clearAllCustomers"
+              >
+                Clear All
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="customer-list">
+
+            ${customers.map(function(customer) {
+
+              return `
+
+                <label class="customer-checkbox">
+
+                  <input
+                    type="checkbox"
+                    class="customer-print-checkbox"
+                    value="${escapeHtml(customer)}"
+                    checked
+                  >
+
+                  <span>
+                    ${escapeHtml(customer)}
+                  </span>
+
+                </label>
+
+              `;
+
+            }).join("")}
+
+          </div>
+
+
+          <div
+            class="customer-selection-count"
+            id="customerSelectionCount"
+          >
+            ${customers.length} customer(s) selected
+          </div>
+
+        </div>
+
+
+        <div
+          class="print-modal-actions"
+          style="
+            display:flex;
+            justify-content:flex-end;
+            gap:8px;
+            margin-top:20px;
+          "
+        >
+
+          <button
+            type="button"
+            class="print-cancel-btn"
+            id="cancelCustomerSelection"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            id="confirmCustomerSelection"
+          >
+            ${
+              action === "print"
+                ? "🖨 Print Selected"
+                : "📄 PDF Selected"
+            }
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+
+    document.body.appendChild(
+      customerModal
+    );
+
+
+    /* =====================================================
+       UPDATE SELECTED CUSTOMER COUNT
+    ===================================================== */
+
+    function updateCustomerCount() {
+
+      const selected =
+        customerModal.querySelectorAll(
+          ".customer-print-checkbox:checked"
+        ).length;
+
+
+      const count =
+        customerModal.querySelector(
+          "#customerSelectionCount"
+        );
+
+
+      if (count) {
+
+        count.textContent =
+          selected +
+          " customer(s) selected";
+
+      }
+
+    }
+
+
+    /* =====================================================
+       CHECKBOX CHANGES
+    ===================================================== */
+
+    customerModal
+      .querySelectorAll(
+        ".customer-print-checkbox"
+      )
+      .forEach(function(checkbox) {
+
+        checkbox.addEventListener(
+          "change",
+          updateCustomerCount
+        );
+
+      });
+
+
+    /* =====================================================
+       SELECT ALL
+    ===================================================== */
+
+    customerModal
+      .querySelector(
+        "#selectAllCustomers"
+      )
+      .addEventListener(
+        "click",
+        function() {
+
+          customerModal
+            .querySelectorAll(
+              ".customer-print-checkbox"
+            )
+            .forEach(function(checkbox) {
+
+              checkbox.checked = true;
+
+            });
+
+
+          updateCustomerCount();
+
+        }
+      );
+
+
+    /* =====================================================
+       CLEAR ALL
+    ===================================================== */
+
+    customerModal
+      .querySelector(
+        "#clearAllCustomers"
+      )
+      .addEventListener(
+        "click",
+        function() {
+
+          customerModal
+            .querySelectorAll(
+              ".customer-print-checkbox"
+            )
+            .forEach(function(checkbox) {
+
+              checkbox.checked = false;
+
+            });
+
+
+          updateCustomerCount();
+
+        }
+      );
+
+
+    /* =====================================================
+       CANCEL
+    ===================================================== */
+
+    customerModal
+      .querySelector(
+        "#cancelCustomerSelection"
+      )
+      .addEventListener(
+        "click",
+        function() {
+
+          customerModal.remove();
+
+          pendingPrintType = null;
+
+          pendingPrintAction = null;
+
+        }
+      );
+
+
+    /* =====================================================
+       CLOSE BY CLICKING OUTSIDE
+    ===================================================== */
+
+    customerModal.addEventListener(
+      "click",
+      function(event) {
+
+        if (
+          event.target ===
+          customerModal
+        ) {
+
+          customerModal.remove();
+
+          pendingPrintType = null;
+
+          pendingPrintAction = null;
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       CONFIRM SELECTION
+    ===================================================== */
+
+    customerModal
+      .querySelector(
+        "#confirmCustomerSelection"
+      )
+      .addEventListener(
+        "click",
+        function() {
+
+          const selectedCustomers =
+            Array.from(
+              customerModal.querySelectorAll(
+                ".customer-print-checkbox:checked"
+              )
+            )
+            .map(function(checkbox) {
+
+              return checkbox.value;
+
+            });
+
+
+          if (!selectedCustomers.length) {
+
+            alert(
+              "Please select at least one customer."
+            );
+
+            return;
+
+          }
+
+
+          const selectedData =
+            getPrintData(
+              pendingPrintType
+            )
+            .filter(function(order) {
+
+              const orderCustomer =
+                cleanText(
+                  order.party
+                ).toLowerCase();
+
+
+              return selectedCustomers.some(
+                function(customer) {
+
+                  return cleanText(
+                    customer
+                  ).toLowerCase() ===
+                  orderCustomer;
+
+                }
+              );
+
+            });
+
+
+          if (!selectedData.length) {
+
+            alert(
+              "No orders were found for the selected customers."
+            );
+
+            return;
+
+          }
+
+
+          const selectedType =
+            pendingPrintType;
+
+
+          const selectedAction =
+            pendingPrintAction;
+
+
+          customerModal.remove();
+
+
+          pendingPrintType = null;
+
+          pendingPrintAction = null;
+
+
+          if (
+            selectedAction ===
+            "print"
+          ) {
+
+            printOrdersWithData(
+              selectedType,
+              selectedData
+            );
+
+          }
+          else {
+
+            downloadPDFWithData(
+              selectedType,
+              selectedData
+            );
+
+          }
+
+        }
+      );
+
+  }
+
+
+  /* =====================================================
      PARSE ORDER DATE CORRECTLY
-     
-     IMPORTANT:
-     The tracker stores dates as YYYY-MM-DD.
-     We parse that format manually so the browser
-     cannot swap day/month or timezone values.
   ===================================================== */
 
   function parseOrderDate(value) {
@@ -1814,8 +2430,7 @@
 
 
     /*
-       Final fallback for other valid
-       JavaScript date formats.
+       Final fallback
     */
 
     const parsed =
@@ -1830,19 +2445,7 @@
 
 
   /* =====================================================
-     SORT PRINT DATA — CORRECTED
-     
-     Oldest → Newest:
-       2026-07-01
-       2026-07-02
-       2026-07-03
-       ...
-
-     Newest → Oldest:
-       2026-07-31
-       2026-07-30
-       2026-07-29
-       ...
+     SORT PRINT DATA
   ===================================================== */
 
   function sortPrintData(data) {
@@ -1870,11 +2473,6 @@
           parseOrderDate(b.date);
 
 
-        /*
-           If both dates are valid,
-           compare the actual dates.
-        */
-
         if (
           !Number.isNaN(timeA) &&
           !Number.isNaN(timeB)
@@ -1891,31 +2489,25 @@
         }
 
 
-        /*
-           Orders without valid dates are
-           placed after dated orders.
-        */
-
-        if (Number.isNaN(timeA) &&
-            !Number.isNaN(timeB)) {
+        if (
+          Number.isNaN(timeA) &&
+          !Number.isNaN(timeB)
+        ) {
 
           return 1;
 
         }
 
 
-        if (!Number.isNaN(timeA) &&
-            Number.isNaN(timeB)) {
+        if (
+          !Number.isNaN(timeA) &&
+          Number.isNaN(timeB)
+        ) {
 
           return -1;
 
         }
 
-
-        /*
-           If both have no usable date,
-           keep their existing order.
-        */
 
         return 0;
 
@@ -2120,13 +2712,16 @@
      PRINT
   ===================================================== */
 
-  function printOrders(type) {
+  function printOrdersWithData(
+    type,
+    selectedData
+  ) {
 
     modal.classList.remove("show");
 
 
     let data =
-      getPrintData(type);
+      selectedData;
 
 
     data =
@@ -2197,7 +2792,6 @@
           ${escapeHtml(period)}
         </p>
 
-    
         <p>
           Printed:
           ${escapeHtml(
@@ -2343,13 +2937,16 @@
      DOWNLOAD PDF
   ===================================================== */
 
-  function downloadPDF(type) {
+  function downloadPDFWithData(
+    type,
+    selectedData
+  ) {
 
     modal.classList.remove("show");
 
 
     let data =
-      getPrintData(type);
+      selectedData;
 
 
     data =
@@ -2750,7 +3347,10 @@
             );
 
 
-          printOrders(type);
+          showCustomerSelection(
+            type,
+            "print"
+          );
 
         }
       );
@@ -2778,7 +3378,10 @@
             );
 
 
-          downloadPDF(type);
+          showCustomerSelection(
+            type,
+            "pdf"
+          );
 
         }
       );
@@ -2795,11 +3398,39 @@
     function (event) {
 
       if (
-        event.key === "Escape" &&
-        modal.classList.contains("show")
+        event.key === "Escape"
       ) {
 
-        modal.classList.remove("show");
+        const customerModal =
+          document.getElementById(
+            "customerSelectionModal"
+          );
+
+
+        if (customerModal) {
+
+          customerModal.remove();
+
+          pendingPrintType = null;
+
+          pendingPrintAction = null;
+
+          return;
+
+        }
+
+
+        if (
+          modal.classList.contains(
+            "show"
+          )
+        ) {
+
+          modal.classList.remove(
+            "show"
+          );
+
+        }
 
       }
 
