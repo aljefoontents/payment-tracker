@@ -1701,3 +1701,11 @@ textarea {
   }
 
 }
+.monthly-order-overview {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+.monthly-order-overview * {
+  color: #ffffff !important;
+}
