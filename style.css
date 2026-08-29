@@ -1699,3 +1699,15 @@ textarea {
     padding: 6px;
 
   }
+
+/* Monthly Order Overview - Black Card */
+.welcome {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+.welcome h2,
+.welcome p,
+.welcome .eyebrow {
+  color: #ffffff !important;
+}
