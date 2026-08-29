@@ -1693,14 +1693,20 @@ textarea {
   }
 
 
-  .report-page th,
+   .report-page th,
   .report-page td {
 
     padding: 6px;
 
   }
 
-/* Monthly Order Overview - Black Card */
+}
+
+
+/* =====================================================
+   MONTHLY ORDER OVERVIEW — BLACK CARD
+===================================================== */
+
 .welcome {
   background: #000000 !important;
   color: #ffffff !important;
@@ -1709,5 +1715,9 @@ textarea {
 .welcome h2,
 .welcome p,
 .welcome .eyebrow {
+  color: #ffffff !important;
+}
+
+.welcome .digital-clock {
   color: #ffffff !important;
 }
