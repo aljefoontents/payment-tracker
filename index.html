@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -8,7 +9,7 @@
   <meta name="theme-color" content="#fcc224">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-   <title>AL JEFOON TENTS — Order Tracker</title>
+  <title>AL JEFOON TENTS — Order Tracker</title>
 
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
@@ -16,13 +17,10 @@
   <link rel="stylesheet" href="style.css">
 
   <!-- PDF LIBRARIES -->
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
   <!-- PRINT STYLES -->
-
   <style>
 
     #printArea {
@@ -391,7 +389,6 @@
       .customer-select-buttons button {
         flex: 1;
       }
-
     }
 
   </style>
@@ -404,441 +401,557 @@
 
   <aside class="sidebar">
 
-<div class="brand">
-  <div>
-    <strong>AL JEFOON TENTS</strong>
-    <span>Order Tracker</span>
-  </div>
-</div>
+    <div class="brand">
+      <div>
+        <strong>AL JEFOON TENTS</strong>
+        <span>Order Tracker</span>
+      </div>
+    </div>
 
-<nav class="nav">
+    <nav class="nav">
 
-  <button class="nav-item active" data-section="dashboard">
-    <span>▦</span>
-    Dashboard
-  </button>
+      <button class="nav-item active" data-section="dashboard">
+        <span>▦</span>
+        Dashboard
+      </button>
 
-  <button class="nav-item" data-section="new-order">
-    <span>＋</span>
-    New Order
-  </button>
+      <button class="nav-item" data-section="new-order">
+        <span>＋</span>
+        New Order
+      </button>
 
-  <button class="nav-item" data-section="orders">
-    <span>☷</span>
-    All Orders
-  </button>
+      <button class="nav-item" data-section="orders">
+        <span>☷</span>
+        All Orders
+      </button>
 
-  <button class="nav-item" data-section="reports">
-    <span>▤</span>
-    Monthly Reports
-  </button>
+      <button class="nav-item" data-section="reports">
+        <span>▤</span>
+        Monthly Reports
+      </button>
 
-</nav>
+    </nav>
 
-<div class="sidebar-footer">
+    <div class="sidebar-footer">
 
-  <div class="brand-line"></div>
+      <div class="brand-line"></div>
 
-  <small style="color: #fff;">
-    Never miss an order
-  </small>
+      <small>
+        Never miss an order.
+      </small>
 
-  <small style="color: #fff;">
-    © 2026 AL JEFOON TENTS
-  </small>
+      <small>
+        © 2026 AL JEFOON TENTS
+      </small>
 
-</div>
+    </div>
 
   </aside>
 
   <main class="main">
 
-<header class="topbar">
+    <header class="topbar">
 
-  <div>
+      <div>
 
-    <div class="eyebrow">
-      ORDER MANAGEMENT
-    </div>
+        <div class="eyebrow">
+          ORDER MANAGEMENT
+        </div>
 
-    <h1 id="pageTitle">
-      Dashboard
-    </h1>
+        <h1 id="pageTitle">
+          Dashboard
+        </h1>
 
-  </div>
-
-  <button class="primary-btn" id="quickAddBtn">
-    ＋ New Order
-  </button>
-
-</header>
-
-
-<!-- DASHBOARD -->
-
-<section id="dashboard" class="section active">
-
-  <div class="welcome">
-
-    <div>
-
-      <div class="eyebrow">
-        AL JEFOON TENTS
       </div>
 
-      <h2>
-        Monthly Order Overview
-      </h2>
+      <button class="primary-btn" id="quickAddBtn">
+        ＋ New Order
+      </button>
 
-      <p id="dashboardDateTime" class="digital-clock">
-        Loading...
-      </p>
+    </header>
 
-    </div>
+    <!-- DASHBOARD -->
 
-  <button class="your-original-class" data-go="reports">
-    View Monthly Report
-  </button>
+    <section id="dashboard" class="section active">
 
-  </div>
-
-
-  <div class="stats-grid">
-
-    <div class="stat-card">
-
-      <span>Total Orders</span>
-
-      <strong id="statOrders">
-        0
-      </strong>
-
-      <small>This month</small>
-
-    </div>
-
-
-    <div class="stat-card">
-
-      <span>Total Received</span>
-
-      <strong id="statReceived">
-        0.00
-      </strong>
-
-      <small>This month</small>
-
-    </div>
-
-
-    <div class="stat-card">
-
-      <span>Total Pending</span>
-
-      <strong id="statPending">
-        0.00
-      </strong>
-
-      <small>Outstanding</small>
-
-    </div>
-
-
-    <div class="stat-card">
-
-      <span>Pending Orders</span>
-
-      <strong id="statPendingOrders">
-        0
-      </strong>
-
-      <small>Need attention</small>
-
-    </div>
-
-  </div>
-
-
-  <div class="dashboard-grid">
-
-    <div class="panel">
-
-      <div class="panel-head">
+      <div class="welcome">
 
         <div>
 
-          <h3>Recent Orders</h3>
+          <div class="eyebrow">
+            AL JEFOON TENTS
+          </div>
 
-          <p>
-            Latest jobs entered into the system
+          <h2>
+            Monthly Order Overview
+          </h2>
+
+          <p id="dashboardDateTime" class="digital-clock">
+            Loading...
           </p>
 
         </div>
 
-        <button class="text-btn" data-go="orders">
-          View all
+        <button class="outline-btn" id="dashboardReportBtn">
+          View Monthly Report
         </button>
 
       </div>
 
-      <div class="table-wrap">
+      <div class="stats-grid">
 
-        <table>
+        <div class="stat-card">
 
-          <thead>
+          <span>Total Orders</span>
 
-            <tr>
+          <strong id="statOrders">
+            0
+          </strong>
 
-              <th>Date</th>
-              <th>Job #</th>
-              <th>Party</th>
-              <th>Received</th>
-              <th>Status</th>
+          <small>This month</small>
 
-            </tr>
+        </div>
 
-          </thead>
+        <div class="stat-card">
 
-          <tbody id="recentOrdersBody"></tbody>
+          <span>Total Received</span>
 
-        </table>
+          <strong id="statReceived">
+            0.00
+          </strong>
+
+          <small>This month</small>
+
+        </div>
+
+        <div class="stat-card">
+
+          <span>Total Pending</span>
+
+          <strong id="statPending">
+            0.00
+          </strong>
+
+          <small>Outstanding</small>
+
+        </div>
+
+        <div class="stat-card">
+
+          <span>Pending Orders</span>
+
+          <strong id="statPendingOrders">
+            0
+          </strong>
+
+          <small>Need attention</small>
+
+        </div>
 
       </div>
 
-    </div>
+      <div class="dashboard-grid">
 
+        <div class="panel">
 
-    <div class="panel">
+          <div class="panel-head">
 
-      <div class="panel-head">
+            <div>
+
+              <h3>Recent Orders</h3>
+
+              <p>
+                Latest jobs entered into the system
+              </p>
+
+            </div>
+
+            <button class="text-btn" data-go="orders">
+              View all
+            </button>
+
+          </div>
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>Date</th>
+                  <th>Job #</th>
+                  <th>Party</th>
+                  <th>Received</th>
+                  <th>Status</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="recentOrdersBody"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+        <div class="panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <h3>Quick Summary</h3>
+
+              <p>
+                Order count by status
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="summary-list">
+
+            <div>
+              <span class="dot paid"></span>
+              Received
+              <strong id="summaryReceived">0</strong>
+            </div>
+
+            <div>
+              <span class="dot partial"></span>
+              Partially Received
+              <strong id="summaryPartial">0</strong>
+            </div>
+
+            <div>
+              <span class="dot pending"></span>
+              Pending
+              <strong id="summaryPending">0</strong>
+            </div>
+
+            <div>
+              <span class="dot noamount"></span>
+              No Amount
+              <strong id="summaryNoAmount">0</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- NEW ORDER -->
+
+    <section id="new-order" class="section">
+
+      <div class="section-intro">
 
         <div>
 
-          <h3>Quick Summary</h3>
+          <h2>Create New Order</h2>
 
           <p>
-            Order count by status
+            Record a new job and collection details.
           </p>
 
         </div>
 
       </div>
 
+      <form id="orderForm" class="panel form-panel">
 
-      <div class="summary-list">
+        <input type="hidden" id="editId">
 
-        <div>
-          <span class="dot paid"></span>
-          Received
-          <strong id="summaryReceived">0</strong>
+        <div class="form-grid">
+
+          <label>
+            Date
+
+            <input
+              type="date"
+              id="orderDate"
+              required
+            >
+
+          </label>
+
+          <label>
+            Job #
+
+            <input
+              type="text"
+              id="jobNo"
+              placeholder="Automatic"
+              required
+            >
+
+          </label>
+
+          <label>
+            HAFLA Order ID
+
+            <input
+              type="text"
+              id="haflaId"
+              placeholder="Optional"
+            >
+
+          </label>
+
+          <label>
+            Party / Customer
+
+            <input
+              type="text"
+              id="party"
+              placeholder="Customer name"
+              required
+            >
+
+          </label>
+
+          <label>
+            Incharge
+
+            <input
+              type="text"
+              id="incharge"
+              placeholder="e.g. Ali"
+              required
+            >
+
+          </label>
+
+          <label>
+            Received By
+
+            <select id="receivedBy">
+
+              <option value="">
+                Select
+              </option>
+
+              <option>Bank</option>
+              <option>Zohaib</option>
+              <option>Saud</option>
+              <option>Fahad</option>
+              <option>Malik</option>
+              <option>Parvaiz</option>
+              <option>Ali</option>
+              <option>Ihsan</option>
+
+            </select>
+
+          </label>
+
+          <label>
+            Payment Method
+
+            <select id="paymentMethod">
+
+              <option value="">
+                Select
+              </option>
+
+              <option>Cash</option>
+              <option>Bank</option>
+              <option>Online</option>
+              <option>Card</option>
+              <option>Other</option>
+
+            </select>
+
+          </label>
+
+          <label>
+            Total Amount
+
+            <input
+              type="number"
+              id="totalAmount"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            >
+
+          </label>
+
+          <label>
+            Amount Received
+
+            <input
+              type="number"
+              id="amountReceived"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            >
+
+          </label>
+
+          <label>
+            Pending
+
+            <input
+              type="number"
+              id="pendingAmount"
+              readonly
+            >
+
+          </label>
+
+          <label>
+            Status
+
+            <select id="status">
+
+              <option value="auto">
+                Automatic
+              </option>
+
+              <option>Received</option>
+              <option>Partially Received</option>
+              <option>Pending</option>
+              <option>No Amount</option>
+
+            </select>
+
+          </label>
+
         </div>
 
-        <div>
-          <span class="dot partial"></span>
-          Partially Received
-          <strong id="summaryPartial">0</strong>
+        <div class="items-section">
+
+          <div class="items-head">
+
+            <div>
+
+              <h3>Order Items</h3>
+
+              <p>
+                Add each item separately for better future reports.
+              </p>
+
+            </div>
+
+            <button
+              type="button"
+              class="outline-btn"
+              id="addItemBtn"
+            >
+              ＋ Add Item
+            </button>
+
+          </div>
+
+          <div id="itemsContainer"></div>
+
         </div>
 
-        <div>
-          <span class="dot pending"></span>
-          Pending
-          <strong id="summaryPending">0</strong>
+        <label class="full-label">
+
+          Remarks
+
+          <textarea
+            id="remarks"
+            rows="4"
+            placeholder="Payment notes, delivery notes, special instructions, etc."
+          ></textarea>
+
+        </label>
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="outline-btn"
+            id="cancelEditBtn"
+          >
+            Clear
+          </button>
+
+          <button
+            type="submit"
+            class="primary-btn"
+            id="saveOrderBtn"
+          >
+            Save Order
+          </button>
+
         </div>
 
+      </form>
+
+    </section>
+
+    <!-- ALL ORDERS -->
+
+    <section id="orders" class="section">
+
+      <div class="section-intro">
+
         <div>
-          <span class="dot noamount"></span>
-          No Amount
-          <strong id="summaryNoAmount">0</strong>
+
+          <h2>All Orders</h2>
+
+          <p>
+            Search, filter and manage your jobs.
+          </p>
+
+        </div>
+
+        <div
+          style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            justify-content:flex-end;
+          "
+        >
+
+          <button
+            class="outline-btn"
+            id="printOrdersBtn"
+            type="button"
+          >
+            🖨 Print Orders
+          </button>
+
+          <button
+            class="primary-btn"
+            id="ordersAddBtn"
+            type="button"
+          >
+            ＋ New Order
+          </button>
+
         </div>
 
       </div>
 
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- NEW ORDER -->
-
-<section id="new-order" class="section">
-
-  <div class="section-intro">
-
-    <div>
-
-      <h2>Create New Order</h2>
-
-      <p>
-        Record a new job and collection details.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <form id="orderForm" class="panel form-panel">
-
-    <input type="hidden" id="editId">
-
-
-    <div class="form-grid">
-
-      <label>
-        Date
+      <div class="panel filters">
 
         <input
-          type="date"
-          id="orderDate"
-          required
+          id="searchOrders"
+          type="search"
+          placeholder="Search job, customer, item, HAFLA ID..."
         >
-
-      </label>
-
-
-      <label>
-        Job #
 
         <input
-          type="text"
-          id="jobNo"
-          placeholder="Automatic"
-          required
+          id="filterMonth"
+          type="month"
         >
 
-      </label>
-
-
-      <label>
-        HAFLA Order ID
-
-        <input
-          type="text"
-          id="haflaId"
-          placeholder="Optional"
-        >
-
-      </label>
-
-
-      <label>
-        Party / Customer
-
-        <input
-          type="text"
-          id="party"
-          placeholder="Customer name"
-          required
-        >
-
-      </label>
-
-
-      <label>
-        Incharge
-
-        <input
-          type="text"
-          id="incharge"
-          placeholder="e.g. Ali"
-          required
-        >
-
-      </label>
-
-
-      <label>
-        Received By
-
-        <select id="receivedBy">
+        <select id="filterStatus">
 
           <option value="">
-            Select
-          </option>
-
-          <option>Bank</option>
-          <option>Zohaib</option>
-          <option>Saud</option>
-          <option>Fahad</option>
-          <option>Malik</option>
-          <option>Parvaiz</option>
-          <option>Ali</option>
-          <option>Ihsan</option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-        Payment Method
-
-        <select id="paymentMethod">
-
-          <option value="">
-            Select
-          </option>
-
-          <option>Cash</option>
-          <option>Bank</option>
-          <option>Online</option>
-          <option>Card</option>
-          <option>Other</option>
-
-        </select>
-
-      </label>
-
-
-      <label>
-        Total Amount
-
-        <input
-          type="number"
-          id="totalAmount"
-          min="0"
-          step="0.01"
-          placeholder="0.00"
-        >
-
-      </label>
-
-
-      <label>
-        Amount Received
-
-        <input
-          type="number"
-          id="amountReceived"
-          min="0"
-          step="0.01"
-          placeholder="0.00"
-        >
-
-      </label>
-
-
-      <label>
-        Pending
-
-        <input
-          type="number"
-          id="pendingAmount"
-          readonly
-        >
-
-      </label>
-
-
-      <label>
-        Status
-
-        <select id="status">
-
-          <option value="auto">
-            Automatic
+            All Statuses
           </option>
 
           <option>Received</option>
@@ -848,269 +961,129 @@
 
         </select>
 
-      </label>
+      </div>
+        <select id="filterStatus">
 
-    </div>
+          <option value="">
+            All Statuses
+          </option>
 
+          <option>Received</option>
+          <option>Partially Received</option>
+          <option>Pending</option>
+          <option>No Amount</option>
 
-    <div class="items-section">
-
-      <div class="items-head">
-
-        <div>
-
-          <h3>Order Items</h3>
-
-          <p>
-            Add each item separately for better future reports.
-          </p>
-
-        </div>
-
+        </select>
 
         <button
-          type="button"
           class="outline-btn"
-          id="addItemBtn"
+          id="clearFilters"
+          type="button"
         >
-          ＋ Add Item
+          Reset
         </button>
 
       </div>
 
 
-      <div id="itemsContainer"></div>
+      <div class="panel">
 
-    </div>
+        <div class="table-wrap">
 
+          <table class="orders-table">
 
-    <label class="full-label">
+            <thead>
 
-      Remarks
+              <tr>
 
-      <textarea
-        id="remarks"
-        rows="4"
-        placeholder="Payment notes, delivery notes, special instructions, etc."
-      ></textarea>
+                <th>Date</th>
+                <th>Job #</th>
+                <th>Party</th>
+                <th>Orders</th>
+                <th>Incharge</th>
+                <th>Received</th>
+                <th>Pending</th>
+                <th>Status</th>
+                <th>Actions</th>
 
-    </label>
+              </tr>
 
+            </thead>
 
-    <div class="form-actions">
+            <tbody id="ordersBody"></tbody>
 
-      <button
-        type="button"
-        class="outline-btn"
-        id="cancelEditBtn"
-      >
-        Clear
-      </button>
+          </table>
 
+        </div>
 
-      <button
-        type="submit"
-        class="primary-btn"
-        id="saveOrderBtn"
-      >
-        Save Order
-      </button>
+      </div>
 
-    </div>
+    </section>
 
-  </form>
 
-</section>
+    <!-- MONTHLY REPORTS -->
 
+    <section id="reports" class="section">
 
-<!-- ALL ORDERS -->
+      <div class="section-intro">
 
-<section id="orders" class="section">
+        <div>
 
-  <div class="section-intro">
+          <h2>Monthly Reports</h2>
 
-    <div>
+          <p>
+            Generate a print-ready order and collection report.
+          </p>
 
-      <h2>All Orders</h2>
+        </div>
 
-      <p>
-        Search, filter and manage your jobs.
-      </p>
+        <button
+          class="primary-btn"
+          id="printReportBtn"
+          type="button"
+        >
+          🖨 Print Report
+        </button>
 
-    </div>
+      </div>
 
 
-    <div
-      style="
-        display:flex;
-        gap:10px;
-        flex-wrap:wrap;
-        justify-content:flex-end;
-      "
-    >
+      <div class="panel report-controls">
 
-      <button
-        class="outline-btn"
-        id="printOrdersBtn"
-        type="button"
-      >
-        🖨 Print Orders
-      </button>
+        <label>
 
+          Report Month
 
-      <button
-        class="primary-btn"
-        id="ordersAddBtn"
-        type="button"
-      >
-        ＋ New Order
-      </button>
+          <input
+            type="month"
+            id="reportMonth"
+          >
 
-    </div>
+        </label>
 
-  </div>
 
+        <button
+          class="outline-btn"
+          id="generateReportBtn"
+          type="button"
+        >
+          Generate Report
+        </button>
 
-  <div class="panel filters">
+      </div>
 
-    <input
-      id="searchOrders"
-      type="search"
-      placeholder="Search job, customer, item, HAFLA ID..."
-    >
 
+      <div
+        id="reportPreview"
+        class="report-page"
+      ></div>
 
-    <input
-      id="filterMonth"
-      type="month"
-    >
-
-
-    <select id="filterStatus">
-
-      <option value="">
-        All Statuses
-      </option>
-
-      <option>Received</option>
-      <option>Partially Received</option>
-      <option>Pending</option>
-      <option>No Amount</option>
-
-    </select>
-
-
-    <button
-      class="outline-btn"
-      id="clearFilters"
-      type="button"
-    >
-      Reset
-    </button>
-
-  </div>
-
-
-  <div class="panel">
-
-    <div class="table-wrap">
-
-      <table class="orders-table">
-
-        <thead>
-
-          <tr>
-
-            <th>Date</th>
-            <th>Job #</th>
-            <th>Party</th>
-            <th>Orders</th>
-            <th>Incharge</th>
-            <th>Received</th>
-            <th>Pending</th>
-            <th>Status</th>
-            <th>Actions</th>
-
-          </tr>
-
-        </thead>
-
-
-        <tbody id="ordersBody"></tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- MONTHLY REPORTS -->
-
-<section id="reports" class="section">
-
-  <div class="section-intro">
-
-    <div>
-
-      <h2>Monthly Reports</h2>
-
-      <p>
-        Generate a print-ready order and collection report.
-      </p>
-
-    </div>
-
-
-    <button
-      class="primary-btn"
-      id="printReportBtn"
-      type="button"
-    >
-      🖨 Print Report
-    </button>
-
-  </div>
-
-
-  <div class="panel report-controls">
-
-    <label>
-
-      Report Month
-
-      <input
-        type="month"
-        id="reportMonth"
-      >
-
-    </label>
-
-
-    <button
-      class="outline-btn"
-      id="generateReportBtn"
-      type="button"
-    >
-      Generate Report
-    </button>
-
-  </div>
-
-
-  <div
-    id="reportPreview"
-    class="report-page"
-  ></div>
-
-</section>
-```
+    </section>
 
   </main>
 
 </div>
+
 
 <!-- PRINT / PDF OPTIONS MODAL -->
 
@@ -1121,2347 +1094,2275 @@
 
   <div class="print-options-box">
 
-```
-<h3>
-  Print / Download Orders
-</h3>
+    <h3>
+      Print / Download Orders
+    </h3>
 
-<p>
-  Choose what you want to print or download as PDF.
-</p>
+    <p>
+      Choose what you want to print or download as PDF.
+    </p>
 
 
-<!-- SORTING -->
+    <!-- SORTING -->
 
-<div class="print-sort-section">
+    <div class="print-sort-section">
 
-  <label for="printSortOrder">
-    Sort Order
-  </label>
+      <label for="printSortOrder">
+        Sort Order
+      </label>
 
-  <select id="printSortOrder">
+      <select id="printSortOrder">
 
-    <option value="oldest">
-      Oldest → Newest
-    </option>
+        <option value="oldest">
+          Oldest → Newest
+        </option>
 
-    <option value="newest" selected>
-      Newest → Oldest
-    </option>
+        <option value="newest" selected>
+          Newest → Oldest
+        </option>
 
-  </select>
+      </select>
+
+    </div>
+
+
+    <!-- CURRENT RESULTS -->
+
+    <div class="print-option-grid">
+
+      <div class="print-option-row">
+
+        <div class="print-option-info">
+
+          <div class="print-option-title">
+            Current Results
+          </div>
+
+          <span class="print-option-description">
+            Print or download whatever is currently filtered.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="current"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="current"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ALL ORDERS -->
+
+      <div class="print-option-row">
+
+        <div class="print-option-info">
+
+          <div class="print-option-title">
+            All Orders
+          </div>
+
+          <span class="print-option-description">
+            Print or download every order in the tracker.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="all"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="all"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- PENDING -->
+
+      <div class="print-option-row">
+
+        <div class="print-option-info">
+
+          <div class="print-option-title">
+            Pending Orders
+          </div>
+
+          <span class="print-option-description">
+            Orders with payment still pending.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="Pending"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="Pending"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- PARTIALLY RECEIVED -->
+
+      <div class="print-option-row">
+
+        <div class="print-option-info">
+
+          <div class="print-option-title">
+            Partially Received
+          </div>
+
+          <span class="print-option-description">
+            Orders with partial payment received.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="Partially Received"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="Partially Received"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- RECEIVED -->
+
+      <div class="print-option-row">
+
+        <div class="print-option-info">
+
+          <div class="print-option-title">
+            Received Orders
+          </div>
+
+          <span class="print-option-description">
+            Orders marked as fully received.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="Received"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="Received"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- NO AMOUNT -->
+
+      <div class="print-option-row">
+
+        <div class="print-option-info">
+
+          <div class="print-option-title">
+            No Amount
+          </div>
+
+          <span class="print-option-description">
+            Orders with no payment amount.
+          </span>
+
+        </div>
+
+        <div class="print-option-actions">
+
+          <button
+            type="button"
+            class="print-action-btn"
+            data-print-filter="No Amount"
+          >
+            🖨 Print
+          </button>
+
+          <button
+            type="button"
+            class="print-action-btn pdf-btn"
+            data-pdf-filter="No Amount"
+          >
+            📄 PDF
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="print-modal-actions">
+
+      <button
+        type="button"
+        class="print-cancel-btn"
+        id="closePrintOptions"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
-
-<!-- CURRENT RESULTS -->
-
-<div class="print-option-grid">
-
-  <div class="print-option-row">
-
-    <div class="print-option-info">
-
-      <div class="print-option-title">
-        Current Results
-      </div>
-
-      <span class="print-option-description">
-        Print or download whatever is currently filtered.
-      </span>
-
-    </div>
-
-    <div class="print-option-actions">
-
-      <button
-        type="button"
-        class="print-action-btn"
-        data-print-filter="current"
-      >
-        🖨 Print
-      </button>
-
-      <button
-        type="button"
-        class="print-action-btn pdf-btn"
-        data-pdf-filter="current"
-      >
-        📄 PDF
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- ALL ORDERS -->
-
-  <div class="print-option-row">
-
-    <div class="print-option-info">
-
-      <div class="print-option-title">
-        All Orders
-      </div>
-
-      <span class="print-option-description">
-        Print or download every order in the tracker.
-      </span>
-
-    </div>
-
-    <div class="print-option-actions">
-
-      <button
-        type="button"
-        class="print-action-btn"
-        data-print-filter="all"
-      >
-        🖨 Print
-      </button>
-
-      <button
-        type="button"
-        class="print-action-btn pdf-btn"
-        data-pdf-filter="all"
-      >
-        📄 PDF
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- PENDING -->
-
-  <div class="print-option-row">
-
-    <div class="print-option-info">
-
-      <div class="print-option-title">
-        Pending Orders
-      </div>
-
-      <span class="print-option-description">
-        Orders with payment still pending.
-      </span>
-
-    </div>
-
-    <div class="print-option-actions">
-
-      <button
-        type="button"
-        class="print-action-btn"
-        data-print-filter="Pending"
-      >
-        🖨 Print
-      </button>
-
-      <button
-        type="button"
-        class="print-action-btn pdf-btn"
-        data-pdf-filter="Pending"
-      >
-        📄 PDF
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- PARTIALLY RECEIVED -->
-
-  <div class="print-option-row">
-
-    <div class="print-option-info">
-
-      <div class="print-option-title">
-        Partially Received
-      </div>
-
-      <span class="print-option-description">
-        Orders with partial payment received.
-      </span>
-
-    </div>
-
-    <div class="print-option-actions">
-
-      <button
-        type="button"
-        class="print-action-btn"
-        data-print-filter="Partially Received"
-      >
-        🖨 Print
-      </button>
-
-      <button
-        type="button"
-        class="print-action-btn pdf-btn"
-        data-pdf-filter="Partially Received"
-      >
-        📄 PDF
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- RECEIVED -->
-
-  <div class="print-option-row">
-
-    <div class="print-option-info">
-
-      <div class="print-option-title">
-        Received Orders
-      </div>
-
-      <span class="print-option-description">
-        Orders marked as fully received.
-      </span>
-
-    </div>
-
-    <div class="print-option-actions">
-
-      <button
-        type="button"
-        class="print-action-btn"
-        data-print-filter="Received"
-      >
-        🖨 Print
-      </button>
-
-      <button
-        type="button"
-        class="print-action-btn pdf-btn"
-        data-pdf-filter="Received"
-      >
-        📄 PDF
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- NO AMOUNT -->
-
-  <div class="print-option-row">
-
-    <div class="print-option-info">
-
-      <div class="print-option-title">
-        No Amount
-      </div>
-
-      <span class="print-option-description">
-        Orders with no payment amount.
-      </span>
-
-    </div>
-
-    <div class="print-option-actions">
-
-      <button
-        type="button"
-        class="print-action-btn"
-        data-print-filter="No Amount"
-      >
-        🖨 Print
-      </button>
-
-      <button
-        type="button"
-        class="print-action-btn pdf-btn"
-        data-pdf-filter="No Amount"
-      >
-        📄 PDF
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<div class="print-modal-actions">
-
-  <button
-    type="button"
-    class="print-cancel-btn"
-    id="closePrintOptions"
-  >
-    Cancel
-  </button>
-
-</div>
-```
-
-  </div>
-
-</div>
 
 <!-- PRINT AREA -->
 
 <div id="printArea"></div>
 
+
 <!-- ORIGINAL SCRIPT -->
 
-<script src="script.js"></script>
-
-<!-- PRINT + PDF FUNCTIONALITY -->
-
 <script>
+
+/* ============================================================
+   SAFE MAY 2026 ORDER IMPORT
+
+   Adds the supplied May 2026 orders ONCE.
+   Does NOT delete or replace existing orders.
+   Existing orders with the same Job # are left untouched.
+   ============================================================ */
 
 (function () {
 
   "use strict";
 
+  const IMPORT_KEY = "alJefoonMay2026ImportV1";
 
-  const modal =
-    document.getElementById("printOptionsModal");
-
-  const openBtn =
-    document.getElementById("printOrdersBtn");
-
-  const closeBtn =
-    document.getElementById("closePrintOptions");
+  const STORAGE_KEY = "alJefoonOrdersV1";
 
 
-  if (!modal) {
+  if (localStorage.getItem(IMPORT_KEY) === "done") {
     return;
   }
 
 
-  /* =====================================================
-     OPEN MODAL
-  ===================================================== */
-
-  function openPrintPdfModal() {
-
-    modal.classList.add("show");
-
-  }
-
-
-  if (openBtn) {
-
-    openBtn.addEventListener(
-      "click",
-      openPrintPdfModal
-    );
-
-  }
-
-
-  /* =====================================================
-     CLOSE MODAL
-  ===================================================== */
-
-  if (closeBtn) {
-
-    closeBtn.addEventListener(
-      "click",
-      function () {
-
-        modal.classList.remove("show");
-
-      }
-    );
-
-  }
-
-
-  modal.addEventListener(
-    "click",
-    function (event) {
-
-      if (event.target === modal) {
-
-        modal.classList.remove("show");
-
-      }
-
-    }
-  );
-
-
-  /* =====================================================
-     ESCAPE HTML
-  ===================================================== */
-
-  function escapeHtml(value) {
-
-    return String(value ?? "")
-
-      .replace(/&/g, "&amp;")
-
-      .replace(/</g, "&lt;")
-
-      .replace(/>/g, "&gt;")
-
-      .replace(/"/g, "&quot;")
-
-      .replace(/'/g, "&#039;");
-
-  }
-
-
-  /* =====================================================
-     CLEAN TEXT
-  ===================================================== */
-
-  function cleanText(value) {
-
-    return String(value ?? "")
-
-      .replace(/\s+/g, " ")
-
-      .trim();
-
-  }
-
-
-  /* =====================================================
-     GET CURRENT TABLE ROWS
-  ===================================================== */
-
-  function getCurrentRows() {
-
-    const body =
-      document.getElementById("ordersBody");
-
-    if (!body) {
-      return [];
-    }
-
-
-    return Array.from(
-      body.querySelectorAll("tr")
-    ).filter(function (row) {
-
-      return !row.querySelector(
-        'td[colspan]'
-      );
-
-    });
-
-  }
-
-
-  /* =====================================================
-     READ ORDERS FROM LOCAL STORAGE
-  ===================================================== */
-
-  function getStoredOrders() {
-
-    try {
-
-      const raw =
-        localStorage.getItem(
-          "alJefoonOrdersV1"
-        );
-
-      if (!raw) {
-        return [];
-      }
-
-
-      const orders =
-        JSON.parse(raw);
-
-
-      return Array.isArray(orders)
-        ? orders
-        : [];
-
-    }
-
-    catch (error) {
-
-      console.error(
-        "Unable to read saved orders:",
-        error
-      );
-
-      return [];
-
-    }
-
-  }
-
-
-  /* =====================================================
-     CONVERT STORED ORDER TO PRINT DATA
-  ===================================================== */
-
-  function convertOrder(order) {
-
-    const items =
-      Array.isArray(order.items)
-        ? order.items
-        : [];
-
-
-    let orderText = "";
-
-
-    if (items.length) {
-
-      orderText =
-        items.map(function (item) {
-
-          if (typeof item === "string") {
-            return item;
-          }
-
-          return (
-            item.name ||
-            item.item ||
-            item.description ||
-            ""
-          );
-
-        })
-
-        .filter(Boolean)
-
-        .join(", ");
-
-    }
-
-
-    return {
-
-      date:
-        order.date ||
-        "",
-
-      job:
-        order.jobNo ||
-        order.job ||
-        "",
-
-      party:
-        order.party ||
-        "",
-
-      orders:
-        orderText ||
-        order.orders ||
-        "",
-
-      incharge:
-        order.incharge ||
-        "",
-
-      received:
-        order.amountReceived ??
-        order.received ??
-        0,
-
-      pending:
-        order.pendingAmount ??
-        order.pending ??
-        0,
-
-      status:
-        order.status ||
-        ""
-
-    };
-
-  }
-
-
-  /* =====================================================
-     CONVERT TABLE ROW
-  ===================================================== */
-
-  function convertTableRow(row) {
-
-    const cells =
-      Array.from(
-        row.querySelectorAll("td")
-      );
-
-
-    if (cells.length < 8) {
-      return null;
-    }
-
-
-    return {
-
-      date:
-        cleanText(cells[0].innerText),
-
-      job:
-        cleanText(cells[1].innerText),
-
-      party:
-        cleanText(cells[2].innerText),
-
-      orders:
-        cleanText(cells[3].innerText),
-
-      incharge:
-        cleanText(cells[4].innerText),
-
-      received:
-        cleanText(cells[5].innerText),
-
-      pending:
-        cleanText(cells[6].innerText),
-
-      status:
-        cleanText(cells[7].innerText)
-
-    };
-
-  }
-
-
-  /* =====================================================
-     GET CURRENT FILTERED RESULTS
-  ===================================================== */
-
-  function getCurrentResults() {
-
-    return getCurrentRows()
-
-      .map(convertTableRow)
-
-      .filter(Boolean);
-
-  }
-
-
-  /* =====================================================
-     GET ALL ORDERS
-  ===================================================== */
-
-  function getAllResults() {
-
-    const stored =
-      getStoredOrders();
-
-
-    if (stored.length) {
-
-      return stored
-
-        .map(convertOrder)
-
-        .filter(function (order) {
-
-          return (
-            order.job ||
-            order.party ||
-            order.date
-          );
-
-        });
-
-    }
-
-
-    return getCurrentResults();
-
-  }
-
-
-  /* =====================================================
-     FILTER BY STATUS
-  ===================================================== */
-
-  function getStatusResults(status) {
-
-    return getAllResults()
-
-      .filter(function (order) {
-
-        return cleanText(
-          order.status
-        ).toLowerCase() ===
-        status.toLowerCase();
-
-      });
-
-  }
-
-
-  /* =====================================================
-     GET PRINT DATA
-  ===================================================== */
-
-  function getPrintData(type) {
-
-    if (type === "current") {
-
-      return getCurrentResults();
-
-    }
-
-
-    if (type === "all") {
-
-      return getAllResults();
-
-    }
-
-
-    return getStatusResults(type);
-
-  }
-
-
-  /* =====================================================
-     GET UNIQUE CUSTOMERS
-  ===================================================== */
-
-  function getUniqueCustomers(data) {
-
-    const customers =
-      data
-
-        .map(function (order) {
-
-          return cleanText(
-            order.party
-          );
-
-        })
-
-        .filter(Boolean);
-
-
-    return Array.from(
-      new Set(customers)
-    ).sort(function (a, b) {
-
-      return a.localeCompare(
-        b,
-        undefined,
+  const importedOrders = [
+
+    {
+      "id": "import-may-2026-JB0306",
+      "date": "2026-05-01",
+      "jobNo": "JB0306",
+      "haflaId": "",
+      "party": "Cash Customer",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 15000,
+      "amountReceived": 15000,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
         {
-          sensitivity: "base"
+          "description": "Traditional Tent 10x15m",
+          "quantity": ""
         }
-      );
-
-    });
-
-  }
-
-
-  /* =====================================================
-     CUSTOMER SELECTION MODAL
-  ===================================================== */
-
-  let pendingPrintType = null;
-
-  let pendingPrintAction = null;
-
-
-  function showCustomerSelection(
-    type,
-    action
-  ) {
-
-    const data =
-      getPrintData(type);
-
-
-    if (!data.length) {
-
-      alert(
-        "There are no orders available for this selection."
-      );
-
-      return;
-
-    }
-
-
-    const customers =
-      getUniqueCustomers(data);
-
-
-    if (!customers.length) {
-
-      alert(
-        "No customers were found in this report."
-      );
-
-      return;
-
-    }
-
-
-    pendingPrintType = type;
-
-    pendingPrintAction = action;
-
-
-    const oldModal =
-      document.getElementById(
-        "customerSelectionModal"
-      );
-
-
-    if (oldModal) {
-
-      oldModal.remove();
-
-    }
-
-
-    const customerModal =
-      document.createElement("div");
-
-
-    customerModal.id =
-      "customerSelectionModal";
-
-
-    customerModal.className =
-      "print-options-modal show";
-
-
-    customerModal.innerHTML = `
-
-      <div class="print-options-box">
-
-        <h3>
-          Select Customers
-        </h3>
-
-        <p>
-          Choose which customers should be included
-          in this printout. Unchecked customers will
-          not appear in the report.
-        </p>
-
-
-        <div class="customer-select-section">
-
-          <div class="customer-select-header">
-
-            <strong>
-              Customers
-            </strong>
-
-            <div class="customer-select-buttons">
-
-              <button
-                type="button"
-                id="selectAllCustomers"
-              >
-                Select All
-              </button>
-
-              <button
-                type="button"
-                id="clearAllCustomers"
-              >
-                Clear All
-              </button>
-
-            </div>
-
-          </div>
-
-
-          <div class="customer-list">
-
-            ${customers.map(function(customer) {
-
-              return `
-
-                <label class="customer-checkbox">
-
-                  <input
-                    type="checkbox"
-                    class="customer-print-checkbox"
-                    value="${escapeHtml(customer)}"
-                    checked
-                  >
-
-                  <span>
-                    ${escapeHtml(customer)}
-                  </span>
-
-                </label>
-
-              `;
-
-            }).join("")}
-
-          </div>
-
-
-          <div
-            class="customer-selection-count"
-            id="customerSelectionCount"
-          >
-            ${customers.length} customer(s) selected
-          </div>
-
-        </div>
-
-
-        <div
-          class="print-modal-actions"
-          style="
-            display:flex;
-            justify-content:flex-end;
-            gap:8px;
-            margin-top:20px;
-          "
-        >
-
-          <button
-            type="button"
-            class="print-cancel-btn"
-            id="cancelCustomerSelection"
-          >
-            Cancel
-          </button>
-
-
-          <button
-            type="button"
-            class="print-action-btn pdf-btn"
-            id="confirmCustomerSelection"
-          >
-            ${
-              action === "print"
-                ? "🖨 Print Selected"
-                : "📄 PDF Selected"
-            }
-          </button>
-
-        </div>
-
-      </div>
-
-    `;
-
-
-    document.body.appendChild(
-      customerModal
-    );
-
-
-    /* =====================================================
-       UPDATE SELECTED CUSTOMER COUNT
-    ===================================================== */
-
-    function updateCustomerCount() {
-
-      const selected =
-        customerModal.querySelectorAll(
-          ".customer-print-checkbox:checked"
-        ).length;
-
-
-      const count =
-        customerModal.querySelector(
-          "#customerSelectionCount"
-        );
-
-
-      if (count) {
-
-        count.textContent =
-          selected +
-          " customer(s) selected";
-
-      }
-
-    }
-
-
-    /* =====================================================
-       CHECKBOX CHANGES
-    ===================================================== */
-
-    customerModal
-      .querySelectorAll(
-        ".customer-print-checkbox"
-      )
-      .forEach(function(checkbox) {
-
-        checkbox.addEventListener(
-          "change",
-          updateCustomerCount
-        );
-
-      });
-
-
-    /* =====================================================
-       SELECT ALL
-    ===================================================== */
-
-    customerModal
-      .querySelector(
-        "#selectAllCustomers"
-      )
-      .addEventListener(
-        "click",
-        function() {
-
-          customerModal
-            .querySelectorAll(
-              ".customer-print-checkbox"
-            )
-            .forEach(function(checkbox) {
-
-              checkbox.checked = true;
-
-            });
-
-
-          updateCustomerCount();
-
-        }
-      );
-
-
-    /* =====================================================
-       CLEAR ALL
-    ===================================================== */
-
-    customerModal
-      .querySelector(
-        "#clearAllCustomers"
-      )
-      .addEventListener(
-        "click",
-        function() {
-
-          customerModal
-            .querySelectorAll(
-              ".customer-print-checkbox"
-            )
-            .forEach(function(checkbox) {
-
-              checkbox.checked = false;
-
-            });
-
-
-          updateCustomerCount();
-
-        }
-      );
-
-
-    /* =====================================================
-       CANCEL
-    ===================================================== */
-
-    customerModal
-      .querySelector(
-        "#cancelCustomerSelection"
-      )
-      .addEventListener(
-        "click",
-        function() {
-
-          customerModal.remove();
-
-          pendingPrintType = null;
-
-          pendingPrintAction = null;
-
-        }
-      );
-
-
-    /* =====================================================
-       CLOSE BY CLICKING OUTSIDE
-    ===================================================== */
-
-    customerModal.addEventListener(
-      "click",
-      function(event) {
-
-        if (
-          event.target ===
-          customerModal
-        ) {
-
-          customerModal.remove();
-
-          pendingPrintType = null;
-
-          pendingPrintAction = null;
-
-        }
-
-      }
-    );
-
-
-    /* =====================================================
-       CONFIRM SELECTION
-    ===================================================== */
-
-    customerModal
-      .querySelector(
-        "#confirmCustomerSelection"
-      )
-      .addEventListener(
-        "click",
-        function() {
-
-          const selectedCustomers =
-            Array.from(
-              customerModal.querySelectorAll(
-                ".customer-print-checkbox:checked"
-              )
-            )
-            .map(function(checkbox) {
-
-              return checkbox.value;
-
-            });
-
-
-          if (!selectedCustomers.length) {
-
-            alert(
-              "Please select at least one customer."
-            );
-
-            return;
-
-          }
-
-
-          const selectedData =
-            getPrintData(
-              pendingPrintType
-            )
-            .filter(function(order) {
-
-              const orderCustomer =
-                cleanText(
-                  order.party
-                ).toLowerCase();
-
-
-              return selectedCustomers.some(
-                function(customer) {
-
-                  return cleanText(
-                    customer
-                  ).toLowerCase() ===
-                  orderCustomer;
-
-                }
-              );
-
-            });
-
-
-          if (!selectedData.length) {
-
-            alert(
-              "No orders were found for the selected customers."
-            );
-
-            return;
-
-          }
-
-
-          const selectedType =
-            pendingPrintType;
-
-
-          const selectedAction =
-            pendingPrintAction;
-
-
-          customerModal.remove();
-
-
-          pendingPrintType = null;
-
-          pendingPrintAction = null;
-
-
-          if (
-            selectedAction ===
-            "print"
-          ) {
-
-            printOrdersWithData(
-              selectedType,
-              selectedData
-            );
-
-          }
-          else {
-
-            downloadPDFWithData(
-              selectedType,
-              selectedData
-            );
-
-          }
-
-        }
-      );
-
-  }
-
-
-  /* =====================================================
-     PARSE ORDER DATE CORRECTLY
-  ===================================================== */
-
-  function parseOrderDate(value) {
-
-    if (!value) {
-      return NaN;
-    }
-
-
-    const text =
-      String(value).trim();
-
-
-    /*
-       YYYY-MM-DD
-    */
-
-    let match =
-      text.match(
-        /^(\d{4})-(\d{2})-(\d{2})$/
-      );
-
-
-    if (match) {
-
-      return Date.UTC(
-        Number(match[1]),
-        Number(match[2]) - 1,
-        Number(match[3])
-      );
-
-    }
-
-
-    /*
-       YYYY-MM-DD with time
-    */
-
-    match =
-      text.match(
-        /^(\d{4})-(\d{2})-(\d{2})[T\s]/
-      );
-
-
-    if (match) {
-
-      return Date.UTC(
-        Number(match[1]),
-        Number(match[2]) - 1,
-        Number(match[3])
-      );
-
-    }
-
-
-    /*
-       DD/MM/YYYY
-    */
-
-    match =
-      text.match(
-        /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
-      );
-
-
-    if (match) {
-
-      return Date.UTC(
-        Number(match[3]),
-        Number(match[2]) - 1,
-        Number(match[1])
-      );
-
-    }
-
-
-    /*
-       DD-MM-YYYY
-    */
-
-    match =
-      text.match(
-        /^(\d{1,2})-(\d{1,2})-(\d{4})$/
-      );
-
-
-    if (match) {
-
-      return Date.UTC(
-        Number(match[3]),
-        Number(match[2]) - 1,
-        Number(match[1])
-      );
-
-    }
-
-
-    /*
-       Final fallback
-    */
-
-    const parsed =
-      new Date(text);
-
-
-    return Number.isNaN(parsed.getTime())
-      ? NaN
-      : parsed.getTime();
-
-  }
-
-
-  /* =====================================================
-     SORT PRINT DATA
-  ===================================================== */
-
-  function sortPrintData(data) {
-
-    const sortSelect =
-      document.getElementById(
-        "printSortOrder"
-      );
-
-
-    const sortOrder =
-      sortSelect
-        ? sortSelect.value
-        : "newest";
-
-
-    return data
-      .slice()
-      .sort(function (a, b) {
-
-        const timeA =
-          parseOrderDate(a.date);
-
-        const timeB =
-          parseOrderDate(b.date);
-
-
-        if (
-          !Number.isNaN(timeA) &&
-          !Number.isNaN(timeB)
-        ) {
-
-          if (sortOrder === "oldest") {
-
-            return timeA - timeB;
-
-          }
-
-          return timeB - timeA;
-
-        }
-
-
-        if (
-          Number.isNaN(timeA) &&
-          !Number.isNaN(timeB)
-        ) {
-
-          return 1;
-
-        }
-
-
-        if (
-          !Number.isNaN(timeA) &&
-          Number.isNaN(timeB)
-        ) {
-
-          return -1;
-
-        }
-
-
-        return 0;
-
-      });
-
-  }
-
-
-  /* =====================================================
-     NUMBER
-  ===================================================== */
-
-  function numberValue(value) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-
-      return 0;
-
-    }
-
-
-    const cleaned =
-      String(value)
-        .replace(/[^0-9.-]/g, "");
-
-
-    const number =
-      parseFloat(cleaned);
-
-
-    return Number.isFinite(number)
-      ? number
-      : 0;
-
-  }
-
-
-  /* =====================================================
-     FORMAT MONEY
-  ===================================================== */
-
-  function formatMoney(value) {
-
-    return numberValue(value)
-      .toLocaleString(
-        "en-AE",
+      ],
+      "remarks": "Received in 2 Transfers."
+    },
+
+    {
+      "id": "import-may-2026-27934",
+      "date": "2026-05-01",
+      "jobNo": "27934",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
         {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          "description": "x200 Police Barriers",
+          "quantity": ""
         }
-      );
-
-  }
-
-
-  /* =====================================================
-     FORMAT DATE
-  ===================================================== */
-
-  function formatDate(value) {
-
-    if (!value) {
-      return "";
-    }
-
-
-    const parsed =
-      parseOrderDate(value);
-
-
-    if (Number.isNaN(parsed)) {
-      return value;
-    }
-
-
-    const date =
-      new Date(parsed);
-
-
-    return date.toLocaleDateString(
-      "en-GB",
-      {
-        timeZone: "UTC"
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     GET REPORT PERIOD
-  ===================================================== */
-
-  function getReportPeriod() {
-
-    const filterMonth =
-      document.getElementById(
-        "filterMonth"
-      );
-
-
-    let period =
-      "All Dates";
-
-
-    if (
-      filterMonth &&
-      filterMonth.value
-    ) {
-
-      const date =
-        new Date(
-          filterMonth.value +
-          "-01T00:00:00"
-        );
-
-
-      period =
-        date.toLocaleDateString(
-          "en-GB",
-          {
-            month: "long",
-            year: "numeric"
-          }
-        );
-
-    }
-
-
-    return period;
-
-  }
-
-
-  /* =====================================================
-     GET REPORT TITLE
-  ===================================================== */
-
-  function getReportTitle(type) {
-
-    const titles = {
-
-      current:
-        "Current Order Results",
-
-      all:
-        "All Orders",
-
-      "Pending":
-        "Pending Orders",
-
-      "Partially Received":
-        "Partially Received Orders",
-
-      "Received":
-        "Received Orders",
-
-      "No Amount":
-        "No Amount Orders"
-
-    };
-
-
-    return titles[type] ||
-      "Order Report";
-
-  }
-
-
-  /* =====================================================
-     GET SORT LABEL
-  ===================================================== */
-
-  function getSortLabel() {
-
-    const sortSelect =
-      document.getElementById(
-        "printSortOrder"
-      );
-
-
-    if (
-      sortSelect &&
-      sortSelect.value === "oldest"
-    ) {
-
-      return "Oldest → Newest";
-
-    }
-
-
-    return "Newest → Oldest";
-
-  }
-
-
-  /* =====================================================
-     PRINT
-  ===================================================== */
-
-  function printOrdersWithData(
-    type,
-    selectedData
-  ) {
-
-    modal.classList.remove("show");
-
-
-    let data =
-      selectedData;
-
-
-    data =
-      sortPrintData(data);
-
-
-    if (!data.length) {
-
-      alert(
-        "There are no orders available to print for this selection."
-      );
-
-      return;
-
-    }
-
-
-    let receivedTotal = 0;
-
-    let pendingTotal = 0;
-
-
-    data.forEach(function (order) {
-
-      receivedTotal +=
-        numberValue(
-          order.received
-        );
-
-      pendingTotal +=
-        numberValue(
-          order.pending
-        );
-
-    });
-
-
-    const title =
-      getReportTitle(type);
-
-
-    const period =
-      getReportPeriod();
-
-
-    const printArea =
-      document.getElementById(
-        "printArea"
-      );
-
-
-    printArea.innerHTML = `
-
-      <div class="print-header">
-
-        <h1>
-          AL JEFOON TENTS
-        </h1>
-
-        <p>
-          <strong>
-            ${escapeHtml(title)}
-          </strong>
-        </p>
-
-        <p>
-          Period:
-          ${escapeHtml(period)}
-        </p>
-
-        <p>
-          Printed:
-          ${escapeHtml(
-            new Date().toLocaleString(
-              "en-GB"
-            )
-          )}
-        </p>
-
-      </div>
-
-
-      <table class="print-table">
-
-        <thead>
-
-          <tr>
-
-            <th>Date</th>
-            <th>Job #</th>
-            <th>Party</th>
-            <th>Orders</th>
-            <th>Incharge</th>
-            <th>Received</th>
-            <th>Pending</th>
-            <th>Status</th>
-
-          </tr>
-
-        </thead>
-
-
-        <tbody>
-
-          ${data.map(function (order) {
-
-            return `
-
-              <tr>
-
-                <td>
-                  ${escapeHtml(
-                    formatDate(order.date)
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.job
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.party
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.orders
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.incharge
-                  )}
-                </td>
-
-                <td>
-                  ${formatMoney(
-                    order.received
-                  )}
-                </td>
-
-                <td>
-                  ${formatMoney(
-                    order.pending
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.status
-                  )}
-                </td>
-
-              </tr>
-
-            `;
-
-          }).join("")}
-
-        </tbody>
-
-      </table>
-
-
-      <div class="print-summary">
-
-        <span>
-          Total Orders:
-          ${data.length}
-        </span>
-
-        <span>
-          Total Received:
-          ${formatMoney(
-            receivedTotal
-          )}
-        </span>
-
-        <span>
-          Total Pending:
-          ${formatMoney(
-            pendingTotal
-          )}
-        </span>
-
-      </div>
-
-
-      <div class="print-footer">
-
-        AL JEFOON TENTS — Order Tracker
-
-      </div>
-
-    `;
-
-
-    setTimeout(function () {
-
-      window.print();
-
-    }, 200);
-
-  }
-
-
-  /* =====================================================
-     DOWNLOAD PDF
-  ===================================================== */
-
-  function downloadPDFWithData(
-    type,
-    selectedData
-  ) {
-
-    modal.classList.remove("show");
-
-
-    let data =
-      selectedData;
-
-
-    data =
-      sortPrintData(data);
-
-
-    if (!data.length) {
-
-      alert(
-        "There are no orders available to download for this selection."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      typeof window.jspdf === "undefined"
-    ) {
-
-      alert(
-        "PDF library could not be loaded. Please check your internet connection and try again."
-      );
-
-      return;
-
-    }
-
-
-    const jsPDF =
-      window.jspdf.jsPDF;
-
-
-    const doc =
-      new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4"
-      });
-
-
-    const title =
-      getReportTitle(type);
-
-
-    const period =
-      getReportPeriod();
-
-
-    let receivedTotal = 0;
-
-    let pendingTotal = 0;
-
-
-    data.forEach(function (order) {
-
-      receivedTotal +=
-        numberValue(
-          order.received
-        );
-
-      pendingTotal +=
-        numberValue(
-          order.pending
-        );
-
-    });
-
-
-    doc.setFont(
-      "helvetica",
-      "bold"
-    );
-
-    doc.setFontSize(20);
-
-    doc.text(
-      "AL JEFOON TENTS",
-      14,
-      15
-    );
-
-
-    doc.setFontSize(12);
-
-    doc.setFont(
-      "helvetica",
-      "bold"
-    );
-
-    doc.text(
-      title,
-      14,
-      22
-    );
-
-
-    doc.setFont(
-      "helvetica",
-      "normal"
-    );
-
-    doc.setFontSize(9);
-
-    doc.text(
-      "Period: " + period,
-      14,
-      28
-    );
-
-
-    doc.text(
-      "Sort: " + getSortLabel(),
-      14,
-      33
-    );
-
-
-    doc.text(
-      "Printed: " +
-      new Date().toLocaleString("en-GB"),
-      14,
-      38
-    );
-
-
-    const tableHead = [[
-      "Date",
-      "Job #",
-      "Party",
-      "Orders",
-      "Incharge",
-      "Received",
-      "Pending",
-      "Status"
-    ]];
-
-
-    const tableBody =
-      data.map(function (order) {
-
-        return [
-
-          formatDate(
-            order.date
-          ),
-
-          order.job || "",
-
-          order.party || "",
-
-          order.orders || "",
-
-          order.incharge || "",
-
-          formatMoney(
-            order.received
-          ),
-
-          formatMoney(
-            order.pending
-          ),
-
-          order.status || ""
-
-        ];
-
-      });
-
-
-    doc.autoTable({
-
-      head: tableHead,
-
-      body: tableBody,
-
-      startY: 44,
-
-      theme: "grid",
-
-      styles: {
-
-        font: "helvetica",
-
-        fontSize: 7.5,
-
-        cellPadding: 3,
-
-        valign: "top",
-
-        textColor: [0, 0, 0],
-
-        lineColor: [150, 150, 150],
-
-        lineWidth: 0.2
-
-      },
-
-      headStyles: {
-
-        fillColor: [242, 242, 242],
-
-        textColor: [0, 0, 0],
-
-        fontStyle: "bold",
-
-        halign: "left"
-
-      },
-
-      columnStyles: {
-
-        0: {
-          cellWidth: 23
-        },
-
-        1: {
-          cellWidth: 20
-        },
-
-        2: {
-          cellWidth: 40
-        },
-
-        3: {
-          cellWidth: 70
-        },
-
-        4: {
-          cellWidth: 28
-        },
-
-        5: {
-          cellWidth: 28,
-          halign: "right"
-        },
-
-        6: {
-          cellWidth: 28,
-          halign: "right"
-        },
-
-        7: {
-          cellWidth: 30
+      ],
+      "remarks": "No Price Mentioned."
+    },
+
+    {
+      "id": "import-may-2026-JB0307",
+      "date": "2026-05-02",
+      "jobNo": "JB0307",
+      "haflaId": "INV-2812",
+      "party": "BBQ Tonight",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 2205,
+      "amountReceived": 2205,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "Setup for 70pax",
+          "quantity": ""
         }
+      ],
+      "remarks": "All Clear for May"
+    },
 
-      },
-
-      margin: {
-
-        left: 14,
-
-        right: 14
-
-      },
-
-      didDrawPage:
-        function () {
-
-          const pageCount =
-            doc.internal.getNumberOfPages();
-
-          const currentPage =
-            doc.internal.getCurrentPageInfo()
-              .pageNumber;
-
-
-          doc.setFontSize(7);
-
-          doc.setFont(
-            "helvetica",
-            "normal"
-          );
-
-
-          doc.text(
-            "AL JEFOON TENTS — Order Tracker",
-            14,
-            202
-          );
-
-
-          doc.text(
-            "Page " +
-            currentPage +
-            " of " +
-            pageCount,
-            283,
-            202,
-            {
-              align: "right"
-            }
-          );
-
+    {
+      "id": "import-may-2026-JB0308",
+      "date": "2026-05-02",
+      "jobNo": "JB0308",
+      "haflaId": "",
+      "party": "Cash Customer",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x18 Cooler",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Sofa Set",
+          "quantity": ""
         }
+      ],
+      "remarks": "No amount mentioned in source."
+    },
 
-    });
+    {
+      "id": "import-may-2026-JB0309",
+      "date": "2026-05-02",
+      "jobNo": "JB0309",
+      "haflaId": "INV-2812",
+      "party": "BBQ Tonight",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "Setup for 50pax",
+          "quantity": ""
+        }
+      ],
+      "remarks": "Received amount not specified (R). Clear (Payment Received with JB0307)"
+    },
 
+    {
+      "id": "import-may-2026-JB0310",
+      "date": "2026-05-02",
+      "jobNo": "JB0310",
+      "haflaId": "INV-2812",
+      "party": "BBQ Tonight",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x5 Chafing Dish",
+          "quantity": ""
+        }
+      ],
+      "remarks": "Received amount not specified (R). Clear (Payment Received with JB0307)"
+    },
 
-    let finalY = 45;
+    {
+      "id": "import-may-2026-JB0311",
+      "date": "2026-05-02",
+      "jobNo": "JB0311",
+      "haflaId": "",
+      "party": "Arch Events",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 131.25,
+      "amountReceived": 131.25,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x1 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": "LN54882595764928."
+    },
 
+    {
+      "id": "import-may-2026-27962",
+      "date": "2026-05-02",
+      "jobNo": "27962",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x3 Bench",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No Price Mentioned."
+    },
 
-    if (
-      doc.lastAutoTable &&
-      doc.lastAutoTable.finalY
-    ) {
+    {
+      "id": "import-may-2026-27980",
+      "date": "2026-05-02",
+      "jobNo": "27980",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "High Majlis",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No Price Mentioned."
+    },
 
-      finalY =
-        doc.lastAutoTable.finalY + 10;
+    {
+      "id": "import-may-2026-27988",
+      "date": "2026-05-02",
+      "jobNo": "27988",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x1 Mist Fan",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No Price Mentioned."
+    },
 
+    {
+      "id": "import-may-2026-27993",
+      "date": "2026-05-02",
+      "jobNo": "27993",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x5 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No Price Mentioned."
+    },
+
+    {
+      "id": "import-may-2026-27982",
+      "date": "2026-05-02",
+      "jobNo": "27982",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 367.5,
+      "amountReceived": 0,
+      "pendingAmount": 367.5,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "x1 Mist Fan",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0312",
+      "date": "2026-05-03",
+      "jobNo": "JB0312",
+      "haflaId": "INV-2792",
+      "party": "AG Engineering & Power Contracting",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 1900,
+      "amountReceived": 1900,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x8 Single Sofa",
+          "quantity": ""
+        },
+        {
+          "description": "x150 Banquet Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Stage Cloth",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Coffee Tables",
+          "quantity": ""
+        }
+      ],
+      "remarks": "Payment Received on 18/6/26"
+    },
+
+    {
+      "id": "import-may-2026-27999",
+      "date": "2026-05-03",
+      "jobNo": "27999",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x2 Buffet Table",
+          "quantity": ""
+        },
+        {
+          "description": "x6 White Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Crockery",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No Price Mentioned."
+    },
+
+    {
+      "id": "import-may-2026-27977",
+      "date": "2026-05-03",
+      "jobNo": "27977",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x2 Buffet Table",
+          "quantity": ""
+        },
+        {
+          "description": "x6 White Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Crockery",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No Price Mentioned."
+    },
+
+    {
+      "id": "import-may-2026-JB0313",
+      "date": "2026-05-03",
+      "jobNo": "JB0313",
+      "haflaId": "INV-2812",
+      "party": "BBQ Tonight",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "Setup for 80pax (Standing)",
+          "quantity": ""
+        }
+      ],
+      "remarks": "Received amount not specified (R). Clear (Payment Received with JB0307)"
+    },
+
+    {
+      "id": "import-may-2026-JB0314",
+      "date": "2026-05-04",
+      "jobNo": "JB0314",
+      "haflaId": "INV-2782",
+      "party": "Spice & Smoke",
+      "incharge": "",
+      "receivedBy": "Usman",
+      "paymentMethod": "",
+      "totalAmount": 1055.25,
+      "amountReceived": 1055.25,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x19 Chafing Dish",
+          "quantity": ""
+        },
+        {
+          "description": "x4 Buffet Table",
+          "quantity": ""
+        }
+      ],
+      "remarks": "Invoice Amount 929.25."
+    },
+
+    {
+      "id": "import-may-2026-JB0315",
+      "date": "2026-05-04",
+      "jobNo": "JB0315",
+      "haflaId": "",
+      "party": "Athoor",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x5 Coffee Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Carpet",
+          "quantity": ""
+        },
+        {
+          "description": "x12 (not readable)",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No amount mentioned in source."
+    },
+
+    {
+      "id": "import-may-2026-JB0316",
+      "date": "2026-05-05",
+      "jobNo": "JB0316",
+      "haflaId": "",
+      "party": "Cash Customer (Fujairah)",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x12 Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x4 Tables",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No amount mentioned in source."
+    },
+
+    {
+      "id": "import-may-2026-JB0317",
+      "date": "2026-05-06",
+      "jobNo": "JB0317",
+      "haflaId": "",
+      "party": "Geeta",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x70 Golden or Acrylic Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "(with pink bow)",
+          "quantity": ""
+        }
+      ],
+      "remarks": "Received amount not specified (R). Cancelled."
+    },
+
+    {
+      "id": "import-may-2026-27992",
+      "date": "2026-05-06",
+      "jobNo": "27992",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 2677.5,
+      "amountReceived": 0,
+      "pendingAmount": 2677.5,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "x3 Cooler (6 May)",
+          "quantity": ""
+        },
+        {
+          "description": "x70 White Chair (6 May)",
+          "quantity": ""
+        },
+        {
+          "description": "x70 Chiavari Chair (9 May)",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Cooler (9May)",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0318",
+      "date": "2026-05-08",
+      "jobNo": "JB0318",
+      "haflaId": "AJ0417",
+      "party": "Parishay Events",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 1100,
+      "amountReceived": 1100,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x300 Banquet Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-28018",
+      "date": "2026-05-08",
+      "jobNo": "28018",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 1008,
+      "amountReceived": 0,
+      "pendingAmount": 1008,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "x6 Golden High Chair",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Golden Table",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0319",
+      "date": "2026-05-09",
+      "jobNo": "JB0319",
+      "haflaId": "",
+      "party": "Geeta",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x70 Golden/Acrylic Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": "Cancelled."
+    },
+
+    {
+      "id": "import-may-2026-JB0320",
+      "date": "2026-05-09",
+      "jobNo": "JB0320",
+      "haflaId": "",
+      "party": "Cash Customer",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x20 Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": "No amount mentioned in source."
     }
-
-
-    if (finalY > 180) {
-
-      doc.addPage();
-
-      finalY = 20;
-
-    }
-
-
-    doc.setFont(
-      "helvetica",
-      "bold"
-    );
-
-    doc.setFontSize(10);
-
-
-    doc.text(
-      "Total Orders: " +
-      data.length,
-      14,
-      finalY
-    );
-
-
-    doc.text(
-      "Total Received: " +
-      formatMoney(receivedTotal),
-      75,
-      finalY
-    );
-
-
-    doc.text(
-      "Total Pending: " +
-      formatMoney(pendingTotal),
-      155,
-      finalY
-    );
-
-
-    let safeTitle =
-      title
-        .replace(/[^a-z0-9]+/gi, "_")
-        .replace(/^_+|_+$/g, "");
-
-
-    const dateStamp =
-      new Date()
-        .toISOString()
-        .slice(0, 10);
-
-
-    const fileName =
-      "AL_JEFOON_TENTS_" +
-      safeTitle +
-      "_" +
-      dateStamp +
-      ".pdf";
-
-
-    doc.save(fileName);
-
-  }
-
-
-  /* =====================================================
-     PRINT BUTTONS
-  ===================================================== */
-
-  document
-    .querySelectorAll(
-      "[data-print-filter]"
-    )
-    .forEach(function (button) {
-
-      button.addEventListener(
-        "click",
-        function () {
-
-          const type =
-            this.getAttribute(
-              "data-print-filter"
-            );
-
-
-          showCustomerSelection(
-            type,
-            "print"
-          );
-
+    {
+      "id": "import-may-2026-JB0321",
+      "date": "2026-05-09",
+      "jobNo": "JB0321",
+      "haflaId": "",
+      "party": "Sikandar",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x4 Cooler",
+          "quantity": ""
+        },
+        {
+          "description": "x6 Dishes",
+          "quantity": ""
+        },
+        {
+          "description": "x6 Serving Spoon",
+          "quantity": ""
+        },
+        {
+          "description": "x6 Food Pan",
+          "quantity": ""
         }
-      );
+      ],
+      "remarks": ""
+    },
 
-    });
-
-
-  /* =====================================================
-     PDF BUTTONS
-  ===================================================== */
-
-  document
-    .querySelectorAll(
-      "[data-pdf-filter]"
-    )
-    .forEach(function (button) {
-
-      button.addEventListener(
-        "click",
-        function () {
-
-          const type =
-            this.getAttribute(
-              "data-pdf-filter"
-            );
-
-
-          showCustomerSelection(
-            type,
-            "pdf"
-          );
-
+    {
+      "id": "import-may-2026-JB0322",
+      "date": "2026-05-09",
+      "jobNo": "JB0322",
+      "haflaId": "AJ0423",
+      "party": "Shj Events",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 1500,
+      "amountReceived": 1500,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x100 White Cushions",
+          "quantity": ""
+        },
+        {
+          "description": "x8 Chiavari Chairs",
+          "quantity": ""
         }
-      );
+      ],
+      "remarks": ""
+    },
 
-    });
-
-
-  /* =====================================================
-     ESC KEY
-  ===================================================== */
-
-  document.addEventListener(
-    "keydown",
-    function (event) {
-
-      if (
-        event.key === "Escape"
-      ) {
-
-        const customerModal =
-          document.getElementById(
-            "customerSelectionModal"
-          );
-
-
-        if (customerModal) {
-
-          customerModal.remove();
-
-          pendingPrintType = null;
-
-          pendingPrintAction = null;
-
-          return;
-
+    {
+      "id": "import-may-2026-27991",
+      "date": "2026-05-09",
+      "jobNo": "27991",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x70 White Chair",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Cooler",
+          "quantity": ""
         }
+      ],
+      "remarks": ""
+    },
 
-
-        if (
-          modal.classList.contains(
-            "show"
-          )
-        ) {
-
-          modal.classList.remove(
-            "show"
-          );
-
+    {
+      "id": "import-may-2026-27944",
+      "date": "2026-05-10",
+      "jobNo": "27944",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x2 Tent",
+          "quantity": ""
         }
+      ],
+      "remarks": ""
+    },
 
-      }
+    {
+      "id": "import-may-2026-28033",
+      "date": "2026-05-11",
+      "jobNo": "28033",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 472.5,
+      "amountReceived": 0,
+      "pendingAmount": 472.5,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "x50 Banquet Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-    }
-  );
+    {
+      "id": "import-may-2026-JB0323",
+      "date": "2026-05-11",
+      "jobNo": "JB0323",
+      "haflaId": "",
+      "party": "Ajmal",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x20 B. Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
+    {
+      "id": "import-may-2026-28057",
+      "date": "2026-05-14",
+      "jobNo": "28057",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x25 Banquet Chairs (White Stretched Cover)",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-  /* =====================================================
-     AFTER PRINT
-  ===================================================== */
+    {
+      "id": "import-may-2026-JB0324",
+      "date": "2026-05-15",
+      "jobNo": "JB0324",
+      "haflaId": "",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 1100,
+      "amountReceived": 1100,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x40 B. Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x4 B. Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x4 Coolers",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-  window.addEventListener(
-    "afterprint",
-    function () {
+    {
+      "id": "import-may-2026-JB0325",
+      "date": "2026-05-15",
+      "jobNo": "JB0325",
+      "haflaId": "AJ0415",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 970,
+      "amountReceived": 970,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x8 Single Sofas",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Coffee Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x10 (not readable)",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-      const printArea =
-        document.getElementById(
-          "printArea"
-        );
+    {
+      "id": "import-may-2026-JB0326",
+      "date": "2026-05-15",
+      "jobNo": "JB0326",
+      "haflaId": "",
+      "party": "Ghaffar",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x35 Chafing Dishes",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
+    {
+      "id": "import-may-2026-JB0327",
+      "date": "2026-05-15",
+      "jobNo": "JB0327",
+      "haflaId": "",
+      "party": "Sabir Events",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 500,
+      "amountReceived": 500,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x16 Buffet Tables",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-      if (printArea) {
+    {
+      "id": "import-may-2026-28061",
+      "date": "2026-05-15",
+      "jobNo": "28061",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 1265.25,
+      "amountReceived": 0,
+      "pendingAmount": 1265.25,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "x15 Crockery & Cutlery",
+          "quantity": ""
+        },
+        {
+          "description": "x4 Coolers",
+          "quantity": ""
+        },
+        {
+          "description": "x2 Centerpieces",
+          "quantity": ""
+        },
+        {
+          "description": "x2 Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x15 White Chiavari Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-        printArea.innerHTML = "";
+    {
+      "id": "import-may-2026-28062",
+      "date": "2026-05-15",
+      "jobNo": "28062",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 5670,
+      "amountReceived": 0,
+      "pendingAmount": 5670,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "Exhibition Carpet 6x37m",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-      }
+    {
+      "id": "import-may-2026-28069",
+      "date": "2026-05-15",
+      "jobNo": "28069",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x15 Banquet Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-    }
-  );
+    {
+      "id": "import-may-2026-JB0328",
+      "date": "2026-05-16",
+      "jobNo": "JB0328",
+      "haflaId": "INV-2793",
+      "party": "Moshi Restaurant",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 1774.5,
+      "amountReceived": 1774.5,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x4 Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x16 Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x2 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
+    {
+      "id": "import-may-2026-JB0329",
+      "date": "2026-05-17",
+      "jobNo": "JB0329",
+      "haflaId": "INV-2794",
+      "party": "Sh. Rafique",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 840,
+      "amountReceived": 840,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x8 Single Sofa",
+          "quantity": ""
+        },
+        {
+          "description": "x2 White Coffee Table",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-})();
+    {
+      "id": "import-may-2026-28071",
+      "date": "2026-05-17",
+      "jobNo": "28071",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x20 Chafing Dish",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-</script>
+    {
+      "id": "import-may-2026-JB0330",
+      "date": "2026-05-18",
+      "jobNo": "JB0330",
+      "haflaId": "",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x1 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
 
-</body>
-</html>
+    {
+      "id": "import-may-2026-JB0331",
+      "date": "2026-05-19",
+      "jobNo": "JB0331",
+      "haflaId": "AJ0399",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "Ali",
+      "paymentMethod": "",
+      "totalAmount": 950,
+      "amountReceived": 950,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x8 Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x7 Buffet Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Round Dish",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Rectangular Dish",
+          "quantity": ""
+        },
+        {
+          "description": "x6 Food Pan",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0332",
+      "date": "2026-05-20",
+      "jobNo": "JB0332",
+      "haflaId": "AJ0401",
+      "party": "Private Customer (Ali Order)",
+      "incharge": "",
+      "receivedBy": "Ali",
+      "paymentMethod": "",
+      "totalAmount": 1000,
+      "amountReceived": 1000,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x14 Rectangular Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x14 Extra Table Covers",
+          "quantity": ""
+        },
+        {
+          "description": "x120 Stretch Chair Covers",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0333",
+      "date": "2026-05-21",
+      "jobNo": "JB0333",
+      "haflaId": "",
+      "party": "Sikandar",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 453,
+      "amountReceived": 453,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x6 Chafing Dish",
+          "quantity": ""
+        },
+        {
+          "description": "x12 Spoon",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-28077",
+      "date": "2026-05-21",
+      "jobNo": "28077",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 787.5,
+      "amountReceived": 0,
+      "pendingAmount": 787.5,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "Exhibition Carpet",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0334",
+      "date": "2026-05-22",
+      "jobNo": "JB0334",
+      "haflaId": "AJ0400",
+      "party": "Ms. Nadia",
+      "incharge": "",
+      "receivedBy": "Ali",
+      "paymentMethod": "",
+      "totalAmount": 460,
+      "amountReceived": 460,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x2 Rectangular Table",
+          "quantity": ""
+        },
+        {
+          "description": "x8 Acrylic Chair",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0335",
+      "date": "2026-05-22",
+      "jobNo": "JB0335",
+      "haflaId": "",
+      "party": "Abdulla",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x150 Banquet Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x15 Buffet Tables",
+          "quantity": ""
+        }
+      ],
+      "remarks": "R"
+    },
+
+    {
+      "id": "import-may-2026-JB0336",
+      "date": "2026-05-23",
+      "jobNo": "JB0336",
+      "haflaId": "AJ0409",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 350,
+      "amountReceived": 350,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x3 Cocktail Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Buffet Table",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0337",
+      "date": "2026-05-23",
+      "jobNo": "JB0337",
+      "haflaId": "",
+      "party": "Event Sugi (Quzi)",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x24 Cocktail Tables",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0338",
+      "date": "2026-05-25",
+      "jobNo": "JB0338",
+      "haflaId": "",
+      "party": "Fajar",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 600,
+      "amountReceived": 600,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x60 Banquet Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Buffet Table",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0339",
+      "date": "2026-05-25",
+      "jobNo": "JB0339",
+      "haflaId": "",
+      "party": "Shj Events",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x5 Mist Fan",
+          "quantity": ""
+        }
+      ],
+      "remarks": "R"
+    },
+
+    {
+      "id": "import-may-2026-JB0340",
+      "date": "2026-05-25",
+      "jobNo": "JB0340",
+      "haflaId": "AJ0414",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "Ali",
+      "paymentMethod": "",
+      "totalAmount": 300,
+      "amountReceived": 300,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x2 Handi",
+          "quantity": ""
+        },
+        {
+          "description": "x4 Sweet Dish",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Cooler",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Bowl Big",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0341",
+      "date": "2026-05-25",
+      "jobNo": "JB0341",
+      "haflaId": "INV-2812",
+      "party": "BBQ Tonight",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x4 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": "R"
+    },
+
+    {
+      "id": "import-may-2026-JB0342",
+      "date": "2026-05-25",
+      "jobNo": "JB0342",
+      "haflaId": "AJ0402",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "Ali",
+      "paymentMethod": "",
+      "totalAmount": 1000,
+      "amountReceived": 1000,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "Carpet 20m",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0343",
+      "date": "2026-05-26",
+      "jobNo": "JB0343",
+      "haflaId": "AJ0404",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 900,
+      "amountReceived": 900,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x2 (3x3) Tents",
+          "quantity": ""
+        },
+        {
+          "description": "Air Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0344",
+      "date": "2026-05-26",
+      "jobNo": "JB0344",
+      "haflaId": "AJ0411",
+      "party": "ARADA",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 400,
+      "amountReceived": 400,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x4 Buffet Tables",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0345",
+      "date": "2026-05-26",
+      "jobNo": "JB0345",
+      "haflaId": "AJ0405",
+      "party": "Sikandar",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 500,
+      "amountReceived": 500,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x2 Air Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0346",
+      "date": "2026-05-26",
+      "jobNo": "JB0346",
+      "haflaId": "AJ0418",
+      "party": "Allah Baksh",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 2000,
+      "amountReceived": 2000,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x30 White Chair",
+          "quantity": ""
+        },
+        {
+          "description": "x11 Buffet Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x8 Dish",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0347",
+      "date": "2026-05-26",
+      "jobNo": "JB0347",
+      "haflaId": "",
+      "party": "Allah Baksh",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x60 Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x6 Round Table",
+          "quantity": ""
+        },
+        {
+          "description": "x10 Buffet Table",
+          "quantity": ""
+        }
+      ],
+      "remarks": "R"
+    },
+
+    {
+      "id": "import-may-2026-JB0348",
+      "date": "2026-05-26",
+      "jobNo": "JB0348",
+      "haflaId": "",
+      "party": "Allah Baksh",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x5 Buffet Table",
+          "quantity": ""
+        }
+      ],
+      "remarks": "R"
+    },
+
+    {
+      "id": "import-may-2026-JB0349",
+      "date": "2026-05-26",
+      "jobNo": "JB0349",
+      "haflaId": "",
+      "party": "Ismail",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x1 Air Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0350",
+      "date": "2026-05-26",
+      "jobNo": "JB0350",
+      "haflaId": "AJ0413",
+      "party": "Nasir",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 2000,
+      "amountReceived": 2000,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x1000 Banquet Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0351",
+      "date": "2026-05-26",
+      "jobNo": "JB0351",
+      "haflaId": "AJ0422",
+      "party": "Shj Events",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x2 Air Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": "R"
+    },
+
+    {
+      "id": "import-may-2026-28110",
+      "date": "2026-05-26",
+      "jobNo": "28110",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 5880,
+      "amountReceived": 0,
+      "pendingAmount": 5880,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "Tent 10x5",
+          "quantity": ""
+        },
+        {
+          "description": "x45 White Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x2 Rectangular Table",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Round Table",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-28111",
+      "date": "2026-05-26",
+      "jobNo": "28111",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 1470,
+      "amountReceived": 0,
+      "pendingAmount": 1470,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "x4 3 Seater Sofa",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0352",
+      "date": "2026-05-27",
+      "jobNo": "JB0352",
+      "haflaId": "AJ0410",
+      "party": "Private Customer",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 900,
+      "amountReceived": 900,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x5 Buffet Table",
+          "quantity": ""
+        },
+        {
+          "description": "x4 Chafing Dish",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Tandoor",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Grill",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0353",
+      "date": "2026-05-28",
+      "jobNo": "JB0353",
+      "haflaId": "AJ0406",
+      "party": "KR Sidra",
+      "incharge": "",
+      "receivedBy": "Ali",
+      "paymentMethod": "",
+      "totalAmount": 700,
+      "amountReceived": 700,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x20 B. Chairs",
+          "quantity": ""
+        },
+        {
+          "description": "x2 R. Tables",
+          "quantity": ""
+        },
+        {
+          "description": "x1 Cooler",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Halogen Lights",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0354",
+      "date": "2026-05-28",
+      "jobNo": "JB0354",
+      "haflaId": "AJ0407",
+      "party": "Memon Darbar",
+      "incharge": "",
+      "receivedBy": "Ali",
+      "paymentMethod": "",
+      "totalAmount": 1400,
+      "amountReceived": 1400,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "Setup for 50pax",
+          "quantity": ""
+        },
+        {
+          "description": "x3 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0355",
+      "date": "2026-05-29",
+      "jobNo": "JB0355",
+      "haflaId": "AJ0419",
+      "party": "Sehar",
+      "incharge": "",
+      "receivedBy": "Zohaib",
+      "paymentMethod": "",
+      "totalAmount": 200,
+      "amountReceived": 200,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x10 B. Chairs",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0356",
+      "date": "2026-05-29",
+      "jobNo": "JB0356",
+      "haflaId": "INV-2812",
+      "party": "BBQ Tonight",
+      "incharge": "",
+      "receivedBy": "Bank",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "Setup for 40pax",
+          "quantity": ""
+        }
+      ],
+      "remarks": "R"
+    },
+
+    {
+      "id": "import-may-2026-JB0357",
+      "date": "2026-05-30",
+      "jobNo": "JB0357",
+      "haflaId": "AJ0420",
+      "party": "Abdulla",
+      "incharge": "",
+      "receivedBy": "Saud",
+      "paymentMethod": "",
+      "totalAmount": 600,
+      "amountReceived": 600,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x130 B. Chairs (white cover)",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0358",
+      "date": "2026-05-30",
+      "jobNo": "JB0358",
+      "haflaId": "",
+      "party": "Boss Order",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 0,
+      "amountReceived": 0,
+      "pendingAmount": 0,
+      "status": "No Amount",
+      "items": [
+        {
+          "description": "x6 Banquet Tables",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0359",
+      "date": "2026-05-30",
+      "jobNo": "JB0359",
+      "haflaId": "AJ0421",
+      "party": "Allah Baksh",
+      "incharge": "",
+      "receivedBy": "Ali",
+      "paymentMethod": "",
+      "totalAmount": 300,
+      "amountReceived": 300,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "x2 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-28103",
+      "date": "2026-05-30",
+      "jobNo": "28103",
+      "haflaId": "",
+      "party": "HAFLA",
+      "incharge": "",
+      "receivedBy": "",
+      "paymentMethod": "",
+      "totalAmount": 1764,
+      "amountReceived": 0,
+      "pendingAmount": 1764,
+      "status": "Pending",
+      "items": [
+        {
+          "description": "x62 Golden Chair",
+          "quantity": ""
+        },
+        {
+          "description": "x12 Buffet Table",
+          "quantity": ""
+        },
+        {
+          "description": "x4 Cooler",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
+
+    {
+      "id": "import-may-2026-JB0360",
+      "date": "2026-05-31",
+      "jobNo": "JB0360",
+      "haflaId": "AJ0412",
+      "party": "Jumeirah Kitchen",
+      "incharge": "",
+      "receivedBy": "Ihsan",
+      "paymentMethod": "",
+      "totalAmount": 1300,
+      "amountReceived": 1300,
+      "pendingAmount": 0,
+      "status": "Received",
+      "items": [
+        {
+          "description": "Setup for 200pax",
+          "quantity": ""
+        }
+      ],
+      "remarks": ""
+    },
