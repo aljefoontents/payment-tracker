@@ -3093,17 +3093,51 @@ function renderReport() {
                                 []
                               )
                                 .map(
-                                  item =>
-                                    `${esc(
-                                      item.description
-                                    )}
-                                    ${
-                                      item.quantity
-                                        ? ` × ${esc(
-                                            item.quantity
-                                          )}`
-                                        : ""
-                                    }`
+                                  item => {
+
+                                    const description =
+                                      item.description ||
+                                      "";
+
+                                    const quantity =
+                                      item.quantity ||
+                                      "";
+
+                                    /*
+                                      If the description already
+                                      contains the quantity, such as
+                                      "x70 White Chair", don't add it
+                                      a second time.
+
+                                      If quantity is stored separately,
+                                      show it as "x70 Description".
+                                    */
+
+                                    const hasQuantityInDescription =
+                                      /^x?\s*\d+/i.test(
+                                        description.trim()
+                                      );
+
+                                    if (
+                                      quantity &&
+                                      !hasQuantityInDescription
+                                    ) {
+
+                                      return `
+                                        ${esc(
+                                          quantity
+                                        )} × ${esc(
+                                          description
+                                        )}
+                                      `;
+
+                                    }
+
+                                    return esc(
+                                      description
+                                    );
+
+                                  }
                                 )
                                 .join("<br>")
                               || "—"
@@ -3195,7 +3229,6 @@ function renderReport() {
     `;
 
 }
-
 
 /* =====================================================
    REPORT BUTTONS
