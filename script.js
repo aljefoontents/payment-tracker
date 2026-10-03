@@ -1,0 +1,6525 @@
+/* =====================================================
+   AL JEFOON TENTS
+   ORDER TRACKER
+   Version 1.0
+===================================================== */
+
+const STORAGE_KEY = "alJefoonOrdersV1";
+const JULY_IMPORT_KEY = "alJefoonJuly2026ImportedV1";
+
+let orders = JSON.parse(
+  localStorage.getItem(STORAGE_KEY) || "[]"
+);
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+const $ = id => document.getElementById(id);
+
+const todayISO = () =>
+  new Date().toISOString().slice(0, 10);
+
+const currentMonth = () =>
+  new Date().toISOString().slice(0, 7);
+
+
+/* =====================================================
+   MONEY
+   AED REMOVED
+===================================================== */
+
+const money = n =>
+  Number(n || 0).toLocaleString("en-AE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+const esc = s =>
+  String(s ?? "").replace(
+    /[&<>"']/g,
+    m => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[m])
+  );
+
+
+/* =====================================================
+   GOOGLE DRIVE BACKUP
+===================================================== */
+
+const GOOGLE_BACKUP_URL =
+  "https://script.google.com/macros/s/AKfycbzN-hhju1kss7zf46kDKQYDXuE5mptq2fie_pi2tCL8GAt8ZWEltWtPW_iRZzuhFGWN/exec";
+
+
+let backupTimer = null;
+
+
+/* =====================================================
+   SAVE LOCALLY + GOOGLE DRIVE BACKUP
+===================================================== */
+
+function save() {
+
+  /*
+    Always save locally first.
+    The application continues working
+    even if the internet is unavailable.
+  */
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(orders)
+  );
+
+
+  /*
+    Send the backup shortly after saving.
+    The delay prevents multiple quick changes
+    from sending many backup requests.
+  */
+
+  clearTimeout(backupTimer);
+
+
+  backupTimer = setTimeout(
+    () => backupToGoogleDrive(),
+    800
+  );
+
+}
+
+
+/* =====================================================
+   BACKUP TO GOOGLE DRIVE
+===================================================== */
+
+async function backupToGoogleDrive() {
+
+  try {
+
+    const backupData = {
+
+      app:
+        "AL JEFOON TENTS - Order Tracker",
+
+      version:
+        "1.0",
+
+      storageKey:
+        STORAGE_KEY,
+
+      backupDate:
+        new Date().toISOString(),
+
+      orders:
+        orders
+
+    };
+
+
+    await fetch(
+      GOOGLE_BACKUP_URL,
+      {
+
+        method: "POST",
+
+        mode: "no-cors",
+
+        headers: {
+          "Content-Type":
+            "text/plain;charset=utf-8"
+        },
+
+        body:
+          JSON.stringify(
+            backupData
+          )
+
+      }
+    );
+
+
+    console.log(
+      "Order Tracker Google Drive backup sent."
+    );
+
+
+  } catch (error) {
+
+    /*
+      Backup failure must never stop
+      the Order Tracker itself.
+    */
+
+    console.error(
+      "Google Drive backup failed:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   AUTOMATIC STATUS
+===================================================== */
+
+function statusFor(order) {
+
+  const total =
+    Number(order.totalAmount || 0);
+
+  const received =
+    Number(order.amountReceived || 0);
+
+  if (total <= 0) {
+    return "No Amount";
+  }
+
+  if (received >= total) {
+    return "Received";
+  }
+
+  if (received > 0) {
+    return "Partially Received";
+  }
+
+  return "Pending";
+
+}
+
+
+/* =====================================================
+   STATUS BADGE
+===================================================== */
+
+function badge(status) {
+
+  const cls = {
+
+    "Received":
+      "badge-paid",
+
+    "Partially Received":
+      "badge-partial",
+
+    "Pending":
+      "badge-pending",
+
+    "No Amount":
+      "badge-none"
+
+  }[status] || "badge-none";
+
+
+  return `
+    <span class="badge ${cls}">
+      ${esc(status)}
+    </span>
+  `;
+
+}
+
+
+/* =====================================================
+   MONTH ORDERS
+===================================================== */
+
+function monthOrders(month) {
+
+  return orders.filter(
+    order =>
+      order.date &&
+      order.date.slice(0, 7) === month
+  );
+
+}
+
+
+/* =====================================================
+   SORT ORDERS
+   Newest date first
+   Job number secondary
+===================================================== */
+
+function sortOrders() {
+
+  orders.sort((a, b) => {
+
+    const dateA =
+      String(a.date || "");
+
+    const dateB =
+      String(b.date || "");
+
+    const dateCompare =
+      dateB.localeCompare(dateA);
+
+    if (dateCompare !== 0) {
+      return dateCompare;
+    }
+
+
+    const jobA =
+      parseInt(
+        String(a.jobNo || "")
+          .replace(/\D/g, ""),
+        10
+      ) || 0;
+
+
+    const jobB =
+      parseInt(
+        String(b.jobNo || "")
+          .replace(/\D/g, ""),
+        10
+      ) || 0;
+
+
+    return jobB - jobA;
+
+  });
+
+}
+
+
+/* =====================================================
+   AUTOMATIC JOB NUMBER
+===================================================== */
+
+function getNextJobNumber() {
+
+  let highest = 0;
+
+
+  orders.forEach(order => {
+
+    const match =
+      String(order.jobNo || "")
+        .match(/JB(\d+)/i);
+
+
+    if (match) {
+
+      const number =
+        parseInt(match[1], 10);
+
+
+      if (number > highest) {
+        highest = number;
+      }
+
+    }
+
+  });
+
+
+  return `JB${String(
+    highest + 1
+  ).padStart(4, "0")}`;
+
+}
+
+
+/* =====================================================
+   JULY 2026 IMPORT DATA
+   37 ORDERS
+===================================================== */
+
+const JULY_2026_ORDERS = [
+
+  /* 1 */
+  {
+    id: "july-2026-01",
+    date: "2026-07-02",
+    jobNo: "",
+    haflaId: "28303",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 766.50,
+    amountReceived: 0,
+    pendingAmount: 766.50,
+    status: "Pending",
+    items: [
+      {
+        description: "Banquet Chairs with White Stretch",
+        quantity: 80
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 2 */
+  {
+    id: "july-2026-02",
+    date: "2026-07-03",
+    jobNo: "JB0394",
+    haflaId: "",
+    party: "Allah Baksh",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 300,
+    amountReceived: 300,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Air Cooler",
+        quantity: 2
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 3 */
+  {
+    id: "july-2026-03",
+    date: "2026-07-03",
+    jobNo: "",
+    haflaId: "28309",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 1575,
+    amountReceived: 0,
+    pendingAmount: 1575,
+    status: "Pending",
+    items: [
+      {
+        description: "Buffet Table with Skirting Black Cover",
+        quantity: 25
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 4 */
+  {
+    id: "july-2026-04",
+    date: "2026-07-03",
+    jobNo: "",
+    haflaId: "28339",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 955,
+    amountReceived: 0,
+    pendingAmount: 955,
+    status: "Pending",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 100
+      },
+      {
+        description: "Buffet Tables",
+        quantity: 2
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 5 */
+  {
+    id: "july-2026-05",
+    date: "2026-07-03",
+    jobNo: "",
+    haflaId: "28342",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 315,
+    amountReceived: 0,
+    pendingAmount: 315,
+    status: "Pending",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 20
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 6 */
+  {
+    id: "july-2026-06",
+    date: "2026-07-04",
+    jobNo: "JB0392",
+    haflaId: "",
+    party: "Ajmal",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 120
+      },
+      {
+        description: "Round Table",
+        quantity: 2
+      },
+      {
+        description: "ATHOOR: Podium",
+        quantity: 1
+      },
+      {
+        description: "ATHOOR: Square Table",
+        quantity: 1
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 7 */
+  {
+    id: "july-2026-07",
+    date: "2026-07-04",
+    jobNo: "JB0393",
+    haflaId: "",
+    party: "Allah Baksh",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 1400,
+    amountReceived: 1400,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 150
+      },
+      {
+        description: "Round Tables",
+        quantity: 15
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 8 */
+  {
+    id: "july-2026-08",
+    date: "2026-07-04",
+    jobNo: "JB0395",
+    haflaId: "",
+    party: "Ajmal",
+    incharge: "",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Air Cooler",
+        quantity: 10
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 9 */
+  {
+    id: "july-2026-09",
+    date: "2026-07-04",
+    jobNo: "JB0396",
+    haflaId: "",
+    party: "Spicy Land",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 100,
+    amountReceived: 100,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Air Cooler",
+        quantity: 1
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 10 */
+  {
+    id: "july-2026-10",
+    date: "2026-07-04",
+    jobNo: "JB0397",
+    haflaId: "",
+    party: "Sehr Events (Ajman)",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 286,
+    amountReceived: 286,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Crockery & Cutlery",
+        quantity: ""
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 11 */
+  {
+    id: "july-2026-11",
+    date: "2026-07-06",
+    jobNo: "JB0398",
+    haflaId: "",
+    party: "Private Customer",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 300,
+    amountReceived: 300,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Dishes (2 Days)",
+        quantity: 5
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 12 */
+  {
+    id: "july-2026-12",
+    date: "2026-07-07",
+    jobNo: "",
+    haflaId: "28338",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 1155,
+    amountReceived: 0,
+    pendingAmount: 1155,
+    status: "Pending",
+    items: [
+      {
+        description: "Cooler",
+        quantity: 2
+      },
+      {
+        description: "5x5m Tent",
+        quantity: 1
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 13 */
+  {
+    id: "july-2026-13",
+    date: "2026-07-10",
+    jobNo: "JB0399",
+    haflaId: "",
+    party: "4 Star Event",
+    incharge: "Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Mattress",
+        quantity: 45
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 14 */
+  {
+    id: "july-2026-14",
+    date: "2026-07-11",
+    jobNo: "JB0400",
+    haflaId: "",
+    party: "BBQ Tonight",
+    incharge: "Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Setup for 55pax",
+        quantity: ""
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 15 */
+  {
+    id: "july-2026-15",
+    date: "2026-07-11",
+    jobNo: "JB0401",
+    haflaId: "",
+    party: "Private Customer",
+    incharge: "Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 1500,
+    amountReceived: 1500,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Single Sofa",
+        quantity: 12
+      },
+      {
+        description: "Coffee Table",
+        quantity: 3
+      },
+      {
+        description: "Cooler",
+        quantity: 2
+      },
+      {
+        description: "Buffet Table",
+        quantity: 1
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 16 */
+  {
+    id: "july-2026-16",
+    date: "2026-07-12",
+    jobNo: "JB0402",
+    haflaId: "",
+    party: "Private Customer",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 1500,
+    amountReceived: 1500,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Air Cooler",
+        quantity: 2
+      },
+      {
+        description: "Single Sofa",
+        quantity: 12
+      },
+      {
+        description: "Coffee Table",
+        quantity: 3
+      },
+      {
+        description: "Barricade",
+        quantity: 8
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 17 */
+  {
+    id: "july-2026-17",
+    date: "2026-07-12",
+    jobNo: "JB0403",
+    haflaId: "",
+    party: "Shj Events (Usman)",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 60,
+    amountReceived: 60,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Banquet Chair",
+        quantity: 15
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 18 */
+  {
+    id: "july-2026-18",
+    date: "2026-07-13",
+    jobNo: "",
+    haflaId: "28357",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Quincy Chair",
+        quantity: 1
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 19 */
+  {
+    id: "july-2026-19",
+    date: "2026-07-14",
+    jobNo: "JB0404",
+    haflaId: "",
+    party: "Al Ghous Tents (Usman)",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Canopies",
+        quantity: 3
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 20 */
+  {
+    id: "july-2026-20",
+    date: "2026-07-15",
+    jobNo: "JB0405",
+    haflaId: "",
+    party: "AG Power & Contracting",
+    incharge: "Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 880,
+    amountReceived: 880,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Table Cover",
+        quantity: 8
+      },
+      {
+        description: "Table Canopy",
+        quantity: 8
+      },
+      {
+        description: "Carpet",
+        quantity: 2
+      }
+    ],
+    remarks: "INV-2829"
+  },
+
+
+  /* 21 */
+  {
+    id: "july-2026-21",
+    date: "2026-07-15",
+    jobNo: "JB0407",
+    haflaId: "",
+    party: "Shj Events (Rehan)",
+    incharge: "Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Cooler (from store)",
+        quantity: 6
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 22 */
+  {
+    id: "july-2026-22",
+    date: "2026-07-16",
+    jobNo: "JB0406",
+    haflaId: "",
+    party: "Best Kidz Nursery",
+    incharge: "Saud",
+    receivedBy: "Bank",
+    paymentMethod: "",
+    totalAmount: 420,
+    amountReceived: 420,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Banquet Chair",
+        quantity: 20
+      }
+    ],
+    remarks: "INV-2830"
+  },
+
+
+  /* 23 */
+  {
+    id: "july-2026-23",
+    date: "2026-07-17",
+    jobNo: "JB0408",
+    haflaId: "",
+    party: "Shj Events (Usman)",
+    incharge: "Ali/Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Cooler (x1 Extension)",
+        quantity: 2
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 24 */
+  {
+    id: "july-2026-24",
+    date: "2026-07-17",
+    jobNo: "JB0409",
+    haflaId: "",
+    party: "Shj Events (Rehan)",
+    incharge: "Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Chafing Dish + Food Pan",
+        quantity: 2
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 25 */
+  {
+    id: "july-2026-25",
+    date: "2026-07-17",
+    jobNo: "JB0410",
+    haflaId: "",
+    party: "Sama Events (Saddam)",
+    incharge: "Saud",
+    receivedBy: "Bank",
+    paymentMethod: "",
+    totalAmount: 400,
+    amountReceived: 400,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Setup for 30pax",
+        quantity: ""
+      }
+    ],
+    remarks: "35DAAA59F8"
+  },
+
+
+  /* 26 */
+  {
+    id: "july-2026-26",
+    date: "2026-07-18",
+    jobNo: "JB0411",
+    haflaId: "",
+    party: "Private Customer",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 900,
+    amountReceived: 900,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 80
+      },
+      {
+        description: "Buffet Table",
+        quantity: 10
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 27 */
+  {
+    id: "july-2026-27",
+    date: "2026-07-18",
+    jobNo: "",
+    haflaId: "No ID",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 40
+      }
+    ],
+    remarks: "Mehmar will uptae ID"
+  },
+
+
+  /* 28 */
+  {
+    id: "july-2026-28",
+    date: "2026-07-19",
+    jobNo: "JB0412",
+    haflaId: "",
+    party: "Ajmal",
+    incharge: "Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 25
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 29 */
+  {
+    id: "july-2026-29",
+    date: "2026-07-19",
+    jobNo: "",
+    haflaId: "28375",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 12
+      },
+      {
+        description: "Square Tables",
+        quantity: 4
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 30 */
+  {
+    id: "july-2026-30",
+    date: "2026-07-19",
+    jobNo: "",
+    haflaId: "28371",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 80
+      },
+      {
+        description: "Square Tables",
+        quantity: 40
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 31 */
+  {
+    id: "july-2026-31",
+    date: "2026-07-21",
+    jobNo: "JB0413",
+    haflaId: "",
+    party: "Private Customer",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 600,
+    amountReceived: 600,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Banquet Chairs",
+        quantity: 70
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 32 */
+  {
+    id: "july-2026-32",
+    date: "2026-07-24",
+    jobNo: "JB0414",
+    haflaId: "",
+    party: "Event Sugi",
+    incharge: "Saud",
+    receivedBy: "Zohaib",
+    paymentMethod: "",
+    totalAmount: 350,
+    amountReceived: 350,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Banquet Chair",
+        quantity: 16
+      },
+      {
+        description: "Buffet Table",
+        quantity: 4
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 33 */
+  {
+    id: "july-2026-33",
+    date: "2026-07-25",
+    jobNo: "JB0415",
+    haflaId: "",
+    party: "Allah Baksh",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 4000,
+    amountReceived: 4000,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Banquet Chair",
+        quantity: 570
+      },
+      {
+        description: "Round Table",
+        quantity: 57
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 34 */
+  {
+    id: "july-2026-34",
+    date: "2026-07-25",
+    jobNo: "JB0416",
+    haflaId: "",
+    party: "Private Customer",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 1500,
+    amountReceived: 1500,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Sofa",
+        quantity: 10
+      },
+      {
+        description: "Coffee Table",
+        quantity: 3
+      },
+      {
+        description: "Cooler",
+        quantity: 2
+      }
+    ],
+    remarks:
+      "Received 3000.00 for JB0417, JB0420. Transferred 2500 to Bank"
+  },
+
+
+  /* 35 */
+  {
+    id: "july-2026-35",
+    date: "2026-07-26",
+    jobNo: "JB0417",
+    haflaId: "",
+    party: "Memon Darbar",
+    incharge: "Saud",
+    receivedBy: "Saud",
+    paymentMethod: "",
+    totalAmount: 1300,
+    amountReceived: 1300,
+    pendingAmount: 0,
+    status: "Received",
+    items: [
+      {
+        description: "Dinner Plate",
+        quantity: 200
+      },
+      {
+        description: "Small Plate",
+        quantity: 200
+      },
+      {
+        description: "Fork & Spoon",
+        quantity: 200
+      },
+      {
+        description: "Chafing Dish",
+        quantity: 8
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 36 */
+  {
+    id: "july-2026-36",
+    date: "2026-07-27",
+    jobNo: "JB0418",
+    haflaId: "",
+    party: "Ismail",
+    incharge: "Saud",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Green Carpet",
+        quantity: ""
+      }
+    ],
+    remarks: ""
+  },
+
+
+  /* 37 */
+  {
+    id: "july-2026-37",
+    date: "2026-07-27",
+    jobNo: "",
+    haflaId: "28391",
+    party: "HAFLA",
+    incharge: "Ihsan",
+    receivedBy: "",
+    paymentMethod: "",
+    totalAmount: 0,
+    amountReceived: 0,
+    pendingAmount: 0,
+    status: "No Amount",
+    items: [
+      {
+        description: "Scandinavian Chairs",
+        quantity: 45
+      }
+    ],
+    remarks: ""
+  }
+
+];
+
+
+/* =====================================================
+   IMPORT JULY 2026 ORDERS
+   IMPORTS ONLY ONCE
+===================================================== */
+
+function importJuly2026Orders() {
+
+  /*
+    Check the import flag first.
+    This prevents duplicate orders when
+    the page is refreshed.
+  */
+
+  const alreadyImported =
+    localStorage.getItem(
+      JULY_IMPORT_KEY
+    );
+
+
+  if (alreadyImported === "yes") {
+    return;
+  }
+
+
+  let added = 0;
+
+
+  JULY_2026_ORDERS.forEach(newOrder => {
+
+    const exists =
+      orders.some(
+        existing =>
+          existing.id === newOrder.id
+      );
+
+
+    if (!exists) {
+
+      orders.push({
+        ...newOrder
+      });
+
+      added++;
+
+    }
+
+  });
+
+
+  sortOrders();
+
+  save();
+
+
+  localStorage.setItem(
+    JULY_IMPORT_KEY,
+    "yes"
+  );
+
+
+  if (added > 0) {
+
+    console.log(
+      `July 2026 import completed: ${added} orders added.`
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   RESET FORM
+===================================================== */
+
+function resetForm() {
+
+  $("orderForm").reset();
+
+  $("editId").value = "";
+
+  $("orderDate").value =
+    todayISO();
+
+  $("jobNo").value =
+    getNextJobNumber();
+
+  $("pendingAmount").value =
+    "0.00";
+
+  $("status").value =
+    "auto";
+
+  $("saveOrderBtn").textContent =
+    "Save Order";
+
+  $("itemsContainer").innerHTML =
+    "";
+
+  addItem();
+
+}
+
+
+/* =====================================================
+   ADD ITEM
+===================================================== */
+
+function addItem(
+  description = "",
+  quantity = ""
+) {
+
+  const row =
+    document.createElement("div");
+
+  row.className =
+    "item-row";
+
+
+  row.innerHTML = `
+
+    <input
+      class="item-desc"
+      placeholder="Item description (e.g. Banquet Chair)"
+      value="${esc(description)}"
+    >
+
+    <input
+      class="item-qty"
+      type="number"
+      min="0"
+      step="1"
+      placeholder="Qty"
+      value="${esc(quantity)}"
+    >
+
+    <button
+      type="button"
+      class="remove-item"
+    >
+      ×
+    </button>
+
+  `;
+
+
+  row.querySelector(
+    ".remove-item"
+  ).onclick = () =>
+    row.remove();
+
+
+  $("itemsContainer")
+    .appendChild(row);
+
+}
+
+
+/* =====================================================
+   GET ITEMS
+===================================================== */
+
+function itemsFromForm() {
+
+  return [
+    ...document.querySelectorAll(
+      ".item-row"
+    )
+  ]
+    .map(row => ({
+
+      description:
+        row.querySelector(
+          ".item-desc"
+        ).value.trim(),
+
+      quantity:
+        row.querySelector(
+          ".item-qty"
+        ).value
+
+    }))
+    .filter(
+      item =>
+        item.description ||
+        item.quantity
+    );
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function navTo(section) {
+
+  document
+    .querySelectorAll(".section")
+    .forEach(element => {
+
+      element.classList.toggle(
+        "active",
+        element.id === section
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(".nav-item")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.section === section
+      );
+
+    });
+
+
+  const names = {
+
+    dashboard:
+      "Dashboard",
+
+    "new-order":
+      "New Order",
+
+    orders:
+      "All Orders",
+
+    reports:
+      "Monthly Reports"
+
+  };
+
+
+  $("pageTitle").textContent =
+    names[section] || "";
+
+
+  if (section === "dashboard") {
+    renderDashboard();
+  }
+
+
+  if (section === "orders") {
+    renderOrders();
+  }
+
+
+  if (section === "reports") {
+    renderReport();
+  }
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* =====================================================
+   NAV BUTTONS
+===================================================== */
+
+document
+  .querySelectorAll(".nav-item")
+  .forEach(button => {
+
+    button.onclick = () =>
+      navTo(
+        button.dataset.section
+      );
+
+  });
+
+
+document
+  .querySelectorAll("[data-go]")
+  .forEach(button => {
+
+    button.onclick = () =>
+      navTo(
+        button.dataset.go
+      );
+
+  });
+
+
+/* =====================================================
+   NEW ORDER BUTTONS
+===================================================== */
+
+$("quickAddBtn").onclick = () => {
+
+  resetForm();
+
+  navTo("new-order");
+
+};
+
+
+$("ordersAddBtn").onclick = () => {
+
+  resetForm();
+
+  navTo("new-order");
+
+};
+
+
+/* =====================================================
+   AMOUNT CALCULATION
+===================================================== */
+
+function updatePending() {
+
+  const total =
+    Math.max(
+      0,
+      Number(
+        $("totalAmount").value
+      ) || 0
+    );
+
+
+  const received =
+    Math.max(
+      0,
+      Number(
+        $("amountReceived").value
+      ) || 0
+    );
+
+
+  $("pendingAmount").value =
+    Math.max(
+      0,
+      total - received
+    ).toFixed(2);
+
+}
+
+
+$("totalAmount").oninput =
+  updatePending;
+
+$("amountReceived").oninput =
+  updatePending;
+
+
+/* =====================================================
+   ADD ITEM BUTTON
+===================================================== */
+
+$("addItemBtn").onclick = () =>
+  addItem();
+
+
+/* =====================================================
+   CLEAR FORM
+===================================================== */
+
+$("cancelEditBtn").onclick =
+  resetForm;
+
+
+/* =====================================================
+   SAVE ORDER
+===================================================== */
+
+$("orderForm").onsubmit = e => {
+
+  e.preventDefault();
+
+
+  const total =
+    Math.max(
+      0,
+      Number(
+        $("totalAmount").value
+      ) || 0
+    );
+
+
+  const received =
+    Math.max(
+      0,
+      Number(
+        $("amountReceived").value
+      ) || 0
+    );
+
+
+  const chosen =
+    $("status").value;
+
+
+  const automaticStatus =
+    statusFor({
+      totalAmount: total,
+      amountReceived: received
+    });
+
+
+  const itemData =
+    itemsFromForm();
+
+
+  const obj = {
+
+    id:
+      $("editId").value ||
+      (
+        crypto.randomUUID
+          ? crypto.randomUUID()
+          : Date.now().toString()
+      ),
+
+
+    date:
+      $("orderDate").value,
+
+
+    jobNo:
+      $("jobNo").value.trim(),
+
+
+    haflaId:
+      $("haflaId").value.trim(),
+
+
+    party:
+      $("party").value.trim(),
+
+
+    incharge:
+      $("incharge").value.trim(),
+
+
+    receivedBy:
+      $("receivedBy").value.trim(),
+
+
+    paymentMethod:
+      $("paymentMethod").value,
+
+
+    totalAmount:
+      total,
+
+
+    amountReceived:
+      Math.min(
+        received,
+        total || received
+      ),
+
+
+    pendingAmount:
+      Math.max(
+        0,
+        total - received
+      ),
+
+
+    status:
+      chosen === "auto"
+        ? automaticStatus
+        : chosen,
+
+
+    items:
+      itemData,
+
+
+    remarks:
+      $("remarks").value.trim()
+
+  };
+
+
+  const index =
+    orders.findIndex(
+      order =>
+        order.id === obj.id
+    );
+
+
+  if (index >= 0) {
+
+    orders[index] =
+      obj;
+
+  } else {
+
+    orders.push(obj);
+
+  }
+
+
+  sortOrders();
+
+  save();
+
+
+  toast(
+    index >= 0
+      ? "Order updated"
+      : "Order saved"
+  );
+
+
+  resetForm();
+
+  navTo("orders");
+
+};
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+function renderDashboard() {
+
+  sortOrders();
+
+
+  const month =
+    currentMonth();
+
+
+  const arr =
+    monthOrders(month);
+
+
+  const received =
+    arr.reduce(
+      (sum, order) =>
+        sum +
+        Number(
+          order.amountReceived || 0
+        ),
+      0
+    );
+
+
+  const pending =
+    arr.reduce(
+      (sum, order) =>
+        sum +
+        Number(
+          order.pendingAmount || 0
+        ),
+      0
+    );
+
+
+  $("dashboardDateTime")
+    .textContent =
+      getDigitalDateTime();
+
+
+  $("statOrders")
+    .textContent =
+      arr.length;
+
+
+  $("statReceived")
+    .textContent =
+      money(received);
+
+
+  $("statPending")
+    .textContent =
+      money(pending);
+
+
+  $("statPendingOrders")
+    .textContent =
+      arr.filter(
+        order =>
+          order.status ===
+            "Pending" ||
+          order.status ===
+            "Partially Received"
+      ).length;
+
+
+  $("summaryReceived")
+    .textContent =
+      arr.filter(
+        order =>
+          order.status ===
+          "Received"
+      ).length;
+
+
+  $("summaryPartial")
+    .textContent =
+      arr.filter(
+        order =>
+          order.status ===
+          "Partially Received"
+      ).length;
+
+
+  $("summaryPending")
+    .textContent =
+      arr.filter(
+        order =>
+          order.status ===
+          "Pending"
+      ).length;
+
+
+  $("summaryNoAmount")
+    .textContent =
+      arr.filter(
+        order =>
+          order.status ===
+          "No Amount"
+      ).length;
+
+
+  const recent =
+    arr
+      .slice()
+      .sort(
+        (a, b) =>
+          String(b.date || "")
+            .localeCompare(
+              String(a.date || "")
+            )
+      )
+      .slice(0, 7);
+
+
+  $("recentOrdersBody")
+    .innerHTML =
+      recent.length
+
+        ? recent
+            .map(order => `
+
+              <tr>
+
+                <td>
+                  ${esc(
+                    formatDate(
+                      order.date
+                    )
+                  )}
+                </td>
+
+                <td>
+                  <strong>
+                    ${esc(
+                      order.jobNo
+                    )}
+                  </strong>
+                </td>
+
+                <td>
+                  ${esc(
+                    order.party
+                  )}
+                </td>
+
+                <td>
+                  ${money(
+                    order.amountReceived
+                  )}
+                </td>
+
+                <td>
+                  ${badge(
+                    order.status
+                  )}
+                </td>
+
+              </tr>
+
+            `)
+            .join("")
+
+        : `
+
+          <tr>
+
+            <td
+              colspan="5"
+              class="empty"
+            >
+              No orders for this month.
+            </td>
+
+          </tr>
+
+        `;
+
+}
+
+
+/* =====================================================
+   REPORT BUTTONS
+===================================================== */
+
+$("reportMonth").value =
+  currentMonth();
+
+
+$("generateReportBtn").onclick =
+  renderReport;
+
+
+/* =====================================================
+   PRINT REPORT
+   Opens a clean print window containing ONLY
+   the currently generated monthly report.
+===================================================== */
+
+$("printReportBtn").onclick = () => {
+
+  // Make sure the latest selected month is rendered
+  renderReport();
+
+  const report =
+    $("reportPreview").innerHTML;
+
+  if (!report || !report.trim()) {
+
+    toast("Please generate the report first.");
+
+    return;
+
+  }
+
+  const printWindow =
+    window.open(
+      "",
+      "_blank",
+      "width=1200,height=800"
+    );
+
+
+  if (!printWindow) {
+
+    alert(
+      "Printing was blocked by your browser. Please allow pop-ups for this site."
+    );
+
+    return;
+
+  }
+
+
+  printWindow.document.open();
+
+  printWindow.document.write(`
+
+    <!DOCTYPE html>
+
+    <html>
+
+    <head>
+
+      <meta charset="UTF-8">
+
+      <title>
+        AL JEFOON TENTS - Monthly Report
+      </title>
+
+
+      <style>
+
+        * {
+          box-sizing: border-box;
+        }
+
+
+        body {
+
+          margin: 0;
+
+          padding: 25px;
+
+          font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+          background: white;
+
+          color: #111;
+
+        }
+
+
+        .report-header {
+
+          display: flex;
+
+          justify-content: space-between;
+
+          align-items: flex-start;
+
+          margin-bottom: 25px;
+
+          border-bottom: 2px solid #000;
+
+          padding-bottom: 15px;
+
+        }
+
+
+        .report-header h2 {
+
+          margin: 0 0 5px 0;
+
+          font-size: 24px;
+
+        }
+
+
+        .report-header p {
+
+          margin: 0;
+
+          font-size: 13px;
+
+        }
+
+
+        .report-title {
+
+          text-align: right;
+
+        }
+
+
+        .report-title strong {
+
+          display: block;
+
+          font-size: 18px;
+
+        }
+
+
+        .report-title span {
+
+          display: block;
+
+          margin-top: 5px;
+
+          font-size: 11px;
+
+          color: #666;
+
+        }
+
+
+        .report-summary {
+
+          display: grid;
+
+          grid-template-columns:
+            repeat(4, 1fr);
+
+          gap: 12px;
+
+          margin-bottom: 25px;
+
+        }
+
+
+        .report-box {
+
+          border: 1px solid #ccc;
+
+          padding: 12px;
+
+          text-align: center;
+
+        }
+
+
+        .report-box span {
+
+          display: block;
+
+          font-size: 11px;
+
+          margin-bottom: 5px;
+
+          color: #555;
+
+        }
+
+
+        .report-box strong {
+
+          font-size: 18px;
+
+        }
+
+
+        .table-wrap {
+
+          width: 100%;
+
+        }
+
+
+        table {
+
+          width: 100%;
+
+          border-collapse: collapse;
+
+          font-size: 10px;
+
+        }
+
+
+        th {
+
+          background: #f2f2f2;
+
+          font-weight: bold;
+
+        }
+
+
+        th,
+        td {
+
+          border: 1px solid #999;
+
+          padding: 6px;
+
+          text-align: left;
+
+          vertical-align: top;
+
+        }
+
+
+        .badge {
+
+          display: inline-block;
+
+          padding: 3px 7px;
+
+          border-radius: 4px;
+
+          font-size: 9px;
+
+          font-weight: bold;
+
+          border: 1px solid #999;
+
+          background: white;
+
+          color: black;
+
+        }
+
+
+        .empty {
+
+          text-align: center;
+
+          padding: 20px;
+
+        }
+
+
+        @page {
+
+          size: A4 landscape;
+
+          margin: 10mm;
+
+        }
+
+
+        @media print {
+
+          body {
+
+            padding: 0;
+
+          }
+
+        }
+
+      </style>
+
+    </head>
+
+
+    <body>
+
+      ${report}
+
+    </body>
+
+
+    </html>
+
+  `);
+
+  printWindow.document.close();
+
+
+  printWindow.focus();
+
+
+  setTimeout(() => {
+
+    printWindow.print();
+
+    printWindow.close();
+
+  }, 500);
+
+};
+
+
+/* =====================================================
+   ALL ORDERS
+===================================================== */
+
+function renderOrders() {
+
+  sortOrders();
+
+
+  const query =
+    $("searchOrders")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const month =
+    $("filterMonth").value;
+
+
+  const selectedStatus =
+    $("filterStatus").value;
+
+
+  const filteredOrders =
+    orders.filter(order => {
+
+      const searchableText = [
+
+        order.jobNo,
+
+        order.party,
+
+        order.haflaId,
+
+        order.incharge,
+
+        order.receivedBy,
+
+        order.paymentMethod,
+
+        order.remarks,
+
+        ...(order.items || [])
+          .map(
+            item =>
+              item.description
+          )
+
+      ]
+        .join(" ")
+        .toLowerCase();
+
+
+      const matchesSearch =
+        !query ||
+        searchableText.includes(
+          query
+        );
+
+
+      const matchesMonth =
+        !month ||
+        (
+          order.date &&
+          order.date.startsWith(
+            month
+          )
+        );
+
+
+      const matchesStatus =
+        !selectedStatus ||
+        order.status ===
+          selectedStatus;
+
+
+      return (
+        matchesSearch &&
+        matchesMonth &&
+        matchesStatus
+      );
+
+    });
+
+
+  $("ordersBody")
+    .innerHTML =
+
+      filteredOrders.length
+
+        ? filteredOrders
+            .map(order => {
+
+              const items =
+                (order.items || [])
+                  .map(item =>
+                    `${esc(
+                      item.description
+                    )}
+                    ${
+                      item.quantity
+                        ? ` × ${esc(
+                            item.quantity
+                          )}`
+                        : ""
+                    }`
+                  )
+                  .join("<br>")
+                  || "—";
+
+
+              return `
+
+                <tr>
+
+                  <td>
+                    ${esc(
+                      formatDate(
+                        order.date
+                      )
+                    )}
+                  </td>
+
+                  <td>
+                    <strong>
+                      ${esc(
+                        order.jobNo
+                      )}
+                    </strong>
+                  </td>
+
+                  <td>
+                    ${esc(
+                      order.party
+                    )}
+                  </td>
+
+                  <td>
+                    ${items}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      order.incharge
+                    )}
+                  </td>
+
+                  <td>
+                    ${money(
+                      order.amountReceived
+                    )}
+                  </td>
+
+                  <td>
+                    ${money(
+                      order.pendingAmount
+                    )}
+                  </td>
+
+                  <td>
+                    ${badge(
+                      order.status
+                    )}
+                  </td>
+
+                  <td>
+
+                    <button
+                      class="action-btn"
+                      onclick="editOrder('${esc(
+                        order.id
+                      )}')"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      class="action-btn"
+                      onclick="deleteOrder('${esc(
+                        order.id
+                      )}')"
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              `;
+
+            })
+            .join("")
+
+        : `
+
+          <tr>
+
+            <td
+              colspan="9"
+              class="empty"
+            >
+              No orders match your filters.
+            </td>
+
+          </tr>
+
+        `;
+
+}
+
+
+/* =====================================================
+   FILTER EVENTS
+===================================================== */
+
+$("searchOrders").oninput =
+  renderOrders;
+
+$("filterMonth").oninput =
+  renderOrders;
+
+$("filterStatus").onchange =
+  renderOrders;
+
+
+$("clearFilters").onclick = () => {
+
+  $("searchOrders").value =
+    "";
+
+  $("filterMonth").value =
+    "";
+
+  $("filterStatus").value =
+    "";
+
+  renderOrders();
+
+};
+
+
+/* =====================================================
+   EDIT ORDER
+===================================================== */
+
+window.editOrder = id => {
+
+  const order =
+    orders.find(
+      item =>
+        item.id === id
+    );
+
+
+  if (!order) {
+    return;
+  }
+
+
+  navTo("new-order");
+
+
+  $("editId").value =
+    order.id;
+
+
+  $("orderDate").value =
+    order.date || todayISO();
+
+
+  $("jobNo").value =
+    order.jobNo || "";
+
+
+  $("haflaId").value =
+    order.haflaId || "";
+
+
+  $("party").value =
+    order.party || "";
+
+
+  $("incharge").value =
+    order.incharge || "";
+
+
+  $("receivedBy").value =
+    order.receivedBy || "";
+
+
+  $("paymentMethod").value =
+    order.paymentMethod || "";
+
+
+  $("totalAmount").value =
+    order.totalAmount || "";
+
+
+  $("amountReceived").value =
+    order.amountReceived || "";
+
+
+  $("pendingAmount").value =
+    Number(
+      order.pendingAmount || 0
+    ).toFixed(2);
+
+
+  let currentStatus =
+    order.status;
+
+
+  /* Convert old status names */
+
+  if (
+    currentStatus === "Paid"
+  ) {
+    currentStatus =
+      "Received";
+  }
+
+
+  if (
+    currentStatus ===
+    "Partially Paid"
+  ) {
+    currentStatus =
+      "Partially Received";
+  }
+
+
+  $("status").value =
+    currentStatus || "auto";
+
+
+  $("remarks").value =
+    order.remarks || "";
+
+
+  $("itemsContainer")
+    .innerHTML = "";
+
+
+  (
+    order.items &&
+    order.items.length
+      ? order.items
+      : [{}]
+  ).forEach(item => {
+
+    addItem(
+      item.description || "",
+      item.quantity || ""
+    );
+
+  });
+
+
+  $("saveOrderBtn")
+    .textContent =
+      "Update Order";
+
+};
+
+
+/* =====================================================
+   DELETE ORDER
+===================================================== */
+
+window.deleteOrder = id => {
+
+  const order =
+    orders.find(
+      item =>
+        item.id === id
+    );
+
+
+  if (!order) {
+    return;
+  }
+
+
+  if (
+    confirm(
+      `Delete ${order.jobNo || order.party}? This cannot be undone.`
+    )
+  ) {
+
+    orders =
+      orders.filter(
+        item =>
+          item.id !== id
+      );
+
+
+    save();
+
+    renderOrders();
+
+    renderDashboard();
+
+    toast(
+      "Order deleted"
+    );
+
+  }
+
+};
+
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDate(date) {
+
+  if (!date) {
+    return "—";
+  }
+
+
+  return new Date(
+    date + "T00:00:00"
+  ).toLocaleDateString(
+    "en-GB",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+/* =====================================================
+   DIGITAL DATE + TIME
+===================================================== */
+
+function getDigitalDateTime() {
+
+  const now =
+    new Date();
+
+
+  const date =
+    now.toLocaleDateString(
+      "en-GB",
+      {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+
+  const time =
+    now.toLocaleTimeString(
+      "en-AE",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      }
+    );
+
+
+  return `${date} • ${time}`;
+
+}
+
+
+/* =====================================================
+   LIVE CLOCK
+===================================================== */
+
+function updateClock() {
+
+  const clock =
+    $("dashboardDateTime");
+
+
+  if (clock) {
+
+    clock.textContent =
+      getDigitalDateTime();
+
+  }
+
+}
+
+
+setInterval(
+  updateClock,
+  1000
+);
+
+
+/* =====================================================
+   MONTHLY REPORT
+===================================================== */
+
+function renderReport() {
+
+  const month =
+    $("reportMonth").value ||
+    currentMonth();
+
+
+  $("reportMonth").value =
+    month;
+
+
+  const arr =
+    monthOrders(month);
+
+
+  const received =
+    arr.reduce(
+      (sum, order) =>
+        sum +
+        Number(
+          order.amountReceived || 0
+        ),
+      0
+    );
+
+
+  const pending =
+    arr.reduce(
+      (sum, order) =>
+        sum +
+        Number(
+          order.pendingAmount || 0
+        ),
+      0
+    );
+
+
+  const label =
+    new Date(
+      month + "-01"
+    ).toLocaleDateString(
+      "en-US",
+      {
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+
+  $("reportPreview")
+    .innerHTML = `
+
+      <div class="report-header">
+
+        <div>
+
+          <h2>
+            AL JEFOON TENTS
+          </h2>
+
+          <p>
+            Monthly Order & Collection Report
+          </p>
+
+        </div>
+
+
+        <div class="report-title">
+
+          <strong>
+            ${label}
+          </strong>
+
+          <span>
+            Generated
+            ${formatDate(
+              todayISO()
+            )}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="report-summary">
+
+        <div class="report-box">
+
+          <span>
+            Total Orders
+          </span>
+
+          <strong>
+            ${arr.length}
+          </strong>
+
+        </div>
+
+
+        <div class="report-box">
+
+          <span>
+            Total Received
+          </span>
+
+          <strong>
+            ${money(received)}
+          </strong>
+
+        </div>
+
+
+        <div class="report-box">
+
+          <span>
+            Total Pending
+          </span>
+
+          <strong>
+            ${money(pending)}
+          </strong>
+
+        </div>
+
+
+        <div class="report-box">
+
+          <span>
+            Pending Orders
+          </span>
+
+          <strong>
+            ${
+              arr.filter(
+                order =>
+                  order.status ===
+                    "Pending" ||
+                  order.status ===
+                    "Partially Received"
+              ).length
+            }
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Sr#</th>
+              <th>Date</th>
+              <th>Job #</th>
+              <th>HAFLA ID</th>
+              <th>Party</th>
+              <th>Orders</th>
+              <th>Incharge</th>
+              <th>Received</th>
+              <th>Pending</th>
+              <th>Received By</th>
+              <th>Status</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            ${
+              arr.length
+
+                ? arr
+                    .map(
+                      (order, index) => `
+
+                        <tr>
+
+                          <td>
+                            ${index + 1}
+                          </td>
+
+                          <td>
+                            ${formatDate(
+                              order.date
+                            )}
+                          </td>
+
+                          <td>
+                            ${esc(
+                              order.jobNo
+                            )}
+                          </td>
+
+                          <td>
+                            ${
+                              esc(
+                                order.haflaId
+                              ) || "—"
+                            }
+                          </td>
+
+                          <td>
+                            ${esc(
+                              order.party
+                            )}
+                          </td>
+
+                          <td>
+                            ${
+                              (
+                                order.items ||
+                                []
+                              )
+                                .map(
+                                  item => {
+
+                                    const description =
+                                      item.description ||
+                                      "";
+
+                                    const quantity =
+                                      item.quantity ||
+                                      "";
+
+                                    /*
+                                      If the description already
+                                      contains the quantity, such as
+                                      "x70 White Chair", don't add it
+                                      a second time.
+
+                                      If quantity is stored separately,
+                                      show it as "x70 Description".
+                                    */
+
+                                    const hasQuantityInDescription =
+                                      /^x?\s*\d+/i.test(
+                                        description.trim()
+                                      );
+
+                                    if (
+                                      quantity &&
+                                      !hasQuantityInDescription
+                                    ) {
+
+                                      return `
+                                        ${esc(
+                                          quantity
+                                        )} × ${esc(
+                                          description
+                                        )}
+                                      `;
+
+                                    }
+
+                                    return esc(
+                                      description
+                                    );
+
+                                  }
+                                )
+                                .join("<br>")
+                              || "—"
+                            }
+                          </td>
+
+                          <td>
+                            ${esc(
+                              order.incharge
+                            )}
+                          </td>
+
+                          <td>
+                            ${money(
+                              order.amountReceived
+                            )}
+                          </td>
+
+                          <td>
+                            ${money(
+                              order.pendingAmount
+                            )}
+                          </td>
+
+                          <td>
+                            ${
+                              esc(
+                                order.receivedBy
+                              ) || "—"
+                            }
+                          </td>
+
+                          <td>
+                            ${badge(
+                              order.status
+                            )}
+                          </td>
+
+                        </tr>
+
+                      `
+                    )
+                    .join("")
+
+                : `
+
+                    <tr>
+
+                      <td
+                        colspan="11"
+                        class="empty"
+                      >
+                        No orders for
+                        ${label}.
+                      </td>
+
+                    </tr>
+
+                  `
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <div
+        style="
+          margin-top:35px;
+          display:flex;
+          justify-content:space-between;
+          font-size:11px;
+          color:#777;
+        "
+      >
+
+        <span>
+          Prepared by: ____________________
+        </span>
+
+        <span>
+          Approved by: ____________________
+        </span>
+
+      </div>
+
+    `;
+
+}
+
+/* =====================================================
+   REPORT BUTTONS
+===================================================== */
+
+$("reportMonth").value =
+  currentMonth();
+
+
+$("generateReportBtn").onclick =
+  renderReport;
+
+
+$("printReportBtn").onclick =
+  () => window.print();
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function toast(message) {
+
+  let toastElement =
+    document.querySelector(
+      ".toast"
+    );
+
+
+  if (!toastElement) {
+
+    toastElement =
+      document.createElement(
+        "div"
+      );
+
+    toastElement.className =
+      "toast";
+
+    document.body.appendChild(
+      toastElement
+    );
+
+  }
+
+
+  toastElement.textContent =
+    message;
+
+
+  toastElement.classList.remove(
+    "hidden"
+  );
+
+
+  setTimeout(
+    () =>
+      toastElement.classList.add(
+        "hidden"
+      ),
+    2200
+  );
+
+}
+
+
+/* =====================================================
+   CONVERT OLD STATUS VALUES
+   Protect existing data
+===================================================== */
+
+let dataChanged = false;
+
+
+orders.forEach(order => {
+
+  if (
+    order.status === "Paid"
+  ) {
+
+    order.status =
+      "Received";
+
+    dataChanged = true;
+
+  }
+
+
+  if (
+    order.status ===
+    "Partially Paid"
+  ) {
+
+    order.status =
+      "Partially Received";
+
+    dataChanged = true;
+
+  }
+
+});
+
+
+/* =====================================================
+   RE-CALCULATE OLD ORDER STATUSES
+===================================================== */
+
+orders.forEach(order => {
+
+  const calculated =
+    statusFor(order);
+
+
+  if (
+    order.status === "Paid" ||
+    order.status === "Partially Paid"
+  ) {
+
+    order.status =
+      calculated;
+
+    dataChanged = true;
+
+  }
+
+});
+
+
+if (dataChanged) {
+  save();
+}
+
+
+/* =====================================================
+   IMPORT JULY 2026 DATA
+   MUST RUN BEFORE INITIALIZATION
+===================================================== */
+
+/* JUNE 2026 ORDERS — additive, one-time import only. */
+const JUNE_2026_ORDERS = [
+  {
+    "id": "june-2026-01",
+    "date": "2026-06-04",
+    "jobNo": "JB0361",
+    "haflaId": "",
+    "party": "Al Marwan Tents",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "PVC Tent 10x15",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-02",
+    "date": "2026-06-05",
+    "jobNo": "JB0362",
+    "haflaId": "",
+    "party": "Athoor",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "White Chiavari Chairs",
+        "quantity": 240
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-03",
+    "date": "2026-06-05",
+    "jobNo": "JB0363",
+    "haflaId": "",
+    "party": "Chicken Tikka",
+    "incharge": "Ali",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 500.0,
+    "amountReceived": 500.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 10
+      },
+      {
+        "description": "Cocktail Tables",
+        "quantity": 2
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 1
+      },
+      {
+        "description": "Cooler",
+        "quantity": 2
+      },
+      {
+        "description": "Napkins",
+        "quantity": 30
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-04",
+    "date": "2026-06-06",
+    "jobNo": "JB0364",
+    "haflaId": "AJ0420",
+    "party": "Abdulla",
+    "incharge": "Saud",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 625.0,
+    "amountReceived": 625.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Round Table",
+        "quantity": 9
+      },
+      {
+        "description": "Banquet Chairs",
+        "quantity": 90
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-05",
+    "date": "2026-06-06",
+    "jobNo": "JB0365",
+    "haflaId": "",
+    "party": "Harshal",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Rope & Poles",
+        "quantity": 50
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-06",
+    "date": "2026-06-06",
+    "jobNo": "JB0366",
+    "haflaId": "",
+    "party": "Hot & Spicy Restaurant",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-07",
+    "date": "2026-06-06",
+    "jobNo": "JB0367",
+    "haflaId": "AJ0421",
+    "party": "Abdulla",
+    "incharge": "Saud",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 225.0,
+    "amountReceived": 225.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "B. Chairs",
+        "quantity": 50
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-08",
+    "date": "2026-06-07",
+    "jobNo": "",
+    "haflaId": "28201",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Mist Fan",
+        "quantity": 3
+      },
+      {
+        "description": "Chiavari Chairs",
+        "quantity": 10
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-09",
+    "date": "2026-06-08",
+    "jobNo": "JB0368",
+    "haflaId": "",
+    "party": "Shj Events",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 100
+      },
+      {
+        "description": "White Chair Cover",
+        "quantity": 40
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-10",
+    "date": "2026-06-08",
+    "jobNo": "JB0369",
+    "haflaId": "",
+    "party": "Hassan RAK",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Banquet Chair Cover (White)",
+        "quantity": 470
+      },
+      {
+        "description": "Banquet Chair Cover (Black)",
+        "quantity": 120
+      },
+      {
+        "description": "Cocktail Table",
+        "quantity": 20
+      },
+      {
+        "description": "Cocktail Table Cover",
+        "quantity": 20
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-11",
+    "date": "2026-06-09",
+    "jobNo": "",
+    "haflaId": "28213",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Cocktail Table",
+        "quantity": 6
+      },
+      {
+        "description": "Banquet Chairs",
+        "quantity": 71
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-12",
+    "date": "2026-06-10",
+    "jobNo": "",
+    "haflaId": "28177",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Stage 240x420 (Height 30cm, Carpet & Skirting)",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-13",
+    "date": "2026-06-11",
+    "jobNo": "JB0370",
+    "haflaId": "",
+    "party": "Ajmal",
+    "incharge": "Saud",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Banquet Chairs (White)",
+        "quantity": 100
+      },
+      {
+        "description": "Tables",
+        "quantity": 10
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-14",
+    "date": "2026-06-12",
+    "jobNo": "",
+    "haflaId": "28204",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 850.5,
+    "amountReceived": 0.0,
+    "pendingAmount": 850.5,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Banquet Chairs with Black Stretched Cover",
+        "quantity": 110
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-15",
+    "date": "2026-06-12",
+    "jobNo": "",
+    "haflaId": "28212",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 1092.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 1092.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Buffet Tables with White Cover",
+        "quantity": 2
+      },
+      {
+        "description": "Mattress",
+        "quantity": 10
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-16",
+    "date": "2026-06-13",
+    "jobNo": "JB0371",
+    "haflaId": "",
+    "party": "Kent College",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Banquet Chairs (Black Stretch)",
+        "quantity": 100
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-17",
+    "date": "2026-06-13",
+    "jobNo": "JB0372",
+    "haflaId": "",
+    "party": "Spicy Land (13.6.26)",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 100.0,
+    "amountReceived": 100.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-18",
+    "date": "2026-06-14",
+    "jobNo": "JB0373",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Zohaib",
+    "paymentMethod": "",
+    "totalAmount": 200.0,
+    "amountReceived": 200.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 15
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-19",
+    "date": "2026-06-14",
+    "jobNo": "JB0374",
+    "haflaId": "",
+    "party": "Waris",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Black Ribbon",
+        "quantity": 100
+      },
+      {
+        "description": "Satin Roll",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-20",
+    "date": "2026-06-17",
+    "jobNo": "",
+    "haflaId": "28231",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 2205.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 2205.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Banquet Chairs with White Stretch Cover",
+        "quantity": 250
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-21",
+    "date": "2026-06-17",
+    "jobNo": "",
+    "haflaId": "28247",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 2562.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 2562.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 60
+      },
+      {
+        "description": "Stage for Rental",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-22",
+    "date": "2026-06-18",
+    "jobNo": "",
+    "haflaId": "28266",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 1260.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 1260.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 100
+      },
+      {
+        "description": "Round Table",
+        "quantity": 12
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 4
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-23",
+    "date": "2026-06-19",
+    "jobNo": "JB0375",
+    "haflaId": "INV-2817",
+    "party": "Little Feet Nursery",
+    "incharge": "Ali",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 120.0,
+    "amountReceived": 120.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs without Cover",
+        "quantity": 30
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-24",
+    "date": "2026-06-19",
+    "jobNo": "JB0376",
+    "haflaId": "AJ0423",
+    "party": "The Villa Customer",
+    "incharge": "Ali",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 400.0,
+    "amountReceived": 400.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Chiavari Chairs",
+        "quantity": 15
+      },
+      {
+        "description": "Buffet Tables",
+        "quantity": 2
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-25",
+    "date": "2026-06-19",
+    "jobNo": "JB0377",
+    "haflaId": "AJ0425",
+    "party": "Abid Hussain",
+    "incharge": "Ali",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 250.0,
+    "amountReceived": 250.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "White Chiavari",
+        "quantity": 50
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-26",
+    "date": "2026-06-19",
+    "jobNo": "JB0378",
+    "haflaId": "",
+    "party": "Sikandar",
+    "incharge": "Saud",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 125.0,
+    "amountReceived": 125.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Chafing Dish (Rectangular)",
+        "quantity": 5
+      },
+      {
+        "description": "Large Food Pan",
+        "quantity": 4
+      },
+      {
+        "description": "Small Food Pan",
+        "quantity": 2
+      },
+      {
+        "description": "Large Spoon",
+        "quantity": 5
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-27",
+    "date": "2026-06-19",
+    "jobNo": "JB0379",
+    "haflaId": "",
+    "party": "Spicy Land",
+    "incharge": "Ali",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 100.0,
+    "amountReceived": 100.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-28",
+    "date": "2026-06-19",
+    "jobNo": "",
+    "haflaId": "28263",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 761.25,
+    "amountReceived": 0.0,
+    "pendingAmount": 761.25,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Acrylic Chair",
+        "quantity": 4
+      },
+      {
+        "description": "Arrow Bar Chair",
+        "quantity": 6
+      },
+      {
+        "description": "Arrow Cocktail Table",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-29",
+    "date": "2026-06-19",
+    "jobNo": "",
+    "haflaId": "28268",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 824.25,
+    "amountReceived": 0.0,
+    "pendingAmount": 824.25,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Golden Cocktail Table",
+        "quantity": 3
+      },
+      {
+        "description": "Gold Bar Stool",
+        "quantity": 6
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-30",
+    "date": "2026-06-19",
+    "jobNo": "",
+    "haflaId": "28248",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 2373.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 2373.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 60
+      },
+      {
+        "description": "Stage",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-31",
+    "date": "2026-06-20",
+    "jobNo": "JB0381",
+    "haflaId": "AJ0424",
+    "party": "JVC Customer",
+    "incharge": "Saud",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 2500.0,
+    "amountReceived": 2500.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Villa Lights",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-32",
+    "date": "2026-06-21",
+    "jobNo": "JB0382",
+    "haflaId": "",
+    "party": "AUS Commercial",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Tent 20x30m",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-33",
+    "date": "2026-06-21",
+    "jobNo": "JB0383",
+    "haflaId": "",
+    "party": "Ajmal",
+    "incharge": "Saud",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Buffet Table",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-34",
+    "date": "2026-06-21",
+    "jobNo": "JB0384",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "Ihsan",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 1000.0,
+    "amountReceived": 1000.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 6
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-35",
+    "date": "2026-06-21",
+    "jobNo": "JB0385",
+    "haflaId": "",
+    "party": "Kamran",
+    "incharge": "Saud",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Round Table",
+        "quantity": 7
+      },
+      {
+        "description": "Golden Pole",
+        "quantity": 10
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-36",
+    "date": "2026-06-20",
+    "jobNo": "JB0380",
+    "haflaId": "",
+    "party": "Abdulla",
+    "incharge": "Saud",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Round Table",
+        "quantity": 6
+      },
+      {
+        "description": "Golden Chiavari Chairs",
+        "quantity": 60
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-37",
+    "date": "2026-06-20",
+    "jobNo": "",
+    "haflaId": "28259",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "White Podium",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-38",
+    "date": "2026-06-22",
+    "jobNo": "",
+    "haflaId": "28269",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 829.5,
+    "amountReceived": 0.0,
+    "pendingAmount": 829.5,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Round Tables",
+        "quantity": 4
+      },
+      {
+        "description": "Banquet Chairs",
+        "quantity": 60
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-39",
+    "date": "2026-06-22",
+    "jobNo": "",
+    "haflaId": "28292",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Golden Tables",
+        "quantity": ""
+      }
+    ],
+    "remarks": "Quantity for Golden Tables not supplied in original order list."
+  },
+  {
+    "id": "june-2026-40",
+    "date": "2026-06-23",
+    "jobNo": "JB0386",
+    "haflaId": "",
+    "party": "BBQ Tonight (Private Customer)",
+    "incharge": "Saud",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 700.0,
+    "amountReceived": 700.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 90
+      },
+      {
+        "description": "VIP Seating",
+        "quantity": 2
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-41",
+    "date": "2026-06-24",
+    "jobNo": "JB0387",
+    "haflaId": "",
+    "party": "Ajmal",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Buffet Table",
+        "quantity": 5
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-42",
+    "date": "2026-06-25",
+    "jobNo": "JB0388",
+    "haflaId": "",
+    "party": "Hassan",
+    "incharge": "Saud",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "A/C",
+        "quantity": 5
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-43",
+    "date": "2026-06-27",
+    "jobNo": "INV-2825",
+    "haflaId": "",
+    "party": "Magic Kids Nursery",
+    "incharge": "Ali",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 750.75,
+    "amountReceived": 750.75,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 140
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-44",
+    "date": "2026-06-27",
+    "jobNo": "JB0389",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "Saud",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "White Chiavari",
+        "quantity": 36
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 6
+      },
+      {
+        "description": "Buffet Table Cloth",
+        "quantity": 8
+      },
+      {
+        "description": "Cushions",
+        "quantity": 40
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-45",
+    "date": "2026-06-28",
+    "jobNo": "JB0390",
+    "haflaId": "",
+    "party": "Ajmal",
+    "incharge": "Saud",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 6
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 6
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-46",
+    "date": "2026-06-29",
+    "jobNo": "",
+    "haflaId": "28302",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 787.5,
+    "amountReceived": 0.0,
+    "pendingAmount": 787.5,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Red Carpet Runner",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "june-2026-47",
+    "date": "2026-06-29",
+    "jobNo": "",
+    "haflaId": "28317",
+    "party": "HAFLA",
+    "incharge": "Ihsan",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 1155.0,
+    "amountReceived": 0.0,
+    "pendingAmount": 1155.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "3x3 Arabic Tent",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  }
+];
+
+function importJune2026Orders() {
+  const importKey = "alJefoonJune2026ImportedV1";
+  if (localStorage.getItem(importKey) === "yes") return;
+  const normalize = value => String(value || "").trim().toLowerCase();
+  const additions = JUNE_2026_ORDERS.filter(newOrder => !orders.some(existing =>
+    existing.id === newOrder.id ||
+    (existing.date === newOrder.date &&
+      normalize(existing.party) === normalize(newOrder.party) &&
+      ((newOrder.jobNo && normalize(existing.jobNo) === normalize(newOrder.jobNo)) ||
+       (newOrder.haflaId && normalize(existing.haflaId) === normalize(newOrder.haflaId))))
+  ));
+  if (additions.length) {
+    const updatedOrders = orders.concat(additions);
+    // Persist before changing the in-memory list or marking the import complete.
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedOrders));
+    orders = updatedOrders;
+    save();
+  }
+  localStorage.setItem(importKey, "yes");
+}
+
+importJune2026Orders();
+
+/* MAY 2026 ORDERS — additive, one-time import only. */
+const MAY_2026_ORDERS = [
+  {
+    "id": "may-2026-01",
+    "date": "2026-05-16",
+    "jobNo": "JB0328",
+    "haflaId": "",
+    "party": "Moshi Restaurant",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 1774.5,
+    "amountReceived": 1774.5,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Tables",
+        "quantity": 4
+      },
+      {
+        "description": "Chairs",
+        "quantity": 16
+      },
+      {
+        "description": "Cooler",
+        "quantity": 2
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-02",
+    "date": "2026-05-17",
+    "jobNo": "JB0329",
+    "haflaId": "",
+    "party": "Sh. Rafique",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 840.0,
+    "amountReceived": 840.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Single Sofa",
+        "quantity": 8
+      },
+      {
+        "description": "White Coffee Table",
+        "quantity": 2
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-03",
+    "date": "2026-05-17",
+    "jobNo": "",
+    "haflaId": "28071",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Chafing Dish",
+        "quantity": 20
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-04",
+    "date": "2026-05-18",
+    "jobNo": "JB0330",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-05",
+    "date": "2026-05-19",
+    "jobNo": "JB0331",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 950.0,
+    "amountReceived": 950.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Chairs",
+        "quantity": 8
+      },
+      {
+        "description": "Buffet Tables",
+        "quantity": 7
+      },
+      {
+        "description": "Round Dish",
+        "quantity": 3
+      },
+      {
+        "description": "Rectangular Dish",
+        "quantity": 3
+      },
+      {
+        "description": "Food Pan",
+        "quantity": 6
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-06",
+    "date": "2026-05-20",
+    "jobNo": "JB0332",
+    "haflaId": "",
+    "party": "Private Customer (Ali Order)",
+    "incharge": "",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 1000.0,
+    "amountReceived": 1000.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Rectangular Tables",
+        "quantity": 14
+      },
+      {
+        "description": "Extra Table Covers",
+        "quantity": 14
+      },
+      {
+        "description": "Stretch Chair Covers",
+        "quantity": 120
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-07",
+    "date": "2026-05-21",
+    "jobNo": "JB0333",
+    "haflaId": "",
+    "party": "Sikandar",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 453.0,
+    "amountReceived": 453.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Chafing Dish",
+        "quantity": 6
+      },
+      {
+        "description": "Spoon",
+        "quantity": 12
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-08",
+    "date": "2026-05-21",
+    "jobNo": "",
+    "haflaId": "28077",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 787.5,
+    "amountReceived": 0,
+    "pendingAmount": 787.5,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Exhibition Carpet",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-09",
+    "date": "2026-05-22",
+    "jobNo": "JB0334",
+    "haflaId": "",
+    "party": "Ms. Nadia",
+    "incharge": "",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 460.0,
+    "amountReceived": 460.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Rectangular Table",
+        "quantity": 2
+      },
+      {
+        "description": "Acrylic Chair",
+        "quantity": 8
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-10",
+    "date": "2026-05-22",
+    "jobNo": "JB0335",
+    "haflaId": "",
+    "party": "Abdulla",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 150
+      },
+      {
+        "description": "Buffet Tables",
+        "quantity": 15
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-11",
+    "date": "2026-05-23",
+    "jobNo": "JB0336",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 350.0,
+    "amountReceived": 350.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Cocktail Tables",
+        "quantity": 3
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-12",
+    "date": "2026-05-23",
+    "jobNo": "JB0337",
+    "haflaId": "",
+    "party": "Event Sugi (Quzi)",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Cocktail Tables",
+        "quantity": 24
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-13",
+    "date": "2026-05-25",
+    "jobNo": "JB0338",
+    "haflaId": "",
+    "party": "Fajar",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 600.0,
+    "amountReceived": 600.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 60
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-14",
+    "date": "2026-05-25",
+    "jobNo": "JB0339",
+    "haflaId": "",
+    "party": "Shj Events",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Mist Fan",
+        "quantity": 5
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-15",
+    "date": "2026-05-25",
+    "jobNo": "JB0340",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 300.0,
+    "amountReceived": 300.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Handi",
+        "quantity": 2
+      },
+      {
+        "description": "Sweet Dish",
+        "quantity": 4
+      },
+      {
+        "description": "Cooler",
+        "quantity": 1
+      },
+      {
+        "description": "Bowl Big",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-16",
+    "date": "2026-05-25",
+    "jobNo": "JB0341",
+    "haflaId": "",
+    "party": "BBQ Tonight",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 4
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-17",
+    "date": "2026-05-25",
+    "jobNo": "JB0342",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 1000.0,
+    "amountReceived": 1000.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Carpet 20m",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-18",
+    "date": "2026-05-26",
+    "jobNo": "JB0343",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 900.0,
+    "amountReceived": 900.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "(3x3) Tents",
+        "quantity": 2
+      },
+      {
+        "description": "Air Cooler",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-19",
+    "date": "2026-05-26",
+    "jobNo": "JB0344",
+    "haflaId": "",
+    "party": "ARADA",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 400.0,
+    "amountReceived": 400.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Buffet Tables",
+        "quantity": 4
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-20",
+    "date": "2026-05-26",
+    "jobNo": "JB0345",
+    "haflaId": "",
+    "party": "Sikandar",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 500.0,
+    "amountReceived": 500.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Air Cooler",
+        "quantity": 2
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-21",
+    "date": "2026-05-26",
+    "jobNo": "JB0346",
+    "haflaId": "",
+    "party": "Allah Baksh",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 2000.0,
+    "amountReceived": 2000.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "White Chair",
+        "quantity": 30
+      },
+      {
+        "description": "Buffet Tables",
+        "quantity": 11
+      },
+      {
+        "description": "Dish",
+        "quantity": 8
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-22",
+    "date": "2026-05-26",
+    "jobNo": "JB0347",
+    "haflaId": "",
+    "party": "Allah Baksh",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Chairs",
+        "quantity": 60
+      },
+      {
+        "description": "Round Table",
+        "quantity": 6
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 10
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-23",
+    "date": "2026-05-26",
+    "jobNo": "JB0348",
+    "haflaId": "",
+    "party": "Allah Baksh",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Buffet Table",
+        "quantity": 5
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-24",
+    "date": "2026-05-26",
+    "jobNo": "JB0349",
+    "haflaId": "",
+    "party": "Ismail",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Air Cooler",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-25",
+    "date": "2026-05-26",
+    "jobNo": "JB0350",
+    "haflaId": "",
+    "party": "Nasir",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 2000.0,
+    "amountReceived": 2000.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 1000
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-26",
+    "date": "2026-05-26",
+    "jobNo": "JB0351",
+    "haflaId": "",
+    "party": "Shj Events",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Air Cooler",
+        "quantity": 2
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-27",
+    "date": "2026-05-26",
+    "jobNo": "",
+    "haflaId": "28110",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 5880.0,
+    "amountReceived": 0,
+    "pendingAmount": 5880.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Tent 10x5",
+        "quantity": ""
+      },
+      {
+        "description": "White Chairs",
+        "quantity": 45
+      },
+      {
+        "description": "Rectangular Table",
+        "quantity": 2
+      },
+      {
+        "description": "Round Table",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-28",
+    "date": "2026-05-26",
+    "jobNo": "",
+    "haflaId": "28111",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 1470.0,
+    "amountReceived": 0,
+    "pendingAmount": 1470.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "3 Seater Sofa",
+        "quantity": 4
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-29",
+    "date": "2026-05-27",
+    "jobNo": "JB0352",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 900.0,
+    "amountReceived": 900.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Buffet Table",
+        "quantity": 5
+      },
+      {
+        "description": "Chafing Dish",
+        "quantity": 4
+      },
+      {
+        "description": "Tandoor",
+        "quantity": 1
+      },
+      {
+        "description": "Grill",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-30",
+    "date": "2026-05-28",
+    "jobNo": "JB0353",
+    "haflaId": "",
+    "party": "KR Sidra",
+    "incharge": "",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 700.0,
+    "amountReceived": 700.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "B. Chairs",
+        "quantity": 20
+      },
+      {
+        "description": "R. Tables",
+        "quantity": 2
+      },
+      {
+        "description": "Cooler",
+        "quantity": 1
+      },
+      {
+        "description": "Halogen Lights",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-31",
+    "date": "2026-05-28",
+    "jobNo": "JB0354",
+    "haflaId": "",
+    "party": "Memon Darbar",
+    "incharge": "",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 1400.0,
+    "amountReceived": 1400.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Setup for 50pax",
+        "quantity": ""
+      },
+      {
+        "description": "Cooler",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-32",
+    "date": "2026-05-29",
+    "jobNo": "JB0355",
+    "haflaId": "",
+    "party": "Sehar",
+    "incharge": "",
+    "receivedBy": "Zohaib",
+    "paymentMethod": "",
+    "totalAmount": 200.0,
+    "amountReceived": 200.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "B. Chairs",
+        "quantity": 10
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-33",
+    "date": "2026-05-29",
+    "jobNo": "JB0356",
+    "haflaId": "",
+    "party": "BBQ Tonight",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Setup for 40pax",
+        "quantity": ""
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-34",
+    "date": "2026-05-30",
+    "jobNo": "JB0357",
+    "haflaId": "",
+    "party": "Abdulla",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 600.0,
+    "amountReceived": 600.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "B. Chairs (white cover)",
+        "quantity": 130
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-35",
+    "date": "2026-05-30",
+    "jobNo": "JB0358",
+    "haflaId": "",
+    "party": "Boss Order",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Banquet Tables",
+        "quantity": 6
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-36",
+    "date": "2026-05-30",
+    "jobNo": "JB0359",
+    "haflaId": "",
+    "party": "Allah Baksh",
+    "incharge": "",
+    "receivedBy": "Ali",
+    "paymentMethod": "",
+    "totalAmount": 300.0,
+    "amountReceived": 300.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 2
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-37",
+    "date": "2026-05-30",
+    "jobNo": "",
+    "haflaId": "28103",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 1764.0,
+    "amountReceived": 0,
+    "pendingAmount": 1764.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Golden Chair",
+        "quantity": 62
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 12
+      },
+      {
+        "description": "Cooler",
+        "quantity": 4
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-38",
+    "date": "2026-05-31",
+    "jobNo": "JB0360",
+    "haflaId": "",
+    "party": "Jumeirah Kitchen",
+    "incharge": "",
+    "receivedBy": "Ihsan",
+    "paymentMethod": "",
+    "totalAmount": 1300.0,
+    "amountReceived": 1300.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Setup for 200pax",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  }
+];
+
+function importMay2026Orders() {
+  const importKey = "alJefoonMay2026ImportedV1";
+  if (localStorage.getItem(importKey) === "yes") return;
+  const normalize = value => String(value || "").trim().toLowerCase();
+  const additions = MAY_2026_ORDERS.filter(newOrder => !orders.some(existing =>
+    existing.id === newOrder.id ||
+    (existing.date === newOrder.date &&
+      normalize(existing.party) === normalize(newOrder.party) &&
+      ((newOrder.jobNo && normalize(existing.jobNo) === normalize(newOrder.jobNo)) ||
+       (newOrder.haflaId && normalize(existing.haflaId) === normalize(newOrder.haflaId))))
+  ));
+  if (additions.length) {
+    const updatedOrders = orders.concat(additions);
+    // Persist before changing the in-memory list or marking the import complete.
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedOrders));
+    orders = updatedOrders;
+    save();
+  }
+  localStorage.setItem(importKey, "yes");
+}
+
+importMay2026Orders();
+
+/* EARLY MAY 2026 ORDERS — additional 39 entries only. */
+const EARLY_MAY_2026_ORDERS = [
+  {
+    "id": "may-2026-early-01",
+    "date": "2026-05-01",
+    "jobNo": "JB0306",
+    "haflaId": "",
+    "party": "Cash Customer",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 15000.0,
+    "amountReceived": 15000.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Traditional Tent 10x15m",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-02",
+    "date": "2026-05-01",
+    "jobNo": "",
+    "haflaId": "27934",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Police Barriers",
+        "quantity": 200
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-03",
+    "date": "2026-05-02",
+    "jobNo": "JB0307",
+    "haflaId": "",
+    "party": "BBQ Tonight",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 2205.0,
+    "amountReceived": 2205.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Setup for 70pax",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-04",
+    "date": "2026-05-02",
+    "jobNo": "JB0308",
+    "haflaId": "",
+    "party": "Cash Customer",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 18
+      },
+      {
+        "description": "Sofa Set",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-05",
+    "date": "2026-05-02",
+    "jobNo": "JB0309",
+    "haflaId": "",
+    "party": "BBQ Tonight",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Setup for 50pax",
+        "quantity": ""
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-early-06",
+    "date": "2026-05-02",
+    "jobNo": "JB0310",
+    "haflaId": "",
+    "party": "BBQ Tonight",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Chafing Dish",
+        "quantity": 5
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-early-07",
+    "date": "2026-05-02",
+    "jobNo": "JB0311",
+    "haflaId": "",
+    "party": "Arch Events",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 131.25,
+    "amountReceived": 131.25,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-08",
+    "date": "2026-05-02",
+    "jobNo": "",
+    "haflaId": "27962",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Bench",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-09",
+    "date": "2026-05-02",
+    "jobNo": "",
+    "haflaId": "27980",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "High Majlis",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-10",
+    "date": "2026-05-02",
+    "jobNo": "",
+    "haflaId": "27988",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Mist Fan",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-11",
+    "date": "2026-05-02",
+    "jobNo": "",
+    "haflaId": "27993",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 5
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-12",
+    "date": "2026-05-02",
+    "jobNo": "",
+    "haflaId": "27982",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 367.5,
+    "amountReceived": 0,
+    "pendingAmount": 367.5,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Mist Fan",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-13",
+    "date": "2026-05-03",
+    "jobNo": "JB0312",
+    "haflaId": "",
+    "party": "AG Engineering & Power Contracting",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 1900.0,
+    "amountReceived": 1900.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Single Sofa",
+        "quantity": 8
+      },
+      {
+        "description": "Banquet Chairs",
+        "quantity": 150
+      },
+      {
+        "description": "Stage Cloth",
+        "quantity": 1
+      },
+      {
+        "description": "Coffee Tables",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-14",
+    "date": "2026-05-03",
+    "jobNo": "",
+    "haflaId": "27999",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Buffet Table",
+        "quantity": 2
+      },
+      {
+        "description": "White Chairs",
+        "quantity": 6
+      },
+      {
+        "description": "Crockery",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-15",
+    "date": "2026-05-03",
+    "jobNo": "",
+    "haflaId": "27977",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Buffet Table",
+        "quantity": 2
+      },
+      {
+        "description": "White Chairs",
+        "quantity": 6
+      },
+      {
+        "description": "Crockery",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-16",
+    "date": "2026-05-03",
+    "jobNo": "JB0313",
+    "haflaId": "",
+    "party": "BBQ Tonight",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Setup for 80pax (Standing)",
+        "quantity": ""
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-early-17",
+    "date": "2026-05-04",
+    "jobNo": "JB0314",
+    "haflaId": "",
+    "party": "Spice & Smoke",
+    "incharge": "",
+    "receivedBy": "Usman",
+    "paymentMethod": "",
+    "totalAmount": 1055.25,
+    "amountReceived": 1055.25,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Chafing Dish",
+        "quantity": 19
+      },
+      {
+        "description": "Buffet Table",
+        "quantity": 4
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-18",
+    "date": "2026-05-04",
+    "jobNo": "JB0315",
+    "haflaId": "",
+    "party": "Athoor",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Coffee Tables",
+        "quantity": 5
+      },
+      {
+        "description": "Carpet",
+        "quantity": 1
+      },
+      {
+        "description": "(not readable)",
+        "quantity": 12
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-19",
+    "date": "2026-05-05",
+    "jobNo": "JB0316",
+    "haflaId": "",
+    "party": "Cash Customer (Fujairah)",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Chairs",
+        "quantity": 12
+      },
+      {
+        "description": "Tables",
+        "quantity": 4
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-20",
+    "date": "2026-05-06",
+    "jobNo": "JB0317",
+    "haflaId": "",
+    "party": "Geeta",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Golden or Acrylic Chairs (with pink bow)",
+        "quantity": 70
+      }
+    ],
+    "remarks": "Paid (confirmed by user); received amount not specified in original list."
+  },
+  {
+    "id": "may-2026-early-21",
+    "date": "2026-05-06",
+    "jobNo": "",
+    "haflaId": "27992",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 2677.5,
+    "amountReceived": 0,
+    "pendingAmount": 2677.5,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Cooler (6 May)",
+        "quantity": 3
+      },
+      {
+        "description": "White Chair (6 May)",
+        "quantity": 70
+      },
+      {
+        "description": "Chiavari Chair (9 May)",
+        "quantity": 70
+      },
+      {
+        "description": "Cooler (9 May)",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-22",
+    "date": "2026-05-08",
+    "jobNo": "JB0318",
+    "haflaId": "",
+    "party": "Parishay Events",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 1100.0,
+    "amountReceived": 1100.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 300
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-23",
+    "date": "2026-05-08",
+    "jobNo": "",
+    "haflaId": "28018",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 1008.0,
+    "amountReceived": 0,
+    "pendingAmount": 1008.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Golden High Chair",
+        "quantity": 6
+      },
+      {
+        "description": "Golden Table",
+        "quantity": 3
+      },
+      {
+        "description": "Cooler",
+        "quantity": 1
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-24",
+    "date": "2026-05-09",
+    "jobNo": "JB0319",
+    "haflaId": "",
+    "party": "Geeta",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 1020.0,
+    "amountReceived": 1020.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Golden High Chair",
+        "quantity": 6
+      },
+      {
+        "description": "Cooler",
+        "quantity": 2
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-25",
+    "date": "2026-05-09",
+    "jobNo": "JB0320",
+    "haflaId": "",
+    "party": "Prvate Customer",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 1200.0,
+    "amountReceived": 1200.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "White Single Sofa",
+        "quantity": ""
+      },
+      {
+        "description": "Coffee Table",
+        "quantity": 1
+      },
+      {
+        "description": "Barricades",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-26",
+    "date": "2026-05-09",
+    "jobNo": "JB0321",
+    "haflaId": "",
+    "party": "Sikandar",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Cooler",
+        "quantity": 4
+      },
+      {
+        "description": "Dishes",
+        "quantity": 6
+      },
+      {
+        "description": "Serving Spoon",
+        "quantity": 6
+      },
+      {
+        "description": "Food Pan",
+        "quantity": 6
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-27",
+    "date": "2026-05-09",
+    "jobNo": "JB0322",
+    "haflaId": "",
+    "party": "Shj Events",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 1500.0,
+    "amountReceived": 1500.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "White Cushions",
+        "quantity": 100
+      },
+      {
+        "description": "Chiavari Chairs",
+        "quantity": 8
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-28",
+    "date": "2026-05-09",
+    "jobNo": "",
+    "haflaId": "27991",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "White Chair",
+        "quantity": 70
+      },
+      {
+        "description": "Cooler",
+        "quantity": 3
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-29",
+    "date": "2026-05-10",
+    "jobNo": "",
+    "haflaId": "27944",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Tent",
+        "quantity": 2
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-30",
+    "date": "2026-05-11",
+    "jobNo": "",
+    "haflaId": "28033",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 472.5,
+    "amountReceived": 0,
+    "pendingAmount": 472.5,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 50
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-31",
+    "date": "2026-05-11",
+    "jobNo": "JB0323",
+    "haflaId": "",
+    "party": "Ajmal",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "B. Chairs",
+        "quantity": 20
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-32",
+    "date": "2026-05-14",
+    "jobNo": "",
+    "haflaId": "28057",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Banquet Chairs (White Stretched Cover)",
+        "quantity": 25
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-33",
+    "date": "2026-05-15",
+    "jobNo": "JB0324",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Bank",
+    "paymentMethod": "Bank Transfer",
+    "totalAmount": 1100.0,
+    "amountReceived": 1100.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "B. Chairs",
+        "quantity": 40
+      },
+      {
+        "description": "B. Tables",
+        "quantity": 4
+      },
+      {
+        "description": "Coolers",
+        "quantity": 4
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-34",
+    "date": "2026-05-15",
+    "jobNo": "JB0325",
+    "haflaId": "",
+    "party": "Private Customer",
+    "incharge": "",
+    "receivedBy": "Saud",
+    "paymentMethod": "",
+    "totalAmount": 970.0,
+    "amountReceived": 970.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Single Sofas",
+        "quantity": 8
+      },
+      {
+        "description": "Coffee Tables",
+        "quantity": 3
+      },
+      {
+        "description": "(not readable)",
+        "quantity": 10
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-35",
+    "date": "2026-05-15",
+    "jobNo": "JB0326",
+    "haflaId": "",
+    "party": "Ghaffar",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Chafing Dishes",
+        "quantity": 35
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-36",
+    "date": "2026-05-15",
+    "jobNo": "JB0327",
+    "haflaId": "",
+    "party": "Sabir Events",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 500.0,
+    "amountReceived": 500.0,
+    "pendingAmount": 0.0,
+    "status": "Received",
+    "items": [
+      {
+        "description": "Buffet Tables",
+        "quantity": 16
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-37",
+    "date": "2026-05-15",
+    "jobNo": "",
+    "haflaId": "28061",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 1265.25,
+    "amountReceived": 0,
+    "pendingAmount": 1265.25,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Crockery & Cutlery",
+        "quantity": 15
+      },
+      {
+        "description": "Coolers",
+        "quantity": 4
+      },
+      {
+        "description": "Centerpieces",
+        "quantity": 2
+      },
+      {
+        "description": "Tables",
+        "quantity": 2
+      },
+      {
+        "description": "White Chiavari Chairs",
+        "quantity": 15
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-38",
+    "date": "2026-05-15",
+    "jobNo": "",
+    "haflaId": "28062",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 5670.0,
+    "amountReceived": 0,
+    "pendingAmount": 5670.0,
+    "status": "Pending",
+    "items": [
+      {
+        "description": "Exhibition Carpet 6x37m",
+        "quantity": ""
+      }
+    ],
+    "remarks": ""
+  },
+  {
+    "id": "may-2026-early-39",
+    "date": "2026-05-15",
+    "jobNo": "",
+    "haflaId": "28069",
+    "party": "HAFLA",
+    "incharge": "",
+    "receivedBy": "",
+    "paymentMethod": "",
+    "totalAmount": 0.0,
+    "amountReceived": 0,
+    "pendingAmount": 0.0,
+    "status": "No Amount",
+    "items": [
+      {
+        "description": "Banquet Chairs",
+        "quantity": 15
+      }
+    ],
+    "remarks": ""
+  }
+];
+
+function importEarlyMay2026Orders() {
+  const importKey = "alJefoonEarlyMay2026ImportedV1";
+  if (localStorage.getItem(importKey) === "yes") return;
+  const normalize = value => String(value || "").trim().toLowerCase();
+  const additions = EARLY_MAY_2026_ORDERS.filter(newOrder => !orders.some(existing =>
+    existing.id === newOrder.id ||
+    (existing.date === newOrder.date &&
+      normalize(existing.party) === normalize(newOrder.party) &&
+      ((newOrder.jobNo && normalize(existing.jobNo) === normalize(newOrder.jobNo)) ||
+       (newOrder.haflaId && normalize(existing.haflaId) === normalize(newOrder.haflaId))))
+  ));
+  if (additions.length) {
+    const updatedOrders = orders.concat(additions);
+    // Persist before changing the in-memory list or marking the import complete.
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedOrders));
+    orders = updatedOrders;
+    save();
+  }
+  localStorage.setItem(importKey, "yes");
+}
+
+importEarlyMay2026Orders();
+
+/* Complete May import: fill missing orders and apply confirmed paid statuses. */
+function completeMay2026Orders() {
+  const key = "alJefoonCompleteMay2026ImportedV2";
+  if (localStorage.getItem(key) === "yes") return;
+  const normalize = value => String(value || "").trim().toLowerCase();
+  const updated = orders.slice();
+  let changed = false;
+  [...EARLY_MAY_2026_ORDERS, ...MAY_2026_ORDERS].forEach(source => {
+    const index = updated.findIndex(existing =>
+      existing.id === source.id ||
+      (existing.date === source.date &&
+        ((source.jobNo && normalize(existing.jobNo) === normalize(source.jobNo)) ||
+         (!source.jobNo && source.party === "HAFLA" &&
+          normalize(existing.party) === "hafla" &&
+          (normalize(existing.haflaId) === normalize(source.haflaId) ||
+           normalize(existing.jobNo) === normalize(source.haflaId)))))
+    );
+    if (index === -1) {
+      updated.push(source);
+      changed = true;
+    } else if (source.remarks.startsWith("Paid (confirmed by user)") &&
+               updated[index].status !== "Received") {
+      updated[index] = {...updated[index], status: "Received", pendingAmount: 0};
+      changed = true;
+    }
+  });
+  if (changed) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    orders = updated;
+    save();
+  }
+  localStorage.setItem(key, "yes");
+}
+completeMay2026Orders();
+
+importJuly2026Orders();
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+sortOrders();
+
+
+$("itemsContainer")
+  .innerHTML = "";
+
+
+resetForm();
+
+
+renderDashboard();
+
+
+renderOrders();
+
+
+renderReport();
+
+
+updateClock();
+
+/* =====================================================
+   INITIAL GOOGLE DRIVE BACKUP
+===================================================== */
+
+setTimeout(
+  () => backupToGoogleDrive(),
+  1500
+);
